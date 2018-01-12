@@ -14,7 +14,7 @@ df.plot.scatter(x='x', y='y')
 
 ![matplotlib scatter output](images/mpl-scatter.png?raw=true)
 
-The goal of ``pdvega`` is that any time you use ``df.plot``, you'll be able to replace it with ``pd.vgplot`` and instead get a similar (but not identical) outpuut in Vega or Vega-Lite:
+The goal of ``pdvega`` is that any time you use ``dataframe.plot``, you'll be able to replace it with ``dataframe.vgplot`` and instead get a similar (but not identical) visualization outpuut in Vega or Vega-Lite:
 
 ```python
 import pdvega  # import adds vgplot attribute to pandas
