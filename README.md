@@ -14,7 +14,7 @@ df.plot.scatter(x='x', y='y')
 
 ![matplotlib scatter output](images/mpl-scatter.png?raw=true)
 
-The goal of ``pdvega`` is that any time you use ``dataframe.plot``, you'll be able to replace it with ``dataframe.vgplot`` and instead get a similar (but not identical) visualization outpuut in Vega or Vega-Lite:
+The goal of ``pdvega`` is that any time you use ``dataframe.plot``, you'll be able to replace it with ``dataframe.vgplot`` and instead get a similar (but not identical) visualization output in Vega or Vega-Lite:
 
 ```python
 import pdvega  # import adds vgplot attribute to pandas
@@ -30,4 +30,6 @@ Currently only a small part of the pandas plotting API is covered; see the [exam
 
 [Altair](http://altair-viz.github.io) is a project that seeks to design an intuitive declarative API for generating Vega-Lite and Vega visualizations, using Pandas dataframes as data sources.
 
-By contrast, ``pdvega`` seeks not to design new visualization APIs, but to use the existing ``DataFrame.plot`` [visualization api](https://pandas.pydata.org/pandas-docs/stable/visualization.html) and output Vega/Vega-Lite visualizations rather than matplotlib.
+By contrast, ``pdvega`` seeks not to design new visualization APIs, but to use the existing ``DataFrame.plot`` [visualization api](https://pandas.pydata.org/pandas-docs/stable/visualization.html) and output visualizations with Vega/Vega-Lite rather than with matplotlib.
+
+In this respect, ``pdvega`` is quite similar in spirit to the now-defunct [mpld3](http://mpld3.github.io) project, though the scope is smaller and (hopefully) **much** more manageable.
