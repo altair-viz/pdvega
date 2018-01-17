@@ -26,6 +26,23 @@ df.vgplot.scatter(x='x', y='y')
 
 Currently only a small part of the pandas plotting API is covered; see the [example notebook](notebooks/pdvega_example.ipynb) for a few working examples.
 
+## Dependencies
+
+``pdvega`` requires only the [pandas](http://pandas.pydata.org) and [vega3](https://github.com/vega/ipyvega/tree/vega3). You can install them with pip:
+
+```
+$ pip install pandas vega3
+```
+
+In order for plots to appear in the Jupyter notebook, you need to enable the
+vega3 notebook extension:
+
+```
+jupyter nbextension install --sys-prefix --py vega3
+```
+
+This requires a recent version of ``notebook``.
+
 ## Relationship to Altair
 
 [Altair](http://altair-viz.github.io) is a project that seeks to design an intuitive declarative API for generating Vega-Lite and Vega visualizations, using Pandas dataframes as data sources.
