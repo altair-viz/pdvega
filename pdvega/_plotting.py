@@ -1,9 +1,18 @@
 from ._utils import unstack_cols
 from pandas.plotting._core import FramePlotMethods, SeriesPlotMethods
-from vega import Vega, VegaLite
+from vega3 import Vega, VegaLite
 
 
-def vgplot_line(df, x=None, y=None):
+INTERACTIVE_SCALES = {
+    "selection": {
+        "grid": {
+            "type": "interval", "bind": "scales"
+        }
+    }
+}
+
+
+def vgplot_line(df, x=None, y=None, interactive=True, width=450, height=300):
     if x is None:
         if df.index.name is None:
             df.index.name = 'index'
@@ -24,11 +33,18 @@ def vgplot_line(df, x=None, y=None):
         "x": {"field": x, "type": "quantitative"},
         "y": {"field": "value", "type": "quantitative"},
         "color": {"field": "variable", "type": "nominal"}
-      }
+      },
+      "width": width,
+      "height": height
     }
+
+    if interactive:
+        D.update(INTERACTIVE_SCALES)
+    
     return VegaLite(D, data=df)
 
-def vgplot_scatter(df, x, y):
+
+def vgplot_scatter(df, x, y, interactive=True, width=450, height=300):
     assert x in df.columns
     assert y in df.columns
 
@@ -39,11 +55,18 @@ def vgplot_scatter(df, x, y):
       "encoding": {
         "x": {"field": x, "type": "quantitative"},
         "y": {"field": y, "type": "quantitative"},
-      }
+      },
+      "width": width,
+      "height": height
     }
+
+    if interactive:
+        D.update(INTERACTIVE_SCALES)
+
     return VegaLite(D, data=df)
 
-def vgplot_bar(df, x, y):
+
+def vgplot_bar(df, x, y, interactive=True, width=450, height=300):
     if x is None:
         if df.index.name is None:
             df.index.name = 'index'
@@ -64,13 +87,21 @@ def vgplot_bar(df, x, y):
         "x": {"field": x, "type": "ordinal"},
         "y": {"field": "value", "type": "quantitative"},
         "color": {"field": "variable", "type": "nominal"}
-      }
+      },
+      "width": width,
+      "height": height
     }
+
+    if interactive:
+        D.update(INTERACTIVE_SCALES)
+    
     return VegaLite(D, data=df)
 
 
 class FrameVgPlotMethods(FramePlotMethods):
-    def __call__(self, x=None, y=None, kind='line', ax=None,
+    def __call__(self, x=None, y=None, kind='line', interactive=True,
+                 width=450, height=300,
+                 ax=None,
                  subplots=False, sharex=None, sharey=False, layout=None,
                  figsize=None, use_index=True, title=None, grid=None,
                  legend=True, style=None, logx=False, logy=False, loglog=False,
@@ -79,17 +110,21 @@ class FrameVgPlotMethods(FramePlotMethods):
                  yerr=None, xerr=None,
                  secondary_y=False, sort_columns=False, **kwds):
         if kind == 'line':
-            return vgplot_line(self._data, x=x, y=y)
+            return vgplot_line(self._data, x=x, y=y, interactive=interactive,
+                               width=width, height=height)
         elif kind == 'scatter':
-            return vgplot_scatter(self._data, x=x, y=y)
+            return vgplot_scatter(self._data, x=x, y=y, interactive=interactive,
+                                  width=width, height=height)
         elif kind == 'bar':
-            return vgplot_bar(self._data, x=x, y=y)
+            return vgplot_bar(self._data, x=x, y=y, interactive=interactive,
+                              width=width, height=height)
         else:
             raise NotImplementedError("kind = {0}".format(kind))
 
 
 class SeriesVgPlotMethods(SeriesPlotMethods):
-    def __call__(self, kind='line', ax=None,
+    def __call__(self, kind='line', interactive=True, width=450, height=300,
+                 ax=None,
                  figsize=None, use_index=True, title=None, grid=None,
                  legend=False, style=None, logx=False, logy=False,
                  loglog=False, xticks=None, yticks=None,
@@ -98,6 +133,7 @@ class SeriesVgPlotMethods(SeriesPlotMethods):
                  yerr=None, xerr=None,
                  label=None, secondary_y=False, **kwds):
         if kind == 'line':
-            return plot_line(self._data.to_frame())
+            return plot_line(self._data.to_frame(), interactive=interactive,
+                             width=width, height=height)
         else:
             raise NotImplementedError("kind = {0}".format(kind))
