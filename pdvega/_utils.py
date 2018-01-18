@@ -1,3 +1,5 @@
+import numpy as np
+import pandas as pd
 
 try:
     from pandas.api.types import infer_dtype as pd_infer_dtype
@@ -5,7 +7,7 @@ except ImportError: # Pandas before 0.20.0
     from pandas.lib import infer_dtype as pd_infer_dtype
 
 
-def infer_vegalite_type(data):
+def infer_vegalite_type(data, ordinal_threshold=0):
     """
     From an array-like input, infer the correct vega typecode
     ('ordinal', 'nominal', 'quantitative', or 'temporal')
@@ -13,6 +15,10 @@ def infer_vegalite_type(data):
     Parameters
     ----------
     data: Numpy array or Pandas Series
+        data for which the type will be inferred
+    ordinal_threshold: integer (default: 0)
+        numerical data will result in a 'quantitative' type, unless the
+        number of unique values is smaller than ordinal_threshold.
 
     Adapted from code at http://github.com/altair-viz/altair/
     Licence: BSD-3
@@ -24,7 +30,10 @@ def infer_vegalite_type(data):
 
     if typ in ['floating', 'mixed-integer-float', 'integer',
                'mixed-integer', 'complex']:
-        return 'quantitative'
+        if ordinal_threshold and pd.Series(data).nunique() < ordinal_threshold:
+            return 'ordinal'
+        else:
+            return 'quantitative'
     elif typ in ['string', 'bytes', 'categorical', 'boolean', 'mixed', 'unicode']:
         return 'nominal'
     elif typ in ['datetime', 'datetime64', 'timedelta',

@@ -96,12 +96,13 @@ def vgplot_bar(df, x, y, interactive=True, width=450, height=300):
       "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
       "mark": "bar",
       "encoding": {
-        "x": {"field": x, "type": infer_vegalite_type(df[x])},
-        "y": {"field": "value", "type": infer_vegalite_type(df["value"])},
-        "color": {"field": "variable", "type": infer_vegalite_type(df["variable"])}
+        "x": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)},
+        "y": {"field": "value", "type": infer_vegalite_type(df["value"]), 'stack': None},
+        "color": {"field": "variable", "type": infer_vegalite_type(df["variable"])},
+        "opacity": {"value": 0.7}
       },
       "width": width,
-      "height": height
+      "height": height,
     }
 
     if interactive:
