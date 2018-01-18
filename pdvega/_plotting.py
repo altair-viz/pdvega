@@ -31,8 +31,8 @@ def vgplot_line(df, x=None, y=None, interactive=True, width=450, height=300):
       "mark": "line",
       "encoding": {
         "x": {"field": x, "type": infer_vegalite_type(df[x])},
-        "y": {"field": "value", "type": infer_vegalite_type(df[y])},
-        "color": {"field": "variable", "type": "nominal"}
+        "y": {"field": "value", "type": infer_vegalite_type(df["value"])},
+        "color": {"field": "variable", "type": infer_vegalite_type(df["variable"], ordinal_threshold=10)}
       },
       "width": width,
       "height": height
