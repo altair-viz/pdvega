@@ -78,7 +78,7 @@ def vgplot_scatter(df, x, y, c=None, s=None,
     return VegaLite(D, data=df)
 
 
-def vgplot_bar(df, x, y, interactive=True, width=450, height=300):
+def vgplot_bar(df, x, y, stacked=False, interactive=True, width=450, height=300):
     if x is None:
         if df.index.name is None:
             df.index.name = 'index'
@@ -97,13 +97,18 @@ def vgplot_bar(df, x, y, interactive=True, width=450, height=300):
       "mark": "bar",
       "encoding": {
         "x": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)},
-        "y": {"field": "value", "type": infer_vegalite_type(df["value"]), 'stack': None},
+        "y": {"field": "value", "type": infer_vegalite_type(df["value"])},
         "color": {"field": "variable", "type": infer_vegalite_type(df["variable"])},
-        "opacity": {"value": 0.7}
       },
       "width": width,
       "height": height,
     }
+
+    if stacked:
+        D['encoding']['y']['stack'] = 'zero'
+    else:
+        D['encoding']['y']['stack'] = None
+        D['encoding']['opacity'] = {"value": 0.7}
 
     if interactive:
         D.update(INTERACTIVE_SCALES)
