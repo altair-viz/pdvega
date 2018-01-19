@@ -1,0 +1,22 @@
+language: python
+
+python:
+  - 2.7
+  - 3.5
+  - 3.6
+
+env:
+  global:
+    - TEST_DIR=/tmp/_pdvega/
+    - PIP_DEPS="pandas vega3 jsonschema pytest"
+
+before_install:
+  - pip install pip --upgrade
+  - pip install pytest
+
+install:
+  - pip install .
+
+script:
+  - mkdir -p $TEST_DIR
+  - cd $TEST_DIR && python -m pytest --pyargs pdvega --doctest-modules
