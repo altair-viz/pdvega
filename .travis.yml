@@ -8,7 +8,7 @@ python:
 env:
   global:
     - TEST_DIR=/tmp/_pdvega/
-    - PIP_DEPS="pandas vega3 jsonschema pytest"
+    - PIP_DEPS="pandas ipython vega3 jsonschema pytest"
 
 before_install:
   - pip install pip --upgrade

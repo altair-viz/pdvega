@@ -1,5 +1,7 @@
 # ``pdvega``
 
+[![build status](http://img.shields.io/travis/jakevdp/pdvega/master.svg?style=flat)](https://travis-ci.org/jakevdp/pdvega)
+
 This package is an experiment in making [vega](https://vega.github.io/) and [vega-lite](https://vega.github.io/vega-lite/) plots easier to generate in Python.
 
 Pandas currently has a built-in set of [Visualization tools](https://pandas.pydata.org/pandas-docs/stable/visualization.html) based on matplotlib. So, for example, you can create a plot this way:
