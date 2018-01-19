@@ -1,6 +1,10 @@
 import pdvega
 import pandas as pd
 
+import jsonschema
+
+from ..schema import VEGALITE_SCHEMA
+
 
 IGNORE = object()
 
@@ -20,11 +24,16 @@ def _get_data(spec):
     return pd.DataFrame.from_records(spec['data']['values'])
 
 
+def validate_vegalite(spec):
+    return jsonschema.validate(spec, VEGALITE_SCHEMA)
+
+
 def test_line_plot_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
     plot = df.vgplot.line()
+    validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'line'
     _check_encodings(plot.spec, x='index', y='value', color='variable')
     data = _get_data(plot.spec)
@@ -37,6 +46,7 @@ def test_line_plot_xy():
                        'z': range(5)})
 
     plot = df.vgplot.line(x='x', y='y')
+    validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'line'
     _check_encodings(plot.spec, x='x', y='value', color='variable')
     data = _get_data(plot.spec)
@@ -48,6 +58,7 @@ def test_scatter_plot_simple():
                        'y': [6,3,4,5,2]})
 
     plot = df.vgplot.scatter(x='x', y='y')
+    validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'circle'
     _check_encodings(plot.spec, x='x', y='y')
 
@@ -59,6 +70,7 @@ def test_scatter_plot_color_size():
                        's': range(5)})
 
     plot = df.vgplot.scatter(x='x', y='y', c='c', s='s')
+    validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'circle'
     _check_encodings(plot.spec, x='x', y='y', color='c', size='s')
 
@@ -68,6 +80,7 @@ def test_bar_plot_simple():
                        'y': [6,3,4,5,2]})
 
     plot = df.vgplot.bar()
+    validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'bar'
     _check_encodings(plot.spec, x='index', y='value',
                      color='variable', opacity=IGNORE)
@@ -80,6 +93,7 @@ def test_bar_plot_xy():
                        'y': [6,3,4,5,2]})
 
     plot = df.vgplot.bar(x='x', y='y')
+    validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'bar'
     _check_encodings(plot.spec, x='x', y='value',
                      color='variable', opacity=IGNORE)
