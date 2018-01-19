@@ -52,7 +52,7 @@ setup(name=NAME,
       license=LICENSE,
       install_requires=["pandas", "vega3", "ipython"],
       tests_require=["pytest", "jsonschema"],
-      packages=['pdvega'],
+      packages=['pdvega', 'pdvega.tests'],
       package_data={'pdvega': ['*.json']},
       classifiers=[
         'Development Status :: 4 - Beta',
