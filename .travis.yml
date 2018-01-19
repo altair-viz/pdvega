@@ -12,7 +12,7 @@ env:
 
 before_install:
   - pip install pip --upgrade
-  - pip install pytest
+  - pip install $PIP_DEPS
 
 install:
   - pip install .
