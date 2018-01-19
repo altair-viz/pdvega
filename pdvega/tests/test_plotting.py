@@ -99,3 +99,59 @@ def test_bar_plot_xy():
                      color='variable', opacity=IGNORE)
     data = _get_data(plot.spec)
     assert set(pd.unique(data['variable'])) == {'y'}
+
+
+def test_area_plot_simple():
+    df = pd.DataFrame({'x': [1,4,2,3,5],
+                       'y': [6,3,4,5,2]})
+
+    plot = df.vgplot.area()
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'area'
+    _check_encodings(plot.spec, x='index', y='value', color='variable')
+    data = _get_data(plot.spec)
+    assert set(pd.unique(data['variable'])) == {'x', 'y'}
+    assert plot.spec['encoding']['y']['stack'] == 'zero'
+
+
+def test_area_plot_unstacked():
+    df = pd.DataFrame({'x': [1,4,2,3,5],
+                       'y': [6,3,4,5,2]})
+
+    plot = df.vgplot.area(stacked=False)
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'area'
+    _check_encodings(plot.spec, x='index', y='value', color='variable', opacity=IGNORE)
+    data = _get_data(plot.spec)
+    assert set(pd.unique(data['variable'])) == {'x', 'y'}
+    assert plot.spec['encoding']['y']['stack'] == None
+    assert plot.spec['encoding']['opacity']['value'] == 0.7
+
+
+def test_area_plot_xy():
+    df = pd.DataFrame({'x': [1,4,2,3,5],
+                       'y': [6,3,4,5,2],
+                       'z': range(5)})
+
+    plot = df.vgplot.area(x='x', y='y')
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'area'
+    _check_encodings(plot.spec, x='x', y='value', color='variable')
+    data = _get_data(plot.spec)
+    assert set(pd.unique(data['variable'])) == {'y'}
+    assert plot.spec['encoding']['y']['stack'] == 'zero'
+
+
+def test_area_plot_xy_unstacked():
+    df = pd.DataFrame({'x': [1,4,2,3,5],
+                       'y': [6,3,4,5,2],
+                       'z': range(5)})
+
+    plot = df.vgplot.area(x='x', y='y', stacked=False)
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'area'
+    _check_encodings(plot.spec, x='x', y='value', color='variable', opacity=IGNORE)
+    data = _get_data(plot.spec)
+    assert set(pd.unique(data['variable'])) == {'y'}
+    assert plot.spec['encoding']['y']['stack'] == None
+    assert plot.spec['encoding']['opacity']['value'] == 0.7
