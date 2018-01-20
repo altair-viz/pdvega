@@ -116,6 +116,44 @@ def vgplot_bar(df, x, y, stacked=False, interactive=True, width=450, height=300)
     return VegaLite(D, data=df)
 
 
+def vgplot_barh(df, x, y, stacked=False, interactive=True, width=450, height=300):
+    if x is None:
+        if df.index.name is None:
+            df.index.name = 'index'
+        x = df.index.name
+        df = df.reset_index()
+    assert x in df.columns
+
+    if y is not None:
+        assert y in df.columns
+        df = df[[x, y]]
+
+    df = df.melt([x], var_name='variable', value_name='value')
+
+    D = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
+      "mark": "bar",
+      "encoding": {
+        "x": {"field": "value", "type": infer_vegalite_type(df["value"])},
+        "y": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)},
+        "color": {"field": "variable", "type": infer_vegalite_type(df["variable"])},
+      },
+      "width": width,
+      "height": height,
+    }
+
+    if stacked:
+        D['encoding']['x']['stack'] = 'zero'
+    else:
+        D['encoding']['x']['stack'] = None
+        D['encoding']['opacity'] = {"value": 0.7}
+
+    if interactive:
+        D.update(INTERACTIVE_SCALES)
+
+    return VegaLite(D, data=df)
+
+
 def vgplot_area(df, x=None, y=None, stacked=True,
                 interactive=True, width=450, height=300):
     if x is None:
@@ -168,6 +206,9 @@ class FrameVgPlotMethods(FramePlotMethods):
         elif kind == 'bar':
             return vgplot_bar(self._data, x=x, y=y, interactive=interactive,
                               width=width, height=height, **kwds)
+        elif kind == 'barh':
+            return vgplot_barh(self._data, x=x, y=y, interactive=interactive,
+                               width=width, height=height, **kwds)
         elif kind == 'area':
             return vgplot_area(self._data, x=x, y=y, interactive=interactive,
                                width=width, height=height, **kwds)

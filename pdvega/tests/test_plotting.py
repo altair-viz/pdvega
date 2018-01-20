@@ -129,6 +129,60 @@ def test_bar_plot_xy_stacked():
     assert plot.spec['encoding']['y']['stack'] == "zero"
 
 
+def test_barh_plot_simple():
+    df = pd.DataFrame({'x': [1,4,2,3,5],
+                       'y': [6,3,4,5,2]})
+
+    plot = df.vgplot.barh()
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'bar'
+    _check_encodings(plot.spec, y='index', x='value',
+                     color='variable', opacity=IGNORE)
+    data = _get_data(plot.spec)
+    assert set(pd.unique(data['variable'])) == {'x', 'y'}
+    assert plot.spec['encoding']['x']['stack'] is None
+
+
+def test_barh_plot_stacked():
+    df = pd.DataFrame({'x': [1,4,2,3,5],
+                       'y': [6,3,4,5,2]})
+
+    plot = df.vgplot.barh(stacked=True)
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'bar'
+    _check_encodings(plot.spec, y='index', x='value', color='variable')
+    data = _get_data(plot.spec)
+    assert set(pd.unique(data['variable'])) == {'x', 'y'}
+    assert plot.spec['encoding']['x']['stack'] == "zero"
+
+
+def test_barh_plot_xy():
+    df = pd.DataFrame({'x': [1,4,2,3,5],
+                       'y': [6,3,4,5,2]})
+
+    plot = df.vgplot.barh(x='x', y='y')
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'bar'
+    _check_encodings(plot.spec, x='value', y='x',
+                     color='variable', opacity=IGNORE)
+    data = _get_data(plot.spec)
+    assert set(pd.unique(data['variable'])) == {'y'}
+    assert plot.spec['encoding']['x']['stack'] is None
+
+
+def test_barh_plot_xy_stacked():
+    df = pd.DataFrame({'x': [1,4,2,3,5],
+                       'y': [6,3,4,5,2]})
+
+    plot = df.vgplot.barh(x='x', y='y', stacked=True)
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'bar'
+    _check_encodings(plot.spec, x='value', y='x', color='variable')
+    data = _get_data(plot.spec)
+    assert set(pd.unique(data['variable'])) == {'y'}
+    assert plot.spec['encoding']['x']['stack'] == "zero"
+
+
 def test_area_plot_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
