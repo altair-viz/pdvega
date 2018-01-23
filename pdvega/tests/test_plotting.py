@@ -269,3 +269,34 @@ def test_series_area_plot():
     validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'area'
     _check_encodings(plot.spec, x='index', y='0')
+
+
+def test_df_hist_plot():
+    df = pd.DataFrame({'x': range(10),
+                       'y': range(10)})
+    plot = df.vgplot.hist(bins=5)
+    assert plot.spec['mark'] == 'bar'
+    _check_encodings(plot.spec, x='value', y=IGNORE, color='variable')
+    assert plot.spec['encoding']['x']['bin'] == {'maxbins': 5}
+    assert plot.spec['encoding']['y']['aggregate'] == 'count'
+    assert plot.spec['encoding']['y']['stack'] == None
+
+
+def test_df_hist_plot_stacked():
+    df = pd.DataFrame({'x': range(10),
+                       'y': range(10)})
+    plot = df.vgplot.hist(bins=5, stacked=True)
+    assert plot.spec['mark'] == 'bar'
+    _check_encodings(plot.spec, x='value', y=IGNORE, color='variable')
+    assert plot.spec['encoding']['x']['bin'] == {'maxbins': 5}
+    assert plot.spec['encoding']['y']['aggregate'] == 'count'
+    assert plot.spec['encoding']['y']['stack'] == 'zero'
+
+
+def test_series_hist_plot():
+    ser = pd.Series(range(10))
+    plot = ser.vgplot.hist(bins=5)
+    assert plot.spec['mark'] == 'bar'
+    _check_encodings(plot.spec, x='0', y=IGNORE)
+    assert plot.spec['encoding']['x']['bin'] == {'maxbins': 5}
+    assert plot.spec['encoding']['y']['aggregate'] == 'count'

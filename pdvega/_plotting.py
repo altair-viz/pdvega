@@ -282,25 +282,90 @@ def vgplot_df_area(df, x=None, y=None, stacked=True,
     return VegaLite(D, data=df)
 
 
+def vgplot_df_hist(df, by=None, bins=10, stacked=False,
+                   interactive=True, width=450, height=300):
+    if by is not None:
+        raise NotImplementedError('vgplot.hist `by` keyword')
+    df = df.melt(var_name='variable', value_name='value')
+
+    spec = {
+        "mark": "bar",
+        "encoding": {
+            "x": {
+                "bin": {"maxbins": bins},
+                "field": "value",
+                "type": "quantitative"
+            },
+            "y": {
+                "aggregate": "count",
+                "type": "quantitative",
+                "stack": ('zero' if stacked else None)
+            },
+            "color": {
+                "field": "variable",
+                "type": "nominal"
+            },
+        },
+        "width": width,
+        "height": height
+    }
+
+    if interactive:
+        spec.update(INTERACTIVE_SCALES)
+
+    return VegaLite(spec, data=df)
+
+
+def vgplot_series_hist(ser, bins=10, interactive=True,
+                       width=450, height=300):
+    df = ser.to_frame()
+    df.columns = map(str, df.columns)
+
+    spec = {
+        "mark": "bar",
+        "encoding": {
+            "x": {
+                "bin": {"maxbins": bins},
+                "field": df.columns[0],
+                "type": "quantitative"
+            },
+            "y": {
+                "aggregate": "count",
+                "type": "quantitative"
+            }
+        },
+        "width": width,
+        "height": height
+    }
+
+    if interactive:
+        spec.update(INTERACTIVE_SCALES)
+
+    return VegaLite(spec, data=df)
+
+
 class FrameVgPlotMethods(FramePlotMethods):
     def __call__(self, x=None, y=None,
                  kind='line', interactive=True,
                  width=450, height=300, **kwds):
         if kind == 'line':
             return vgplot_df_line(self._data, x=x, y=y, interactive=interactive,
-                               width=width, height=height, **kwds)
+                                  width=width, height=height, **kwds)
         elif kind == 'scatter':
             return vgplot_df_scatter(self._data, x=x, y=y, interactive=interactive,
-                                  width=width, height=height, **kwds)
+                                     width=width, height=height, **kwds)
         elif kind == 'bar':
             return vgplot_df_bar(self._data, x=x, y=y, interactive=interactive,
-                              width=width, height=height, **kwds)
+                                 width=width, height=height, **kwds)
         elif kind == 'barh':
             return vgplot_df_barh(self._data, x=x, y=y, interactive=interactive,
-                               width=width, height=height, **kwds)
+                                  width=width, height=height, **kwds)
         elif kind == 'area':
             return vgplot_df_area(self._data, x=x, y=y, interactive=interactive,
-                               width=width, height=height, **kwds)
+                                  width=width, height=height, **kwds)
+        elif kind == 'hist':
+            return vgplot_df_hist(self._data, interactive=interactive,
+                                  width=width, height=height, **kwds)
         else:
             raise NotImplementedError("kind = {0}".format(kind))
 
@@ -319,6 +384,9 @@ class SeriesVgPlotMethods(SeriesPlotMethods):
                                width=width, height=height, **kwds)
         elif kind == 'area':
             return vgplot_series_area(self._data, interactive=interactive,
+                                      width=width, height=height, **kwds)
+        elif kind == 'hist':
+            return vgplot_series_hist(self._data, interactive=interactive,
                                       width=width, height=height, **kwds)
         else:
             raise NotImplementedError("kind = {0}".format(kind))
