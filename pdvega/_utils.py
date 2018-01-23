@@ -33,8 +33,7 @@ def infer_vegalite_type(data, ordinal_threshold=6):
             return 'ordinal'
         else:
             return 'quantitative'
-    if typ in ['floating', 'mixed-integer-float', 'integer',
-               'mixed-integer', 'complex']:
+    elif typ in ['floating', 'mixed-integer-float', 'complex']:
         return 'quantitative'
     elif typ in ['string', 'bytes', 'categorical', 'boolean', 'mixed', 'unicode']:
         return 'nominal'
@@ -45,12 +44,3 @@ def infer_vegalite_type(data, ordinal_threshold=6):
         warnings.warn("I don't know how to infer vegalite type from '{0}'.  "
                       "Defaulting to nominal.".format(typ))
         return 'nominal'
-
-
-def unstack_cols(df):
-    cols = df.columns
-    df = df.reset_index()
-    return df.melt(['index'],
-                   value_vars=cols,
-                   var_name='variable',
-                   value_name='value')

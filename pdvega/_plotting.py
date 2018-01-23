@@ -1,4 +1,4 @@
-from ._utils import unstack_cols, infer_vegalite_type
+from ._utils import infer_vegalite_type
 from pandas.plotting._core import FramePlotMethods, SeriesPlotMethods
 from vega3 import Vega, VegaLite
 
@@ -161,7 +161,7 @@ def vgplot_df_bar(df, x, y, stacked=False, interactive=True, width=450, height=3
     return VegaLite(D, data=df)
 
 
-def vgplot_series_bar(ser, stacked=False, interactive=True, width=450, height=300):
+def vgplot_series_bar(ser, interactive=True, width=450, height=300):
     df = ser.reset_index()
     df.columns = map(str, df.columns)
     x, y = df.columns
@@ -176,11 +176,6 @@ def vgplot_series_bar(ser, stacked=False, interactive=True, width=450, height=30
       "width": width,
       "height": height,
     }
-
-    if stacked:
-        D['encoding']['y']['stack'] = 'zero'
-    else:
-        D['encoding']['y']['stack'] = None
 
     if interactive:
         D.update(INTERACTIVE_SCALES)
@@ -226,7 +221,7 @@ def vgplot_df_barh(df, x, y, stacked=False, interactive=True, width=450, height=
     return VegaLite(D, data=df)
 
 
-def vgplot_series_barh(ser, stacked=False, interactive=True, width=450, height=300):
+def vgplot_series_barh(ser, interactive=True, width=450, height=300):
     df = ser.reset_index()
     df.columns = map(str, df.columns)
     x, y = df.columns
@@ -241,12 +236,6 @@ def vgplot_series_barh(ser, stacked=False, interactive=True, width=450, height=3
       "width": width,
       "height": height,
     }
-
-    if stacked:
-        D['encoding']['x']['stack'] = 'zero'
-    else:
-        D['encoding']['x']['stack'] = None
-        D['encoding']['opacity'] = {"value": 0.7}
 
     if interactive:
         D.update(INTERACTIVE_SCALES)

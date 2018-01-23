@@ -145,15 +145,6 @@ def test_series_bar_plot():
     _check_encodings(plot.spec, x='index', y='0')
 
 
-def test_series_stacked_bar_plot():
-    ser = pd.Series([4,5,4,5], index=['A', 'B', 'C', 'D'])
-    plot = ser.vgplot.bar(stacked=True)
-    validate_vegalite(plot.spec)
-    assert plot.spec['mark'] == 'bar'
-    _check_encodings(plot.spec, x='index', y='0')
-    assert plot.spec['encoding']['y']['stack'] == "zero"
-
-
 def test_barh_plot_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
@@ -208,7 +199,15 @@ def test_barh_plot_xy_stacked():
     assert plot.spec['encoding']['x']['stack'] == "zero"
 
 
-def test_area_plot_simple():
+def test_series_barh_plot():
+    ser = pd.Series([4,5,4,5], index=['A', 'B', 'C', 'D'])
+    plot = ser.vgplot.barh()
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'bar'
+    _check_encodings(plot.spec, y='index', x='0')
+
+
+def test_df_area_plot_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -221,15 +220,7 @@ def test_area_plot_simple():
     assert plot.spec['encoding']['y']['stack'] == 'zero'
 
 
-def test_series_area_plot():
-    ser = pd.Series([3, 2, 3, 2, 3])
-    plot = ser.vgplot.area()
-    validate_vegalite(plot.spec)
-    assert plot.spec['mark'] == 'area'
-    _check_encodings(plot.spec, x='index', y='0')
-
-
-def test_area_plot_unstacked():
+def test_df_area_plot_unstacked():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -243,7 +234,7 @@ def test_area_plot_unstacked():
     assert plot.spec['encoding']['opacity']['value'] == 0.7
 
 
-def test_area_plot_xy():
+def test_df_area_plot_xy():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2],
                        'z': range(5)})
@@ -257,7 +248,7 @@ def test_area_plot_xy():
     assert plot.spec['encoding']['y']['stack'] == 'zero'
 
 
-def test_area_plot_xy_unstacked():
+def test_df_area_plot_xy_unstacked():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2],
                        'z': range(5)})
@@ -270,3 +261,11 @@ def test_area_plot_xy_unstacked():
     assert set(pd.unique(data['variable'])) == {'y'}
     assert plot.spec['encoding']['y']['stack'] is None
     assert plot.spec['encoding']['opacity']['value'] == 0.7
+
+
+def test_series_area_plot():
+    ser = pd.Series([3, 2, 3, 2, 3])
+    plot = ser.vgplot.area()
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'area'
+    _check_encodings(plot.spec, x='index', y='0')
