@@ -53,6 +53,14 @@ def test_line_plot_xy():
     assert set(pd.unique(data['variable'])) == {'y'}
 
 
+def test_series_line_plot():
+    ser = pd.Series([3, 2, 3, 2, 3])
+    plot = ser.vgplot.line()
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'line'
+    _check_encodings(plot.spec, x='index', y='0')
+
+
 def test_scatter_plot_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
@@ -129,6 +137,23 @@ def test_bar_plot_xy_stacked():
     assert plot.spec['encoding']['y']['stack'] == "zero"
 
 
+def test_series_bar_plot():
+    ser = pd.Series([4,5,4,5], index=['A', 'B', 'C', 'D'])
+    plot = ser.vgplot.bar()
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'bar'
+    _check_encodings(plot.spec, x='index', y='0')
+
+
+def test_series_stacked_bar_plot():
+    ser = pd.Series([4,5,4,5], index=['A', 'B', 'C', 'D'])
+    plot = ser.vgplot.bar(stacked=True)
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'bar'
+    _check_encodings(plot.spec, x='index', y='0')
+    assert plot.spec['encoding']['y']['stack'] == "zero"
+
+
 def test_barh_plot_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
@@ -194,6 +219,14 @@ def test_area_plot_simple():
     data = _get_data(plot.spec)
     assert set(pd.unique(data['variable'])) == {'x', 'y'}
     assert plot.spec['encoding']['y']['stack'] == 'zero'
+
+
+def test_series_area_plot():
+    ser = pd.Series([3, 2, 3, 2, 3])
+    plot = ser.vgplot.area()
+    validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'area'
+    _check_encodings(plot.spec, x='index', y='0')
 
 
 def test_area_plot_unstacked():

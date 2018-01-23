@@ -181,7 +181,6 @@ def vgplot_series_bar(ser, stacked=False, interactive=True, width=450, height=30
         D['encoding']['y']['stack'] = 'zero'
     else:
         D['encoding']['y']['stack'] = None
-        D['encoding']['opacity'] = {"value": 0.7}
 
     if interactive:
         D.update(INTERACTIVE_SCALES)
