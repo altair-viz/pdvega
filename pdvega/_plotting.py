@@ -344,6 +344,45 @@ def vgplot_series_hist(ser, bins=10, interactive=True,
     return VegaLite(spec, data=df)
 
 
+def vgplot_df_hexbin(df, x, y, C=None, reduce_C_function=None, gridsize=100,
+                     interactive=True, width=450, height=300):
+    # TODO: Use actual hexbins rather than a grid heatmap
+    if reduce_C_function is not None:
+        raise NotImplementedError("Custom reduce_C_function in hexbin")
+    if C is None:
+        df = df[[x, y]]
+    else:
+        df = df[[x, y, C]]
+
+    spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
+      "encoding": {
+        "x": {"field": x, "bin": {"maxbins": gridsize}, "type": "quantitative"},
+        "y": {"field": y, "bin": {"maxbins": gridsize}, "type": "quantitative"},
+        "color": ({"aggregate": "count", "type": "quantitative"} if C is None else
+                  {"field": C, "aggregate": "mean", "type": "quantitative"})
+      },
+      "config": {
+        "range": {
+          "heatmap": {
+            "scheme": "greenblue"
+          }
+        },
+        "view": {
+          "stroke": "transparent"
+        }
+      },
+      "mark": "rect",
+      "width": width,
+      "height": height,
+    }
+
+    if interactive:
+        spec.update(INTERACTIVE_SCALES)
+
+    return VegaLite(spec, data=df)
+
+
 class FrameVgPlotMethods(FramePlotMethods):
     def __call__(self, x=None, y=None,
                  kind='line', interactive=True,
@@ -366,6 +405,9 @@ class FrameVgPlotMethods(FramePlotMethods):
         elif kind == 'hist':
             return vgplot_df_hist(self._data, interactive=interactive,
                                   width=width, height=height, **kwds)
+        elif kind == 'hexbin':
+            return vgplot_df_hexbin(self._data, x=x, y=y, interactive=interactive,
+                                    width=width, height=height, **kwds)
         else:
             raise NotImplementedError("kind = {0}".format(kind))
 
