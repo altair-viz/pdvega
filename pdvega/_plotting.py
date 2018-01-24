@@ -16,7 +16,7 @@ INTERACTIVE_SCALES = {
     }
 }
 
-class VGLPlot(object):
+class VegaLitePlot(object):
     kind = None
 
     def _warn_if_unused_keywords(self, kwds):
@@ -60,7 +60,7 @@ class VGLPlot(object):
         raise NotImplementedError("kind='{0}' for series".format(self.kind))
 
 
-class VgLinePlot(VGLPlot):
+class VegaLinePlot(VegaLitePlot):
     kind = 'line'
     def frame_plot(self, data, x=None, y=None,
                    var_name='variable', value_name='value',
@@ -116,11 +116,12 @@ class VgLinePlot(VGLPlot):
         return VegaLite(spec, data=df)
 
 
-class VgScatterPlot(VGLPlot):
+class VegaScatterPlot(VegaLitePlot):
     kind = 'scatter'
 
     def frame_plot(self, data, x, y, c=None, s=None,
-                   interactive=True, width=450, height=300):
+                   interactive=True, width=450, height=300, **kwds):
+        self._warn_if_unused_keywords(kwds)
         cols = [x, y]
 
         encoding = {
@@ -153,26 +154,66 @@ class VgScatterPlot(VGLPlot):
         return VegaLite(spec, data=data[cols])
 
 
-def vgplot_series_area(ser, interactive=True, width=450, height=300):
-    df = ser.reset_index()
-    df.columns = map(str, df.columns)
-    x, y = df.columns
+class VegaAreaPlot(VegaLitePlot):
+    kind = 'area'
 
-    D = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "mark": "area",
-      "encoding": {
-        "x": {"field": x, "type": infer_vegalite_type(df[x])},
-        "y": {"field": y, "type": infer_vegalite_type(df[y])},
-      },
-      "width": width,
-      "height": height
-    }
+    def frame_plot(self, data, x=None, y=None, stacked=True,
+                   var_name='variable', value_name='value',
+                   interactive=True, width=450, height=300, **kwds):
+        self._warn_if_unused_keywords(kwds)
 
-    if interactive:
-        D.update(INTERACTIVE_SCALES)
+        usecols = [y] if y else None
+        df = self._melt_frame(data, index=x, usecols=usecols,
+                              var_name=var_name, value_name=value_name)
+        x = df.columns[0]
 
-    return VegaLite(D, data=df)
+        spec = {
+          "mark": "area",
+          "encoding": {
+            "x": {
+              "field": x,
+              "type": infer_vegalite_type(df[x])
+            },
+            "y": {
+              "field": value_name,
+              "type": infer_vegalite_type(df[value_name])
+            },
+            "color": {
+              "field": var_name,
+              "type": infer_vegalite_type(df[var_name], ordinal_threshold=10)
+            }
+          }
+        }
+
+        if stacked:
+            spec['encoding']['y']['stack'] = 'zero'
+        else:
+            spec['encoding']['y']['stack'] = None
+            spec['encoding']['opacity'] = {'value': 0.7}
+
+        spec = self.vgl_spec(spec, interactive=interactive,
+                             width=width, height=height)
+
+        return VegaLite(spec, data=df)
+
+    def series_plot(self, data, interactive=True, width=450, height=300, **kwds):
+        self._warn_if_unused_keywords(kwds)
+        df = data.reset_index()
+        df.columns = map(str, df.columns)
+        x, y = df.columns
+
+        spec = {
+          "mark": "area",
+          "encoding": {
+            "x": {"field": x, "type": infer_vegalite_type(df[x])},
+            "y": {"field": y, "type": infer_vegalite_type(df[y])},
+          },
+        }
+
+        spec = self.vgl_spec(spec, interactive=interactive,
+                             width=width, height=height)
+
+        return VegaLite(spec, data=df)
 
 
 def vgplot_df_bar(df, x, y, stacked=False, interactive=True, width=450, height=300):
@@ -295,43 +336,7 @@ def vgplot_series_barh(ser, interactive=True, width=450, height=300):
     return VegaLite(D, data=df)
 
 
-def vgplot_df_area(df, x=None, y=None, stacked=True,
-                interactive=True, width=450, height=300):
-    if x is None:
-        if df.index.name is None:
-            df.index.name = 'index'
-        x = df.index.name
-        df = df.reset_index()
-    assert x in df.columns
 
-    if y is not None:
-        assert y in df.columns
-        df = df[[x, y]]
-
-    df = df.melt([x], var_name='variable', value_name='value')
-
-    D = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "mark": "area",
-      "encoding": {
-        "x": {"field": x, "type": infer_vegalite_type(df[x])},
-        "y": {"field": "value", "type": infer_vegalite_type(df["value"])},
-        "color": {"field": "variable", "type": infer_vegalite_type(df["variable"], ordinal_threshold=10)}
-      },
-      "width": width,
-      "height": height
-    }
-
-    if stacked:
-        D['encoding']['y']['stack'] = 'zero'
-    else:
-        D['encoding']['y']['stack'] = None
-        D['encoding']['opacity'] = {'value': 0.7}
-
-    if interactive:
-        D.update(INTERACTIVE_SCALES)
-
-    return VegaLite(D, data=df)
 
 
 def vgplot_df_hist(df, by=None, bins=10, stacked=False,
@@ -450,7 +455,7 @@ def vgplot_df_kde(df, y=None, bw_method=None, interactive=True,
                            for col in df}, index=t)
     kde_df.index.name = ' '
 
-    return VgLinePlot().frame_plot(kde_df, value_name='Density')
+    return VegaLinePlot().frame_plot(kde_df, value_name='Density')
 
 
 def vgplot_series_kde(ser, bw_method=None, interactive=True,
@@ -464,7 +469,7 @@ def vgplot_series_kde(ser, bw_method=None, interactive=True,
     kde_ser = pd.Series(gaussian_kde(ser, bw_method=bw_method).evaluate(t),
                         index=t, name=ser.name)
     kde_ser.index.name = ' '
-    return VgLinePlot().series_plot(kde_ser)
+    return VegaLinePlot().series_plot(kde_ser)
 
 
 class FrameVgPlotMethods(FramePlotMethods):
@@ -472,21 +477,22 @@ class FrameVgPlotMethods(FramePlotMethods):
                  kind='line', interactive=True,
                  width=450, height=300, **kwds):
         if kind == 'line':
-            return VgLinePlot().frame_plot(self._data, x=x, y=y,
-                                           interactive=interactive,
-                                           width=width, height=height, **kwds)
+            return VegaLinePlot().frame_plot(self._data, x=x, y=y,
+                                             interactive=interactive,
+                                             width=width, height=height, **kwds)
         elif kind == 'scatter':
-            return VgScatterPlot().frame_plot(self._data, x=x, y=y,
-                                              interactive=interactive,
-                                              width=width, height=height, **kwds)
+            return VegaScatterPlot().frame_plot(self._data, x=x, y=y,
+                                                interactive=interactive,
+                                                width=width, height=height, **kwds)
+        elif kind == 'area':
+            return VegaAreaPlot().frame_plot(self._data, x=x, y=y,
+                                             interactive=interactive,
+                                             width=width, height=height, **kwds)
         elif kind == 'bar':
             return vgplot_df_bar(self._data, x=x, y=y, interactive=interactive,
                                  width=width, height=height, **kwds)
         elif kind == 'barh':
             return vgplot_df_barh(self._data, x=x, y=y, interactive=interactive,
-                                  width=width, height=height, **kwds)
-        elif kind == 'area':
-            return vgplot_df_area(self._data, x=x, y=y, interactive=interactive,
                                   width=width, height=height, **kwds)
         elif kind == 'hist':
             return vgplot_df_hist(self._data, interactive=interactive,
@@ -505,17 +511,17 @@ class SeriesVgPlotMethods(SeriesPlotMethods):
     def __call__(self, kind='line', interactive=True, width=450, height=300,
                  **kwds):
         if kind == 'line':
-            return VgLinePlot().series_plot(self._data, interactive=interactive,
-                                            width=width, height=height, **kwds)
+            return VegaLinePlot().series_plot(self._data, interactive=interactive,
+                                              width=width, height=height, **kwds)
+        elif kind == 'area':
+            return VegaAreaPlot().series_plot(self._data, interactive=interactive,
+                                              width=width, height=height, **kwds)
         elif kind == 'bar':
             return vgplot_series_bar(self._data, interactive=interactive,
                                  width=width, height=height, **kwds)
         elif kind == 'barh':
             return vgplot_series_barh(self._data, interactive=interactive,
                                width=width, height=height, **kwds)
-        elif kind == 'area':
-            return vgplot_series_area(self._data, interactive=interactive,
-                                      width=width, height=height, **kwds)
         elif kind == 'hist':
             return vgplot_series_hist(self._data, interactive=interactive,
                                       width=width, height=height, **kwds)
