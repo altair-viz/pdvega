@@ -1,10 +1,6 @@
 import numpy as np
 import pandas as pd
-
-try:
-    from pandas.api.types import infer_dtype as pd_infer_dtype
-except ImportError: # Pandas before 0.20.0
-    from pandas.lib import infer_dtype as pd_infer_dtype
+from ._pandas_internals import infer_dtype as pd_infer_dtype
 
 
 def infer_vegalite_type(data, ordinal_threshold=6):

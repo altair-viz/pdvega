@@ -1,5 +1,5 @@
 from ._utils import infer_vegalite_type
-from pandas.plotting._core import FramePlotMethods, SeriesPlotMethods
+from ._pandas_internals import FramePlotMethods, SeriesPlotMethods
 from vega3 import Vega, VegaLite
 
 

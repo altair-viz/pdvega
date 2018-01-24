@@ -1,10 +1,5 @@
 from pandas import DataFrame, Series
-try:
-    # new location
-    from pandas.core.accessor import AccessorProperty
-except ImportError:
-    # old location
-    from pandas.core.base import AccessorProperty
+from ._pandas_internals import AccessorProperty
 from ._plotting import FrameVgPlotMethods, SeriesVgPlotMethods
 
 
