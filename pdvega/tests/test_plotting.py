@@ -326,3 +326,30 @@ def test_df_hexbin_C():
     assert plot.spec['encoding']['x']['bin'] == {"maxbins": gridsize}
     assert plot.spec['encoding']['y']['bin'] == {"maxbins": gridsize}
     assert plot.spec['encoding']['color']['aggregate'] == "mean"
+
+
+def test_df_kde():
+    df = pd.DataFrame({'x': range(10),
+                       'y': range(10)})
+    plot = df.vgplot.kde(bw_method='scott')
+    assert plot.spec['mark'] == 'line'
+    _check_encodings(plot.spec, x=' ', y='Density', color=IGNORE)
+    data = _get_data(plot.spec)
+    assert set(pd.unique(data['variable'])) == {'x', 'y'}
+
+
+def test_df_kde_y():
+    df = pd.DataFrame({'x': range(10),
+                       'y': range(10)})
+    plot = df.vgplot.kde(y='y', bw_method='scott')
+    assert plot.spec['mark'] == 'line'
+    _check_encodings(plot.spec, x=' ', y='Density', color=IGNORE)
+    data = _get_data(plot.spec)
+    assert set(pd.unique(data['variable'])) == {'y'}
+
+
+def test_ser_kde():
+    ser = pd.Series(range(10), name='x')
+    plot = ser.vgplot.kde(bw_method='scott')
+    assert plot.spec['mark'] == 'line'
+    _check_encodings(plot.spec, x=' ', y='x')
