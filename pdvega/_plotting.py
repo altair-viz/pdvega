@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 import pandas as pd
 
@@ -14,61 +16,141 @@ INTERACTIVE_SCALES = {
     }
 }
 
+class VGLPlot(object):
+    kind = None
 
-def vgplot_df_line(df, x=None, y=None, interactive=True, width=450, height=300,
-                   var_name='variable', value_name='value'):
-    if x is None:
-        if df.index.name is None:
-            df.index.name = 'index'
-        x = df.index.name
-        df = df.reset_index()
-    assert x in df.columns
+    def _warn_if_unused_keywords(self, kwds):
+        if kwds:
+            warnings.warn("Unrecognized keywords in vgplot.{0}(): {1}"
+                          "".format(self.kind, list(kwds.keys())))
 
-    if y is not None:
-        assert y in df.columns
-        df = df[[x, y]]
+    @staticmethod
+    def _melt_frame(df, index=None, usecols=None,
+                    var_name='variable', value_name='value'):
+        if index is None:
+            cols = df.columns
+            df = df.reset_index()
+            index = (set(df.columns) - set(cols)).pop()
+        assert index in df.columns
+        if usecols:
+            df = df[[index] + list(usecols)]
+        return df.melt([index], var_name=var_name, value_name=value_name)
 
-    df = df.melt([x], var_name=var_name, value_name=value_name)
+    def vgl_spec(self, spec, interactive=True, width=450, height=300):
+        spec.update({
+            "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
+            "width": width,
+            "height": height
+        })
+        if interactive:
+            spec.update({
+                "selection": {
+                    "grid": {
+                        "type": "interval",
+                        "bind": "scales"
+                    }
+                }
+            })
+        return spec
 
-    D = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "mark": "line",
-      "encoding": {
-        "x": {"field": x, "type": infer_vegalite_type(df[x])},
-        "y": {"field": value_name, "type": infer_vegalite_type(df[value_name])},
-        "color": {"field": var_name, "type": infer_vegalite_type(df[var_name], ordinal_threshold=10)}
-      },
-      "width": width,
-      "height": height
-    }
+    def frame_plot(self, *args, **kwargs):
+        raise NotImplementedError("kind='{0}' for dataframe".format(self.kind))
 
-    if interactive:
-        D.update(INTERACTIVE_SCALES)
-
-    return VegaLite(D, data=df)
+    def series_plot(self, *args, **kwargs):
+        raise NotImplementedError("kind='{0}' for series".format(self.kind))
 
 
-def vgplot_series_line(ser, interactive=True, width=450, height=300):
-    df = ser.reset_index()
-    df.columns = map(str, df.columns)
-    x, y = df.columns
+class VgLinePlot(VGLPlot):
+    kind = 'line'
+    def frame_plot(self, data, x=None, y=None,
+                   var_name='variable', value_name='value',
+                   interactive=True, width=450, height=300, **kwds):
+        self._warn_if_unused_keywords(kwds)
 
-    D = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "mark": "line",
-      "encoding": {
-        "x": {"field": x, "type": infer_vegalite_type(df[x])},
-        "y": {"field": y, "type": infer_vegalite_type(df[y])},
-      },
-      "width": width,
-      "height": height
-    }
+        if y:
+            usecols = [y]
+        else:
+            usecols = None
+        df = self._melt_frame(data, index=x, usecols=usecols,
+                              var_name=var_name, value_name=value_name)
+        x = df.columns[0]
 
-    if interactive:
-        D.update(INTERACTIVE_SCALES)
+        spec = {
+            "mark": "line",
+            "encoding": {
+                "x": {
+                    "field": x,
+                    "type": infer_vegalite_type(df[x])
+                },
+                "y": {
+                    "field": value_name,
+                    "type": infer_vegalite_type(df[value_name])
+                },
+                "color": {
+                    "field": var_name,
+                    "type": infer_vegalite_type(df[var_name],
+                                                ordinal_threshold=10)
+                }
+            },
+        }
+        spec = self.vgl_spec(spec, interactive=interactive,
+                             width=width, height=height)
+        return VegaLite(spec, data=df)
 
-    return VegaLite(D, data=df)
+    def series_plot(self, data, interactive=True, width=450, height=300, **kwds):
+        self._warn_if_unused_keywords(kwds)
+        df = data.reset_index()
+        df.columns = map(str, df.columns)
+        x, y = df.columns
 
+        spec = self.vgl_spec({
+          "mark": "line",
+          "encoding": {
+            "x": {"field": x, "type": infer_vegalite_type(df[x])},
+            "y": {"field": y, "type": infer_vegalite_type(df[y])},
+          }
+        })
+
+        spec = self.vgl_spec(spec, interactive=interactive,
+                             width=width, height=height)
+        return VegaLite(spec, data=df)
+
+
+class VgScatterPlot(VGLPlot):
+    kind = 'scatter'
+
+    def frame_plot(self, data, x, y, c=None, s=None,
+                   interactive=True, width=450, height=300):
+        cols = [x, y]
+
+        encoding = {
+          "x": {"field": x, "type": infer_vegalite_type(data[x])},
+          "y": {"field": y, "type": infer_vegalite_type(data[y])},
+        }
+
+        if c is not None:
+            cols.append(c)
+            encoding['color'] = {
+                'field': c,
+                'type': infer_vegalite_type(data[c])
+            }
+
+        if s is not None:
+            cols.append(s)
+            encoding['size'] = {
+                'field': s,
+                'type': infer_vegalite_type(data[s])
+            }
+
+        spec = {
+          "mark": "circle",
+          "encoding": encoding
+        }
+
+
+        spec = self.vgl_spec(spec, interactive=interactive,
+                             width=width, height=height)
+        return VegaLite(spec, data=data[cols])
 
 
 def vgplot_series_area(ser, interactive=True, width=450, height=300):
@@ -90,40 +172,6 @@ def vgplot_series_area(ser, interactive=True, width=450, height=300):
     if interactive:
         D.update(INTERACTIVE_SCALES)
 
-    return VegaLite(D, data=df)
-
-
-def vgplot_df_scatter(df, x, y, c=None, s=None,
-                   interactive=True, width=450, height=300):
-    cols = [x, y]
-    assert x in df.columns
-    assert y in df.columns
-
-    D = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "mark": "circle",
-      "encoding": {
-        "x": {"field": x, "type": infer_vegalite_type(df[x])},
-        "y": {"field": y, "type": infer_vegalite_type(df[y])},
-      },
-      "width": width,
-      "height": height
-    }
-
-    if c is not None:
-        assert c in df.columns
-        cols.append(c)
-        D['encoding']['color'] = {'field': c, 'type': infer_vegalite_type(df[c])}
-
-    if s is not None:
-        assert s in df.columns
-        cols.append(s)
-        D['encoding']['size'] = {'field': s, 'type': infer_vegalite_type(df[s])}
-
-    if interactive:
-        D.update(INTERACTIVE_SCALES)
-
-    df = df[cols]
     return VegaLite(D, data=df)
 
 
@@ -402,7 +450,7 @@ def vgplot_df_kde(df, y=None, bw_method=None, interactive=True,
                            for col in df}, index=t)
     kde_df.index.name = ' '
 
-    return vgplot_df_line(kde_df, value_name='Density')
+    return VgLinePlot().frame_plot(kde_df, value_name='Density')
 
 
 def vgplot_series_kde(ser, bw_method=None, interactive=True,
@@ -416,7 +464,7 @@ def vgplot_series_kde(ser, bw_method=None, interactive=True,
     kde_ser = pd.Series(gaussian_kde(ser, bw_method=bw_method).evaluate(t),
                         index=t, name=ser.name)
     kde_ser.index.name = ' '
-    return vgplot_series_line(kde_ser)
+    return VgLinePlot().series_plot(kde_ser)
 
 
 class FrameVgPlotMethods(FramePlotMethods):
@@ -424,11 +472,13 @@ class FrameVgPlotMethods(FramePlotMethods):
                  kind='line', interactive=True,
                  width=450, height=300, **kwds):
         if kind == 'line':
-            return vgplot_df_line(self._data, x=x, y=y, interactive=interactive,
-                                  width=width, height=height, **kwds)
+            return VgLinePlot().frame_plot(self._data, x=x, y=y,
+                                           interactive=interactive,
+                                           width=width, height=height, **kwds)
         elif kind == 'scatter':
-            return vgplot_df_scatter(self._data, x=x, y=y, interactive=interactive,
-                                     width=width, height=height, **kwds)
+            return VgScatterPlot().frame_plot(self._data, x=x, y=y,
+                                              interactive=interactive,
+                                              width=width, height=height, **kwds)
         elif kind == 'bar':
             return vgplot_df_bar(self._data, x=x, y=y, interactive=interactive,
                                  width=width, height=height, **kwds)
@@ -455,8 +505,8 @@ class SeriesVgPlotMethods(SeriesPlotMethods):
     def __call__(self, kind='line', interactive=True, width=450, height=300,
                  **kwds):
         if kind == 'line':
-            return vgplot_series_line(self._data, interactive=interactive,
-                                      width=width, height=height, **kwds)
+            return VgLinePlot().series_plot(self._data, interactive=interactive,
+                                            width=width, height=height, **kwds)
         elif kind == 'bar':
             return vgplot_series_bar(self._data, interactive=interactive,
                                  width=width, height=height, **kwds)
