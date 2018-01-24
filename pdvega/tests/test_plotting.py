@@ -28,7 +28,7 @@ def validate_vegalite(spec):
     return jsonschema.validate(spec, VEGALITE_SCHEMA)
 
 
-def test_line_plot_simple():
+def test_line_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -40,7 +40,7 @@ def test_line_plot_simple():
     assert set(pd.unique(data['variable'])) == {'x', 'y'}
 
 
-def test_line_plot_xy():
+def test_line_xy():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2],
                        'z': range(5)})
@@ -53,7 +53,7 @@ def test_line_plot_xy():
     assert set(pd.unique(data['variable'])) == {'y'}
 
 
-def test_series_line_plot():
+def test_series_line():
     ser = pd.Series([3, 2, 3, 2, 3])
     plot = ser.vgplot.line()
     validate_vegalite(plot.spec)
@@ -61,7 +61,7 @@ def test_series_line_plot():
     _check_encodings(plot.spec, x='index', y='0')
 
 
-def test_scatter_plot_simple():
+def test_scatter_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -71,7 +71,7 @@ def test_scatter_plot_simple():
     _check_encodings(plot.spec, x='x', y='y')
 
 
-def test_scatter_plot_color_size():
+def test_scatter_color_size():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2],
                        'c': range(5),
@@ -83,7 +83,7 @@ def test_scatter_plot_color_size():
     _check_encodings(plot.spec, x='x', y='y', color='c', size='s')
 
 
-def test_bar_plot_simple():
+def test_bar_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -97,7 +97,7 @@ def test_bar_plot_simple():
     assert plot.spec['encoding']['y']['stack'] is None
 
 
-def test_bar_plot_stacked():
+def test_bar_stacked():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -110,7 +110,7 @@ def test_bar_plot_stacked():
     assert plot.spec['encoding']['y']['stack'] == "zero"
 
 
-def test_bar_plot_xy():
+def test_bar_xy():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -124,7 +124,7 @@ def test_bar_plot_xy():
     assert plot.spec['encoding']['y']['stack'] is None
 
 
-def test_bar_plot_xy_stacked():
+def test_bar_xy_stacked():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -137,7 +137,7 @@ def test_bar_plot_xy_stacked():
     assert plot.spec['encoding']['y']['stack'] == "zero"
 
 
-def test_series_bar_plot():
+def test_series_bar():
     ser = pd.Series([4,5,4,5], index=['A', 'B', 'C', 'D'])
     plot = ser.vgplot.bar()
     validate_vegalite(plot.spec)
@@ -145,7 +145,7 @@ def test_series_bar_plot():
     _check_encodings(plot.spec, x='index', y='0')
 
 
-def test_barh_plot_simple():
+def test_barh_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -159,7 +159,7 @@ def test_barh_plot_simple():
     assert plot.spec['encoding']['x']['stack'] is None
 
 
-def test_barh_plot_stacked():
+def test_barh_stacked():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -172,7 +172,7 @@ def test_barh_plot_stacked():
     assert plot.spec['encoding']['x']['stack'] == "zero"
 
 
-def test_barh_plot_xy():
+def test_barh_xy():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -186,7 +186,7 @@ def test_barh_plot_xy():
     assert plot.spec['encoding']['x']['stack'] is None
 
 
-def test_barh_plot_xy_stacked():
+def test_barh_xy_stacked():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -199,7 +199,7 @@ def test_barh_plot_xy_stacked():
     assert plot.spec['encoding']['x']['stack'] == "zero"
 
 
-def test_series_barh_plot():
+def test_series_barh():
     ser = pd.Series([4,5,4,5], index=['A', 'B', 'C', 'D'])
     plot = ser.vgplot.barh()
     validate_vegalite(plot.spec)
@@ -207,7 +207,7 @@ def test_series_barh_plot():
     _check_encodings(plot.spec, y='index', x='0')
 
 
-def test_df_area_plot_simple():
+def test_df_area_simple():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -220,7 +220,7 @@ def test_df_area_plot_simple():
     assert plot.spec['encoding']['y']['stack'] == 'zero'
 
 
-def test_df_area_plot_unstacked():
+def test_df_area_unstacked():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2]})
 
@@ -234,7 +234,7 @@ def test_df_area_plot_unstacked():
     assert plot.spec['encoding']['opacity']['value'] == 0.7
 
 
-def test_df_area_plot_xy():
+def test_df_area_xy():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2],
                        'z': range(5)})
@@ -248,7 +248,7 @@ def test_df_area_plot_xy():
     assert plot.spec['encoding']['y']['stack'] == 'zero'
 
 
-def test_df_area_plot_xy_unstacked():
+def test_df_area_xy_unstacked():
     df = pd.DataFrame({'x': [1,4,2,3,5],
                        'y': [6,3,4,5,2],
                        'z': range(5)})
@@ -263,7 +263,7 @@ def test_df_area_plot_xy_unstacked():
     assert plot.spec['encoding']['opacity']['value'] == 0.7
 
 
-def test_series_area_plot():
+def test_series_area():
     ser = pd.Series([3, 2, 3, 2, 3])
     plot = ser.vgplot.area()
     validate_vegalite(plot.spec)
@@ -271,7 +271,7 @@ def test_series_area_plot():
     _check_encodings(plot.spec, x='index', y='0')
 
 
-def test_df_hist_plot():
+def test_df_hist():
     df = pd.DataFrame({'x': range(10),
                        'y': range(10)})
     plot = df.vgplot.hist(bins=5)
@@ -282,7 +282,7 @@ def test_df_hist_plot():
     assert plot.spec['encoding']['y']['stack'] == None
 
 
-def test_df_hist_plot_stacked():
+def test_df_hist_stacked():
     df = pd.DataFrame({'x': range(10),
                        'y': range(10)})
     plot = df.vgplot.hist(bins=5, stacked=True)
@@ -293,10 +293,36 @@ def test_df_hist_plot_stacked():
     assert plot.spec['encoding']['y']['stack'] == 'zero'
 
 
-def test_series_hist_plot():
+def test_series_hist():
     ser = pd.Series(range(10))
     plot = ser.vgplot.hist(bins=5)
     assert plot.spec['mark'] == 'bar'
     _check_encodings(plot.spec, x='0', y=IGNORE)
     assert plot.spec['encoding']['x']['bin'] == {'maxbins': 5}
     assert plot.spec['encoding']['y']['aggregate'] == 'count'
+
+
+def test_df_hexbin():
+    df = pd.DataFrame({'x': range(10),
+                       'y': range(10),
+                       'C': range(10)})
+    gridsize=10
+    plot = df.vgplot.hexbin(x='x', y='y', gridsize=gridsize)
+    assert plot.spec['mark'] == 'rect'
+    _check_encodings(plot.spec, x='x', y='y', color=IGNORE)
+    assert plot.spec['encoding']['x']['bin'] == {"maxbins": gridsize}
+    assert plot.spec['encoding']['y']['bin'] == {"maxbins": gridsize}
+    assert plot.spec['encoding']['color']['aggregate'] == "count"
+
+
+def test_df_hexbin_C():
+    df = pd.DataFrame({'x': range(10),
+                       'y': range(10),
+                       'C': range(10)})
+    gridsize=10
+    plot = df.vgplot.hexbin(x='x', y='y', C='C', gridsize=gridsize)
+    assert plot.spec['mark'] == 'rect'
+    _check_encodings(plot.spec, x='x', y='y', color='C')
+    assert plot.spec['encoding']['x']['bin'] == {"maxbins": gridsize}
+    assert plot.spec['encoding']['y']['bin'] == {"maxbins": gridsize}
+    assert plot.spec['encoding']['color']['aggregate'] == "mean"
