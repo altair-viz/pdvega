@@ -221,257 +221,214 @@ class VegaAreaPlot(VegaLitePlot):
         return VegaLite(spec, data=df)
 
 
-def vgplot_df_bar(df, x, y, stacked=False, interactive=True, width=450, height=300):
-    if x is None:
-        if df.index.name is None:
-            df.index.name = 'index'
-        x = df.index.name
-        df = df.reset_index()
-    assert x in df.columns
+class VegaBarPlot(VegaLitePlot):
+    kind = 'bar'
 
-    if y is not None:
-        assert y in df.columns
-        df = df[[x, y]]
+    def frame_plot(self, data, x, y, stacked=False,
+                   var_name='variable', value_name='value',
+                   interactive=True, width=450, height=300, **kwds):
+        self._warn_if_unused_keywords(kwds)
 
-    df = df.melt([x], var_name='variable', value_name='value')
+        if y:
+            usecols = [y]
+        else:
+            usecols = None
+        df = self._melt_frame(data, index=x, usecols=usecols,
+                              var_name=var_name, value_name=value_name)
+        x = df.columns[0]
 
-    D = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "mark": "bar",
-      "encoding": {
-        "x": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)},
-        "y": {"field": "value", "type": infer_vegalite_type(df["value"])},
-        "color": {"field": "variable", "type": infer_vegalite_type(df["variable"])},
-      },
-      "width": width,
-      "height": height,
-    }
-
-    if stacked:
-        D['encoding']['y']['stack'] = 'zero'
-    else:
-        D['encoding']['y']['stack'] = None
-        D['encoding']['opacity'] = {"value": 0.7}
-
-    if interactive:
-        D.update(INTERACTIVE_SCALES)
-
-    return VegaLite(D, data=df)
-
-
-def vgplot_series_bar(ser, interactive=True, width=450, height=300):
-    df = ser.reset_index()
-    df.columns = map(str, df.columns)
-    x, y = df.columns
-
-    D = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "mark": "bar",
-      "encoding": {
-        "x": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)},
-        "y": {"field": y, "type": infer_vegalite_type(df[y])},
-      },
-      "width": width,
-      "height": height,
-    }
-
-    if interactive:
-        D.update(INTERACTIVE_SCALES)
-
-    return VegaLite(D, data=df)
-
-
-def vgplot_df_barh(df, x, y, stacked=False, interactive=True, width=450, height=300):
-    if x is None:
-        if df.index.name is None:
-            df.index.name = 'index'
-        x = df.index.name
-        df = df.reset_index()
-    assert x in df.columns
-
-    if y is not None:
-        assert y in df.columns
-        df = df[[x, y]]
-
-    df = df.melt([x], var_name='variable', value_name='value')
-
-    D = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "mark": "bar",
-      "encoding": {
-        "x": {"field": "value", "type": infer_vegalite_type(df["value"])},
-        "y": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)},
-        "color": {"field": "variable", "type": infer_vegalite_type(df["variable"])},
-      },
-      "width": width,
-      "height": height,
-    }
-
-    if stacked:
-        D['encoding']['x']['stack'] = 'zero'
-    else:
-        D['encoding']['x']['stack'] = None
-        D['encoding']['opacity'] = {"value": 0.7}
-
-    if interactive:
-        D.update(INTERACTIVE_SCALES)
-
-    return VegaLite(D, data=df)
-
-
-def vgplot_series_barh(ser, interactive=True, width=450, height=300):
-    df = ser.reset_index()
-    df.columns = map(str, df.columns)
-    x, y = df.columns
-
-    D = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "mark": "bar",
-      "encoding": {
-        "x": {"field": y, "type": infer_vegalite_type(df[y])},
-        "y": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)}
-      },
-      "width": width,
-      "height": height,
-    }
-
-    if interactive:
-        D.update(INTERACTIVE_SCALES)
-
-    return VegaLite(D, data=df)
-
-
-def vgplot_df_hist(df, by=None, bins=10, stacked=False,
-                   interactive=True, width=450, height=300):
-    if by is not None:
-        raise NotImplementedError('vgplot.hist `by` keyword')
-    df = df.melt(var_name='variable', value_name='value')
-
-    spec = {
-        "mark": "bar",
-        "encoding": {
-            "x": {
-                "bin": {"maxbins": bins},
-                "field": "value",
-                "type": "quantitative"
-            },
-            "y": {
-                "aggregate": "count",
-                "type": "quantitative",
-                "stack": ('zero' if stacked else None)
-            },
-            "color": {
-                "field": "variable",
-                "type": "nominal"
-            },
-        },
-        "width": width,
-        "height": height
-    }
-
-    if interactive:
-        spec.update(INTERACTIVE_SCALES)
-
-    return VegaLite(spec, data=df)
-
-
-def vgplot_series_hist(ser, bins=10, interactive=True,
-                       width=450, height=300):
-    df = ser.to_frame()
-    df.columns = map(str, df.columns)
-
-    spec = {
-        "mark": "bar",
-        "encoding": {
-            "x": {
-                "bin": {"maxbins": bins},
-                "field": df.columns[0],
-                "type": "quantitative"
-            },
-            "y": {
-                "aggregate": "count",
-                "type": "quantitative"
-            }
-        },
-        "width": width,
-        "height": height
-    }
-
-    if interactive:
-        spec.update(INTERACTIVE_SCALES)
-
-    return VegaLite(spec, data=df)
-
-
-def vgplot_df_hexbin(df, x, y, C=None, reduce_C_function=None, gridsize=100,
-                     interactive=True, width=450, height=300):
-    # TODO: Use actual hexbins rather than a grid heatmap
-    if reduce_C_function is not None:
-        raise NotImplementedError("Custom reduce_C_function in hexbin")
-    if C is None:
-        df = df[[x, y]]
-    else:
-        df = df[[x, y, C]]
-
-    spec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "encoding": {
-        "x": {"field": x, "bin": {"maxbins": gridsize}, "type": "quantitative"},
-        "y": {"field": y, "bin": {"maxbins": gridsize}, "type": "quantitative"},
-        "color": ({"aggregate": "count", "type": "quantitative"} if C is None else
-                  {"field": C, "aggregate": "mean", "type": "quantitative"})
-      },
-      "config": {
-        "range": {
-          "heatmap": {
-            "scheme": "greenblue"
-          }
-        },
-        "view": {
-          "stroke": "transparent"
+        spec = {
+          "mark": "bar",
+          "encoding": {
+            "x": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)},
+            "y": {"field": "value", "type": infer_vegalite_type(df["value"])},
+            "color": {"field": "variable", "type": infer_vegalite_type(df["variable"])},
+          },
         }
-      },
-      "mark": "rect",
-      "width": width,
-      "height": height,
-    }
 
-    if interactive:
-        spec.update(INTERACTIVE_SCALES)
+        if stacked:
+            spec['encoding']['y']['stack'] = 'zero'
+        else:
+            spec['encoding']['y']['stack'] = None
+            spec['encoding']['opacity'] = {"value": 0.7}
 
-    return VegaLite(spec, data=df)
+        spec = self.vgl_spec(spec, interactive=interactive,
+                             width=width, height=height)
+        return VegaLite(spec, data=df)
+
+    def series_plot(self, data, interactive=True, width=450, height=300, **kwds):
+        self._warn_if_unused_keywords(kwds)
+        df = data.reset_index()
+        df.columns = map(str, df.columns)
+        x, y = df.columns
+
+        spec = {
+          "mark": "bar",
+          "encoding": {
+            "x": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)},
+            "y": {"field": y, "type": infer_vegalite_type(df[y])},
+          },
+        }
+
+        spec = self.vgl_spec(spec, interactive=interactive,
+                             width=width, height=height)
+        return VegaLite(spec, data=df)
 
 
-def vgplot_df_kde(df, y=None, bw_method=None, interactive=True,
-                  width=450, height=300):
-    from scipy.stats import gaussian_kde
+class VegaBarhPlot(VegaBarPlot):
+    kind = 'barh'
 
-    if y is not None:
-        df = df[y].to_frame()
+    def frame_plot(self, *args, **kwargs):
+        plot = super(VegaBarhPlot, self).frame_plot(*args, **kwargs)
+        enc = plot.spec['encoding']
+        enc['x'], enc['y'] = enc['y'], enc['x']
+        return plot
 
-    tmin, tmax = df.min().min(), df.max().max()
-    trange = tmax - tmin
-    t = np.linspace(tmin - 0.5 * trange, tmax + 0.5 * trange, 1000)
-
-    kde_df = pd.DataFrame({col: gaussian_kde(df[col], bw_method=bw_method).evaluate(t)
-                           for col in df}, index=t)
-    kde_df.index.name = ' '
-
-    return VegaLinePlot().frame_plot(kde_df, value_name='Density')
+    def series_plot(self, *args, **kwargs):
+        plot = super(VegaBarhPlot, self).series_plot(*args, **kwargs)
+        enc = plot.spec['encoding']
+        enc['x'], enc['y'] = enc['y'], enc['x']
+        return plot
 
 
-def vgplot_series_kde(ser, bw_method=None, interactive=True,
-                      width=450, height=300):
-    from scipy.stats import gaussian_kde
+class VegaHistPlot(VegaLitePlot):
+    kind = 'hist'
 
-    tmin, tmax = ser.min(), ser.max()
-    trange = tmax - tmin
-    t = np.linspace(tmin - 0.5 * trange, tmax + 0.5 * trange, 1000)
+    def frame_plot(self, data, by=None, bins=10, stacked=False,
+                   var_name='variable', value_name='value',
+                   interactive=True, width=450, height=300, **kwds):
+        self._warn_if_unused_keywords(kwds)
+        if by is not None:
+            raise NotImplementedError('vgplot.hist `by` keyword')
+        df = data.melt(var_name='variable', value_name='value')
 
-    kde_ser = pd.Series(gaussian_kde(ser, bw_method=bw_method).evaluate(t),
-                        index=t, name=ser.name)
-    kde_ser.index.name = ' '
-    return VegaLinePlot().series_plot(kde_ser)
+        spec = {
+            "mark": "bar",
+            "encoding": {
+                "x": {
+                    "bin": {"maxbins": bins},
+                    "field": value_name,
+                    "type": "quantitative"
+                },
+                "y": {
+                    "aggregate": "count",
+                    "type": "quantitative",
+                    "stack": ('zero' if stacked else None)
+                },
+                "color": {
+                    "field": var_name,
+                    "type": "nominal"
+                },
+            },
+        }
+
+        spec = self.vgl_spec(spec, interactive=interactive,
+                             width=width, height=height)
+        return VegaLite(spec, data=df)
+
+    def series_plot(self, data, bins=10, interactive=True,
+                    width=450, height=300, **kwds):
+        self._warn_if_unused_keywords(kwds)
+        df = data.to_frame()
+        df.columns = map(str, df.columns)
+
+        spec = {
+            "mark": "bar",
+            "encoding": {
+                "x": {
+                    "bin": {"maxbins": bins},
+                    "field": df.columns[0],
+                    "type": "quantitative"
+                },
+                "y": {
+                    "aggregate": "count",
+                    "type": "quantitative"
+                }
+            },
+        }
+
+        spec = self.vgl_spec(spec, interactive=interactive,
+                             width=width, height=height)
+        return VegaLite(spec, data=df)
+
+
+class VegaHexbinPlot(VegaLitePlot):
+    kind = 'hexbin'
+
+    def frame_plot(self, data, x, y, C=None, reduce_C_function=None, gridsize=100,
+                   interactive=True, width=450, height=300, **kwds):
+        # TODO: Use actual hexbins rather than a grid heatmap
+        self._warn_if_unused_keywords(kwds)
+
+        if reduce_C_function is not None:
+            raise NotImplementedError("Custom reduce_C_function in hexbin")
+        if C is None:
+            df = data[[x, y]]
+        else:
+            df = data[[x, y, C]]
+
+        spec = {
+          "mark": "rect",
+          "encoding": {
+            "x": {"field": x, "bin": {"maxbins": gridsize}, "type": "quantitative"},
+            "y": {"field": y, "bin": {"maxbins": gridsize}, "type": "quantitative"},
+            "color": ({"aggregate": "count", "type": "quantitative"} if C is None else
+                      {"field": C, "aggregate": "mean", "type": "quantitative"})
+          },
+          "config": {
+            "range": {
+              "heatmap": {
+                "scheme": "greenblue"
+              }
+            },
+            "view": {
+              "stroke": "transparent"
+            }
+          },
+          "mark": "rect",
+        }
+
+        spec = self.vgl_spec(spec, interactive=interactive,
+                             width=width, height=height)
+        return VegaLite(spec, data=df)
+
+
+class VegaKDEPlot(VegaLitePlot):
+    kind = 'kde'
+
+    def frame_plot(self, data, y=None, bw_method=None, interactive=True,
+                   width=450, height=300, **kwds):
+        self._warn_if_unused_keywords(kwds)
+
+        from scipy.stats import gaussian_kde as kde
+
+        if y is not None:
+            df = data[y].to_frame()
+        else:
+            df = data
+
+        tmin, tmax = df.min().min(), df.max().max()
+        trange = tmax - tmin
+        t = np.linspace(tmin - 0.5 * trange, tmax + 0.5 * trange, 1000)
+
+        kde_df = pd.DataFrame({col: kde(df[col], bw_method=bw_method).evaluate(t)
+                               for col in df}, index=t)
+        kde_df.index.name = ' '
+
+        return VegaLinePlot().frame_plot(kde_df, value_name='Density')
+
+    def series_plot(self, data, bw_method=None, interactive=True,
+                    width=450, height=300):
+        from scipy.stats import gaussian_kde
+
+        tmin, tmax = data.min(), data.max()
+        trange = tmax - tmin
+        t = np.linspace(tmin - 0.5 * trange, tmax + 0.5 * trange, 1000)
+
+        kde_ser = pd.Series(gaussian_kde(data, bw_method=bw_method).evaluate(t),
+                            index=t, name=data.name)
+        kde_ser.index.name = ' '
+        return VegaLinePlot().series_plot(kde_ser)
 
 
 @register_dataframe_accessor('vgplot')
@@ -492,20 +449,24 @@ class FrameVgPlotMethods(FramePlotMethods):
                                              interactive=interactive,
                                              width=width, height=height, **kwds)
         elif kind == 'bar':
-            return vgplot_df_bar(self._data, x=x, y=y, interactive=interactive,
-                                 width=width, height=height, **kwds)
+            return VegaBarPlot().frame_plot(self._data, x=x, y=y,
+                                            interactive=interactive,
+                                            width=width, height=height, **kwds)
         elif kind == 'barh':
-            return vgplot_df_barh(self._data, x=x, y=y, interactive=interactive,
-                                  width=width, height=height, **kwds)
+            return VegaBarhPlot().frame_plot(self._data, x=x, y=y,
+                                             interactive=interactive,
+                                             width=width, height=height, **kwds)
         elif kind == 'hist':
-            return vgplot_df_hist(self._data, interactive=interactive,
-                                  width=width, height=height, **kwds)
+            return VegaHistPlot().frame_plot(self._data, interactive=interactive,
+                                             width=width, height=height, **kwds)
         elif kind == 'hexbin':
-            return vgplot_df_hexbin(self._data, x=x, y=y, interactive=interactive,
-                                    width=width, height=height, **kwds)
+            return VegaHexbinPlot().frame_plot(self._data, x=x, y=y,
+                                               interactive=interactive,
+                                               width=width, height=height, **kwds)
         elif kind in ['kde', 'density']:
-            return vgplot_df_kde(self._data, y=y, interactive=interactive,
-                                 width=width, height=height, **kwds)
+            return VegaKDEPlot().frame_plot(self._data, y=y,
+                                            interactive=interactive,
+                                            width=width, height=height, **kwds)
         else:
             raise NotImplementedError("kind = {0}".format(kind))
 
@@ -521,16 +482,16 @@ class SeriesVgPlotMethods(SeriesPlotMethods):
             return VegaAreaPlot().series_plot(self._data, interactive=interactive,
                                               width=width, height=height, **kwds)
         elif kind == 'bar':
-            return vgplot_series_bar(self._data, interactive=interactive,
-                                 width=width, height=height, **kwds)
+            return VegaBarPlot().series_plot(self._data, interactive=interactive,
+                                             width=width, height=height, **kwds)
         elif kind == 'barh':
-            return vgplot_series_barh(self._data, interactive=interactive,
-                               width=width, height=height, **kwds)
+            return VegaBarhPlot().series_plot(self._data, interactive=interactive,
+                                              width=width, height=height, **kwds)
         elif kind == 'hist':
-            return vgplot_series_hist(self._data, interactive=interactive,
-                                      width=width, height=height, **kwds)
+            return VegaHistPlot().series_plot(self._data, interactive=interactive,
+                                              width=width, height=height, **kwds)
         elif kind in ['kde', 'density']:
-            return vgplot_series_kde(self._data, interactive=interactive,
-                                     width=width, height=height, **kwds)
+            return VegaKDEPlot().series_plot(self._data, interactive=interactive,
+                                             width=width, height=height, **kwds)
         else:
             raise NotImplementedError("kind = {0}".format(kind))
