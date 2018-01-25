@@ -8,6 +8,7 @@ except ImportError:  # Pandas before 0.20.0
 from pandas import DataFrame, Series
 
 try:
+    # Import register decorators from pandas >= 0.23
     from pandas.api.extensions import (register_dataframe_accessor,
                                        register_series_accessor)
 except ImportError:
@@ -16,7 +17,7 @@ except ImportError:
     except ImportError:  # Pandas before 0.22.0
         from pandas.core.base import AccessorProperty
 
-    # Define register functions
+    # Define register decorators for pandas < 0.23
     class register_dataframe_accessor(object):
         """Register custom accessor on DataFrame."""
         def __init__(self, name):
