@@ -1,5 +1,6 @@
 import pdvega
 import pandas as pd
+import numpy as np
 
 import jsonschema
 
@@ -353,3 +354,41 @@ def test_ser_kde():
     plot = ser.vgplot.kde(bw_method='scott')
     assert plot.spec['mark'] == 'line'
     _check_encodings(plot.spec, x=' ', y='x')
+
+
+def test_scatter_matrix():
+    df = pd.DataFrame({'x': range(5),
+                       'y': range(5),
+                       'label': list('ABABA')})
+    # no color or size specified
+    plot = pdvega.scatter_matrix(df)
+    validate_vegalite(plot.spec)
+    assert plot.spec['repeat']['row'] == ['x', 'y']
+    assert plot.spec['repeat']['column'] == ['y', 'x']
+    assert plot.spec['spec']['encoding']['color']['condition']['value'] == 'steelblue'
+
+    # with color specified
+    plot = pdvega.scatter_matrix(df, c='label')
+    validate_vegalite(plot.spec)
+    assert plot.spec['repeat']['row'] == ['x', 'y']
+    assert plot.spec['repeat']['column'] == ['y', 'x']
+    assert plot.spec['spec']['encoding']['color']['condition']['field'] == 'label'
+
+    # with size specified
+    plot = pdvega.scatter_matrix(df, s='label')
+    validate_vegalite(plot.spec)
+    assert plot.spec['repeat']['row'] == ['x', 'y']
+    assert plot.spec['repeat']['column'] == ['y', 'x']
+    assert plot.spec['spec']['encoding']['color']['condition']['value'] == 'steelblue'
+    assert plot.spec['spec']['encoding']['size']['field'] == 'label'
+
+    # test figsize keyword
+    figsize = (8, 6)
+    dpi = 40
+    ncols = 2
+    plot = pdvega.scatter_matrix(df, figsize=figsize, dpi=dpi)
+    validate_vegalite(plot.spec)
+    assert np.allclose(plot.spec['spec']['width'],
+                       0.8 * dpi * figsize[0] / ncols)
+    assert np.allclose(plot.spec['spec']['height'],
+                       0.8 * dpi * figsize[1] / ncols)
