@@ -4,7 +4,12 @@ import numpy as np
 import pandas as pd
 
 from ._utils import infer_vegalite_type
-from ._pandas_internals import FramePlotMethods, SeriesPlotMethods
+from ._pandas_internals import (FramePlotMethods,
+                                SeriesPlotMethods,
+                                register_dataframe_accessor,
+                                register_series_accessor)
+
+
 from vega3 import Vega, VegaLite
 
 
@@ -469,6 +474,7 @@ def vgplot_series_kde(ser, bw_method=None, interactive=True,
     return VegaLinePlot().series_plot(kde_ser)
 
 
+@register_dataframe_accessor('vgplot')
 class FrameVgPlotMethods(FramePlotMethods):
     def __call__(self, x=None, y=None,
                  kind='line', interactive=True,
@@ -504,6 +510,7 @@ class FrameVgPlotMethods(FramePlotMethods):
             raise NotImplementedError("kind = {0}".format(kind))
 
 
+@register_series_accessor('vgplot')
 class SeriesVgPlotMethods(SeriesPlotMethods):
     def __call__(self, kind='line', interactive=True, width=450, height=300,
                  **kwds):
