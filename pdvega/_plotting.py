@@ -336,9 +336,6 @@ def vgplot_series_barh(ser, interactive=True, width=450, height=300):
     return VegaLite(D, data=df)
 
 
-
-
-
 def vgplot_df_hist(df, by=None, bins=10, stacked=False,
                    interactive=True, width=450, height=300):
     if by is not None:
