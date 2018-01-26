@@ -93,10 +93,10 @@ def is_stackable(kind):
     return kind in ['bar', 'barh', 'area', 'hist']
 
 
-@pytest.mark.parametrize('kind', SERIES_TEST_CASES.keys())
-def test_series_plot_interactive(data, kind):
-    col = SERIES_TEST_CASES[kind]['col']
-    kwds = SERIES_TEST_CASES[kind].get('kwds', {})
+@pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
+def test_series_plot_interactive(data, kind, info):
+    col = info['col']
+    kwds = info.get('kwds', {})
     data = data[col]
 
     spec = data.vgplot(kind=kind, **kwds).spec
@@ -112,10 +112,10 @@ def test_series_plot_interactive(data, kind):
     assert 'selection' not in spec
 
 
-@pytest.mark.parametrize('kind', FRAME_TEST_CASES.keys())
-def test_frame_plot_interactive(data, kind):
-    cols = FRAME_TEST_CASES[kind]['usecols']
-    kwds = FRAME_TEST_CASES[kind].get('kwds', {})
+@pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
+def test_frame_plot_interactive(data, kind, info):
+    cols = info['usecols']
+    kwds = info.get('kwds', {})
     data = data[cols]
 
     spec = data.vgplot(kind=kind, **kwds).spec
@@ -131,10 +131,10 @@ def test_frame_plot_interactive(data, kind):
     assert 'selection' not in spec
 
 
-@pytest.mark.parametrize('kind', SERIES_TEST_CASES.keys())
-def test_series_plot_alpha(data, kind):
-    col = SERIES_TEST_CASES[kind]['col']
-    kwds = SERIES_TEST_CASES[kind].get('kwds', {})
+@pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
+def test_series_plot_alpha(data, kind, info):
+    col = info['col']
+    kwds = info.get('kwds', {})
     data = data[col]
 
     spec = data.vgplot(kind=kind, alpha=0.5, **kwds).spec
@@ -146,10 +146,10 @@ def test_series_plot_alpha(data, kind):
     assert 'opacity' not in spec['encoding']
 
 
-@pytest.mark.parametrize('kind', FRAME_TEST_CASES.keys())
-def test_frame_plot_alpha(data, kind):
-    cols = FRAME_TEST_CASES[kind]['usecols']
-    kwds = FRAME_TEST_CASES[kind].get('kwds', {})
+@pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
+def test_frame_plot_alpha(data, kind, info):
+    cols = info['usecols']
+    kwds = info.get('kwds', {})
     data = data[cols]
 
     # if alpha is explicitly specified, then opacity should be in the spec
@@ -179,10 +179,10 @@ def test_frame_plot_alpha(data, kind):
         assert 'opacity' not in spec['encoding']
 
 
-@pytest.mark.parametrize('kind', SERIES_TEST_CASES.keys())
-def test_series_plot_width_height(data, kind):
-    col = SERIES_TEST_CASES[kind]['col']
-    kwds = SERIES_TEST_CASES[kind].get('kwds', {})
+@pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
+def test_series_plot_width_height(data, kind, info):
+    col = info['col']
+    kwds = info.get('kwds', {})
     data = data[col]
 
     spec = data.vgplot(kind=kind, width=300, height=200, **kwds).spec
@@ -194,10 +194,10 @@ def test_series_plot_width_height(data, kind):
     assert (spec['width'], spec['height']) == (450, 300)
 
 
-@pytest.mark.parametrize('kind', FRAME_TEST_CASES.keys())
-def test_frame_plot_width_height(data, kind):
-    cols = FRAME_TEST_CASES[kind]['usecols']
-    kwds = FRAME_TEST_CASES[kind].get('kwds', {})
+@pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
+def test_frame_plot_width_height(data, kind, info):
+    cols = info['usecols']
+    kwds = info.get('kwds', {})
     data = data[cols]
 
     spec = data.vgplot(kind=kind, width=300, height=200, **kwds).spec
