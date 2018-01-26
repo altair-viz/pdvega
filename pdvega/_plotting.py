@@ -76,11 +76,13 @@ class VegaLinePlot(VegaLitePlot):
             "encoding": {
                 "x": {
                     "field": x,
-                    "type": infer_vegalite_type(df[x])
+                    "type": infer_vegalite_type(df[x],
+                                                ordinal_threshold=0)
                 },
                 "y": {
                     "field": value_name,
-                    "type": infer_vegalite_type(df[value_name])
+                    "type": infer_vegalite_type(df[value_name],
+                                                ordinal_threshold=0)
                 },
                 "color": {
                     "field": var_name,
@@ -107,8 +109,14 @@ class VegaLinePlot(VegaLitePlot):
         spec = {
           "mark": "line",
           "encoding": {
-            "x": {"field": x, "type": infer_vegalite_type(df[x])},
-            "y": {"field": y, "type": infer_vegalite_type(df[y])},
+            "x": {
+                "field": x,
+                "type": infer_vegalite_type(df[x], ordinal_threshold=0)
+            },
+            "y": {
+                "field": y,
+                "type": infer_vegalite_type(df[y], ordinal_threshold=0)
+            },
           }
         }
 
@@ -130,8 +138,14 @@ class VegaScatterPlot(VegaLitePlot):
         cols = [x, y]
 
         encoding = {
-          "x": {"field": x, "type": infer_vegalite_type(data[x])},
-          "y": {"field": y, "type": infer_vegalite_type(data[y])},
+          "x": {
+              "field": x,
+              "type": infer_vegalite_type(data[x], ordinal_threshold=0)
+          },
+          "y": {
+              "field": y,
+              "type": infer_vegalite_type(data[y], ordinal_threshold=0)
+          },
         }
 
         if c is not None:
@@ -180,11 +194,11 @@ class VegaAreaPlot(VegaLitePlot):
           "encoding": {
             "x": {
               "field": x,
-              "type": infer_vegalite_type(df[x])
+              "type": infer_vegalite_type(df[x], ordinal_threshold=0)
             },
             "y": {
               "field": value_name,
-              "type": infer_vegalite_type(df[value_name]),
+              "type": infer_vegalite_type(df[value_name], ordinal_threshold=0),
               "stack": 'zero' if stacked else None
             },
             "color": {
@@ -216,8 +230,14 @@ class VegaAreaPlot(VegaLitePlot):
         spec = {
           "mark": "area",
           "encoding": {
-            "x": {"field": x, "type": infer_vegalite_type(df[x])},
-            "y": {"field": y, "type": infer_vegalite_type(df[y])},
+            "x": {
+                "field": x,
+                "type": infer_vegalite_type(df[x], ordinal_threshold=0)
+            },
+            "y": {
+                "field": y,
+                "type": infer_vegalite_type(df[y], ordinal_threshold=0)
+            },
           },
         }
 
@@ -256,7 +276,7 @@ class VegaBarPlot(VegaLitePlot):
             },
             "y": {
                 "field": "value",
-                "type": infer_vegalite_type(df["value"]),
+                "type": infer_vegalite_type(df["value"], ordinal_threshold=0),
                 "stack": 'zero' if stacked else None
             },
             "color": {
@@ -293,7 +313,7 @@ class VegaBarPlot(VegaLitePlot):
             },
             "y": {
                 "field": y,
-                "type": infer_vegalite_type(df[y])
+                "type": infer_vegalite_type(df[y], ordinal_threshold=0)
             },
           },
         }
