@@ -12,15 +12,6 @@ from ._pandas_internals import (FramePlotMethods,
 
 from vega3 import Vega, VegaLite
 
-
-INTERACTIVE_SCALES = {
-    "selection": {
-        "grid": {
-            "type": "interval", "bind": "scales"
-        }
-    }
-}
-
 class VegaLitePlot(object):
     kind = None
 
@@ -101,6 +92,7 @@ class VegaLinePlot(VegaLitePlot):
         if alpha is not None:
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
+
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
         return VegaLite(spec, data=df)
@@ -112,17 +104,18 @@ class VegaLinePlot(VegaLitePlot):
         df.columns = map(str, df.columns)
         x, y = df.columns
 
-        spec = self.vgl_spec({
+        spec = {
           "mark": "line",
           "encoding": {
             "x": {"field": x, "type": infer_vegalite_type(df[x])},
             "y": {"field": y, "type": infer_vegalite_type(df[y])},
           }
-        })
+        }
 
         if alpha is not None:
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
+
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
         return VegaLite(spec, data=df)
