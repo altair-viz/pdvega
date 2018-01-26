@@ -118,8 +118,7 @@ def test_bar_xy():
     plot = df.vgplot.bar(x='x', y='y')
     validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'bar'
-    _check_encodings(plot.spec, x='x', y='value',
-                     color='variable', opacity=IGNORE)
+    _check_encodings(plot.spec, x='x', y='value', color='variable')
     data = _get_data(plot.spec)
     assert set(pd.unique(data['variable'])) == {'y'}
     assert plot.spec['encoding']['y']['stack'] is None
@@ -180,8 +179,7 @@ def test_barh_xy():
     plot = df.vgplot.barh(x='x', y='y')
     validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'bar'
-    _check_encodings(plot.spec, x='value', y='x',
-                     color='variable', opacity=IGNORE)
+    _check_encodings(plot.spec, x='value', y='x', color='variable')
     data = _get_data(plot.spec)
     assert set(pd.unique(data['variable'])) == {'y'}
     assert plot.spec['encoding']['x']['stack'] is None
@@ -257,11 +255,10 @@ def test_df_area_xy_unstacked():
     plot = df.vgplot.area(x='x', y='y', stacked=False)
     validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'area'
-    _check_encodings(plot.spec, x='x', y='value', color='variable', opacity=IGNORE)
+    _check_encodings(plot.spec, x='x', y='value', color='variable')
     data = _get_data(plot.spec)
     assert set(pd.unique(data['variable'])) == {'y'}
     assert plot.spec['encoding']['y']['stack'] is None
-    assert plot.spec['encoding']['opacity']['value'] == 0.7
 
 
 def test_series_area():
@@ -277,7 +274,8 @@ def test_df_hist():
                        'y': range(10)})
     plot = df.vgplot.hist(bins=5)
     assert plot.spec['mark'] == 'bar'
-    _check_encodings(plot.spec, x='value', y=IGNORE, color='variable')
+    _check_encodings(plot.spec, x='value', y=IGNORE,
+                     color='variable', opacity=IGNORE)
     assert plot.spec['encoding']['x']['bin'] == {'maxbins': 5}
     assert plot.spec['encoding']['y']['aggregate'] == 'count'
     assert plot.spec['encoding']['y']['stack'] == None

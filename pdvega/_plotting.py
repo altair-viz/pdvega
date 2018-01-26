@@ -67,7 +67,7 @@ class VegaLitePlot(object):
 
 class VegaLinePlot(VegaLitePlot):
     kind = 'line'
-    def frame_plot(self, data, x=None, y=None,
+    def frame_plot(self, data, x=None, y=None, alpha=None,
                    var_name='variable', value_name='value',
                    interactive=True, width=450, height=300, **kwds):
         self._warn_if_unused_keywords(kwds)
@@ -95,14 +95,18 @@ class VegaLinePlot(VegaLitePlot):
                     "field": var_name,
                     "type": infer_vegalite_type(df[var_name],
                                                 ordinal_threshold=10)
-                }
+                },
             },
         }
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
         return VegaLite(spec, data=df)
 
-    def series_plot(self, data, interactive=True, width=450, height=300, **kwds):
+    def series_plot(self, data, alpha=None,
+                    interactive=True, width=450, height=300, **kwds):
         self._warn_if_unused_keywords(kwds)
         df = data.reset_index()
         df.columns = map(str, df.columns)
@@ -116,6 +120,9 @@ class VegaLinePlot(VegaLitePlot):
           }
         })
 
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
         return VegaLite(spec, data=df)
@@ -124,7 +131,7 @@ class VegaLinePlot(VegaLitePlot):
 class VegaScatterPlot(VegaLitePlot):
     kind = 'scatter'
 
-    def frame_plot(self, data, x, y, c=None, s=None,
+    def frame_plot(self, data, x, y, c=None, s=None, alpha=None,
                    interactive=True, width=450, height=300, **kwds):
         self._warn_if_unused_keywords(kwds)
         cols = [x, y]
@@ -148,11 +155,14 @@ class VegaScatterPlot(VegaLitePlot):
                 'type': infer_vegalite_type(data[s])
             }
 
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            encoding['opacity'] = {'value': alpha}
+
         spec = {
           "mark": "circle",
           "encoding": encoding
         }
-
 
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
@@ -162,7 +172,7 @@ class VegaScatterPlot(VegaLitePlot):
 class VegaAreaPlot(VegaLitePlot):
     kind = 'area'
 
-    def frame_plot(self, data, x=None, y=None, stacked=True,
+    def frame_plot(self, data, x=None, y=None, stacked=True, alpha=None,
                    var_name='variable', value_name='value',
                    interactive=True, width=450, height=300, **kwds):
         self._warn_if_unused_keywords(kwds)
@@ -181,7 +191,8 @@ class VegaAreaPlot(VegaLitePlot):
             },
             "y": {
               "field": value_name,
-              "type": infer_vegalite_type(df[value_name])
+              "type": infer_vegalite_type(df[value_name]),
+              "stack": 'zero' if stacked else None
             },
             "color": {
               "field": var_name,
@@ -190,18 +201,20 @@ class VegaAreaPlot(VegaLitePlot):
           }
         }
 
-        if stacked:
-            spec['encoding']['y']['stack'] = 'zero'
-        else:
-            spec['encoding']['y']['stack'] = None
-            spec['encoding']['opacity'] = {'value': 0.7}
+        if alpha is None and not stacked and df[var_name].nunique() > 1:
+            alpha = 0.7
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
 
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
 
         return VegaLite(spec, data=df)
 
-    def series_plot(self, data, interactive=True, width=450, height=300, **kwds):
+    def series_plot(self, data, interactive=True, width=450, height=300, alpha=None,
+                    **kwds):
         self._warn_if_unused_keywords(kwds)
         df = data.reset_index()
         df.columns = map(str, df.columns)
@@ -215,6 +228,10 @@ class VegaAreaPlot(VegaLitePlot):
           },
         }
 
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
+
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
 
@@ -224,7 +241,7 @@ class VegaAreaPlot(VegaLitePlot):
 class VegaBarPlot(VegaLitePlot):
     kind = 'bar'
 
-    def frame_plot(self, data, x, y, stacked=False,
+    def frame_plot(self, data, x, y, stacked=False, alpha=None,
                    var_name='variable', value_name='value',
                    interactive=True, width=450, height=300, **kwds):
         self._warn_if_unused_keywords(kwds)
@@ -240,23 +257,35 @@ class VegaBarPlot(VegaLitePlot):
         spec = {
           "mark": "bar",
           "encoding": {
-            "x": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)},
-            "y": {"field": "value", "type": infer_vegalite_type(df["value"])},
-            "color": {"field": "variable", "type": infer_vegalite_type(df["variable"])},
+            "x": {
+                "field": x,
+                "type": infer_vegalite_type(df[x], ordinal_threshold=50)
+            },
+            "y": {
+                "field": "value",
+                "type": infer_vegalite_type(df["value"]),
+                "stack": 'zero' if stacked else None
+            },
+            "color": {
+                "field": "variable",
+                "type": infer_vegalite_type(df["variable"])
+            },
           },
         }
 
-        if stacked:
-            spec['encoding']['y']['stack'] = 'zero'
-        else:
-            spec['encoding']['y']['stack'] = None
-            spec['encoding']['opacity'] = {"value": 0.7}
+        if alpha is None and not stacked and df[var_name].nunique() > 1:
+            alpha = 0.7
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
 
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
         return VegaLite(spec, data=df)
 
-    def series_plot(self, data, interactive=True, width=450, height=300, **kwds):
+    def series_plot(self, data, alpha=None, interactive=True,
+                    width=450, height=300, **kwds):
         self._warn_if_unused_keywords(kwds)
         df = data.reset_index()
         df.columns = map(str, df.columns)
@@ -265,10 +294,20 @@ class VegaBarPlot(VegaLitePlot):
         spec = {
           "mark": "bar",
           "encoding": {
-            "x": {"field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)},
-            "y": {"field": y, "type": infer_vegalite_type(df[y])},
+            "x": {
+                "field": x,
+                "type": infer_vegalite_type(df[x], ordinal_threshold=50)
+            },
+            "y": {
+                "field": y,
+                "type": infer_vegalite_type(df[y])
+            },
           },
         }
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
 
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
@@ -294,7 +333,7 @@ class VegaBarhPlot(VegaBarPlot):
 class VegaHistPlot(VegaLitePlot):
     kind = 'hist'
 
-    def frame_plot(self, data, by=None, bins=10, stacked=False,
+    def frame_plot(self, data, by=None, bins=10, stacked=False, alpha=None,
                    var_name='variable', value_name='value',
                    interactive=True, width=450, height=300, **kwds):
         self._warn_if_unused_keywords(kwds)
@@ -322,11 +361,18 @@ class VegaHistPlot(VegaLitePlot):
             },
         }
 
+        if alpha is None and not stacked and df[var_name].nunique() > 1:
+            alpha = 0.7
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
+
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
         return VegaLite(spec, data=df)
 
-    def series_plot(self, data, bins=10, interactive=True,
+    def series_plot(self, data, bins=10, alpha=None, interactive=True,
                     width=450, height=300, **kwds):
         self._warn_if_unused_keywords(kwds)
         df = data.to_frame()
@@ -347,6 +393,10 @@ class VegaHistPlot(VegaLitePlot):
             },
         }
 
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
+
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
         return VegaLite(spec, data=df)
@@ -355,7 +405,8 @@ class VegaHistPlot(VegaLitePlot):
 class VegaHexbinPlot(VegaLitePlot):
     kind = 'hexbin'
 
-    def frame_plot(self, data, x, y, C=None, reduce_C_function=None, gridsize=100,
+    def frame_plot(self, data, x, y, C=None, reduce_C_function=None,
+                   gridsize=100, alpha=None,
                    interactive=True, width=450, height=300, **kwds):
         # TODO: Use actual hexbins rather than a grid heatmap
         self._warn_if_unused_keywords(kwds)
@@ -388,6 +439,10 @@ class VegaHexbinPlot(VegaLitePlot):
           "mark": "rect",
         }
 
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
+
         spec = self.vgl_spec(spec, interactive=interactive,
                              width=width, height=height)
         return VegaLite(spec, data=df)
@@ -396,10 +451,8 @@ class VegaHexbinPlot(VegaLitePlot):
 class VegaKDEPlot(VegaLitePlot):
     kind = 'kde'
 
-    def frame_plot(self, data, y=None, bw_method=None, interactive=True,
-                   width=450, height=300, **kwds):
-        self._warn_if_unused_keywords(kwds)
-
+    def frame_plot(self, data, y=None, bw_method=None, alpha=None,
+                   interactive=True, width=450, height=300, **kwds):
         from scipy.stats import gaussian_kde as kde
 
         if y is not None:
@@ -415,10 +468,12 @@ class VegaKDEPlot(VegaLitePlot):
                                for col in df}, index=t)
         kde_df.index.name = ' '
 
-        return VegaLinePlot().frame_plot(kde_df, value_name='Density')
+        return VegaLinePlot().frame_plot(kde_df, value_name='Density',
+                                         alpha=alpha, interactive=interactive,
+                                         width=width, height=height, **kwds)
 
-    def series_plot(self, data, bw_method=None, interactive=True,
-                    width=450, height=300):
+    def series_plot(self, data, bw_method=None, alpha=None,
+                    interactive=True, width=450, height=300, **kwds):
         from scipy.stats import gaussian_kde
 
         tmin, tmax = data.min(), data.max()
@@ -428,7 +483,9 @@ class VegaKDEPlot(VegaLitePlot):
         kde_ser = pd.Series(gaussian_kde(data, bw_method=bw_method).evaluate(t),
                             index=t, name=data.name)
         kde_ser.index.name = ' '
-        return VegaLinePlot().series_plot(kde_ser)
+        return VegaLinePlot().series_plot(kde_ser, alpha=alpha,
+                                          interactive=interactive,
+                                          width=width, height=height, **kwds)
 
 
 @register_dataframe_accessor('vgplot')
