@@ -2,6 +2,8 @@
 import warnings
 
 from vega3 import VegaLite
+import numpy as np
+import pandas as pd
 
 from ._utils import infer_vegalite_type
 from ._plotting import VegaLitePlot
@@ -99,6 +101,42 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
         cond['field'] = c
         cond['type'] = infer_vegalite_type(frame[c])
     return VegaLite(spec, data=frame)
+
+
+def andrews_curves(data, class_column, samples=200,
+                   width=450, height=300, interactive=True, **kwds):
+    if kwds:
+        warnings.warn("Unrecognized keywords in pdvega.andrews_curves(): {0}"
+                      "".format(list(kwds.keys())))
+    t = np.linspace(-np.pi, np.pi, samples)
+    vals = data.drop(class_column, axis=1).values.T
+
+    curves = np.outer(vals[0], np.ones_like(t))
+    for i in range(1, len(vals)):
+        ft = ((i + 1) // 2) * t
+        if i % 2 == 1:
+            curves += np.outer(vals[i], np.sin(ft))
+        else:
+            curves += np.outer(vals[i], np.cos(ft))
+
+    df = pd.DataFrame({'t': np.tile(np.arange(samples), curves.shape[0]),
+                       'sample': np.repeat(np.arange(curves.shape[0]), curves.shape[1]),
+                       'y': curves.ravel(),
+                       class_column: np.repeat(data[class_column], samples)})
+
+    spec = {
+        'mark': 'line',
+        'encoding': {
+            'x': {'field': 't', 'type': 'quantitative'},
+            'y': {'field': 'y', 'type': 'quantitative'},
+            'color': {'field': class_column, 'type': infer_vegalite_type(df[class_column])},
+            'detail': {'field': 'sample', 'type': 'quantitative'}
+        }
+    }
+
+    spec = VegaLitePlot.vgl_spec(spec, width=width, height=height, interactive=interactive)
+
+    return VegaLite(spec, data=df)
 
 
 def parallel_coordinates(data, class_column, cols=None,
