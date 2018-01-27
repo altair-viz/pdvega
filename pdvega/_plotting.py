@@ -32,7 +32,8 @@ class VegaLitePlot(object):
             df = df[[index] + list(usecols)]
         return df.melt([index], var_name=var_name, value_name=value_name)
 
-    def vgl_spec(self, spec, interactive=True, width=450, height=300):
+    @staticmethod
+    def vgl_spec(spec, interactive=True, width=450, height=300):
         spec.update({
             "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
             "width": width,

@@ -4,6 +4,7 @@ import warnings
 from vega3 import VegaLite
 
 from ._utils import infer_vegalite_type
+from ._plotting import VegaLitePlot
 
 
 def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
@@ -35,7 +36,7 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
 
     See Also
     --------
-    pandas.plotting.scatter_matrix
+    pandas.plotting.scatter_matrix : matplotlib version of this routine
     """
     if kwds:
         warnings.warn("Unrecognized keywords in pdvega.scatter_matrix: {0}"
@@ -98,3 +99,71 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
         cond['field'] = c
         cond['type'] = infer_vegalite_type(frame[c])
     return VegaLite(spec, data=frame)
+
+
+def parallel_coordinates(data, class_column, cols=None,
+                         width=450, height=300, interactive=True,
+                         var_name='variable', value_name='value', **kwds):
+    """
+    Parallel coordinates plotting.
+
+    Parameters
+    ----------
+    frame: DataFrame
+    class_column: str
+        Column name containing class names
+    cols: list, optional
+        A list of column names to use
+    color: list or tuple, optional
+        Colors to use for the different classes
+
+    Returns
+    -------
+    plot : VegaLite object
+        The Vega-Lite representation of the plot.
+
+    See Also
+    --------
+    pandas.plotting.parallel_coordinates : matplotlib version of this routine
+    """
+    if kwds:
+        warnings.warn("Unrecognized keywords in pdvega.scatter_matrix: {0}"
+                      "".format(list(kwds.keys())))
+
+    # Transform the dataframe to be used in Vega-Lite
+    if cols is not None:
+        data = data[cols]
+    else:
+        cols = data.columns
+    df = data.reset_index()
+    index = (set(df.columns) - set(cols)).pop()
+    assert index in df.columns
+    df = df.melt([index, class_column],
+                 var_name=var_name, value_name=value_name)
+
+    spec = {
+        'mark': 'line',
+        'encoding': {
+            'color': {
+                'field': class_column,
+                'type': infer_vegalite_type(df[class_column])
+            },
+            'detail': {
+                'field': index,
+                'type': infer_vegalite_type(df[index])
+            },
+            'x': {
+                'field': var_name,
+                'type': infer_vegalite_type(df[var_name])
+            },
+            'y': {
+                'field': value_name,
+                'type': infer_vegalite_type(df[value_name])
+            }
+        }
+    }
+
+    spec = VegaLitePlot.vgl_spec(spec, interactive=interactive,
+                                 width=width, height=height)
+
+    return VegaLite(spec, data=df)

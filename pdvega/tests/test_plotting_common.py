@@ -21,8 +21,7 @@ def data():
         'y': range(10),
         'z': range(10),
         'a': list('ABCABCABCA'),
-        'b': list('ABCABCABCA'),
-        'c': list('ABCABCABCA')
+        'b': list('ABCABCABCA')
     })
 
 COMMON_ARGS = {
