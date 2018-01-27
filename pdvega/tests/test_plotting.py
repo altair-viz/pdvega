@@ -397,15 +397,17 @@ def test_parallel_coordinates():
                          'y': range(10),
                          'z': range(10),
                          'c': list('ABABABABAB')})
-    plot = pdvega.parallel_coordinates(data, 'c')
+    plot = pdvega.parallel_coordinates(data, 'c', alpha=0.5)
     validate_vegalite(plot.spec)
     _check_encodings(plot.spec, x='variable', y='value',
-                     color='c', detail='index')
+                     color='c', detail='index', opacity=IGNORE)
     enc = plot.spec['encoding']
+    assert plot.spec['mark'] == 'line'
     assert enc['x']['type'] == 'nominal'
     assert enc['y']['type'] == 'quantitative'
     assert enc['color']['type'] == 'nominal'
     assert enc['detail']['type'] == 'quantitative'
+    assert enc['opacity']['value'] == 0.5
     df = _get_data(plot.spec)
     assert set(pd.unique(df['variable'])) == {'x', 'y', 'z'}
 
@@ -414,9 +416,32 @@ def test_parallel_coordinates():
     _check_encodings(plot.spec, x='variable', y='value',
                      color='c', detail='index')
     enc = plot.spec['encoding']
+    assert plot.spec['mark'] == 'line'
     assert enc['x']['type'] == 'nominal'
     assert enc['y']['type'] == 'quantitative'
     assert enc['color']['type'] == 'nominal'
     assert enc['detail']['type'] == 'quantitative'
     df = _get_data(plot.spec)
     assert set(pd.unique(df['variable'])) == {'x', 'y'}
+
+
+def test_andrews_curves():
+    data = pd.DataFrame({'x': range(10),
+                         'y': range(10),
+                         'z': range(10),
+                         'c': list('ABABABABAB')})
+    n_samples = 120
+    n_points = len(data)
+    plot = pdvega.andrews_curves(data, 'c', samples=120, alpha=0.5)
+    validate_vegalite(plot.spec)
+    _check_encodings(plot.spec, x='t', y=' ',
+                     color='c', detail='sample', opacity=IGNORE)
+    enc = plot.spec['encoding']
+    assert plot.spec['mark'] == 'line'
+    assert enc['x']['type'] == 'quantitative'
+    assert enc['y']['type'] == 'quantitative'
+    assert enc['color']['type'] == 'nominal'
+    assert enc['detail']['type'] == 'quantitative'
+    assert enc['opacity']['value'] == 0.5
+    df = _get_data(plot.spec)
+    assert len(df) == n_samples * n_points

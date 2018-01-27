@@ -103,7 +103,7 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
     return VegaLite(spec, data=frame)
 
 
-def andrews_curves(data, class_column, samples=200,
+def andrews_curves(data, class_column, samples=200, alpha=None,
                    width=450, height=300, interactive=True, **kwds):
     if kwds:
         warnings.warn("Unrecognized keywords in pdvega.andrews_curves(): {0}"
@@ -121,25 +121,28 @@ def andrews_curves(data, class_column, samples=200,
 
     df = pd.DataFrame({'t': np.tile(np.arange(samples), curves.shape[0]),
                        'sample': np.repeat(np.arange(curves.shape[0]), curves.shape[1]),
-                       'y': curves.ravel(),
+                       ' ': curves.ravel(),
                        class_column: np.repeat(data[class_column], samples)})
 
     spec = {
         'mark': 'line',
         'encoding': {
             'x': {'field': 't', 'type': 'quantitative'},
-            'y': {'field': 'y', 'type': 'quantitative'},
+            'y': {'field': ' ', 'type': 'quantitative'},
             'color': {'field': class_column, 'type': infer_vegalite_type(df[class_column])},
             'detail': {'field': 'sample', 'type': 'quantitative'}
         }
     }
+    if alpha is not None:
+        assert 0 <= alpha <= 1
+        spec['encoding']['opacity'] = {'value': alpha}
 
     spec = VegaLitePlot.vgl_spec(spec, width=width, height=height, interactive=interactive)
 
     return VegaLite(spec, data=df)
 
 
-def parallel_coordinates(data, class_column, cols=None,
+def parallel_coordinates(data, class_column, cols=None, alpha=None,
                          width=450, height=300, interactive=True,
                          var_name='variable', value_name='value', **kwds):
     """
@@ -152,8 +155,8 @@ def parallel_coordinates(data, class_column, cols=None,
         Column name containing class names
     cols: list, optional
         A list of column names to use
-    color: list or tuple, optional
-        Colors to use for the different classes
+    alpha: float, optional
+        The transparency of the lines
 
     Returns
     -------
@@ -199,6 +202,10 @@ def parallel_coordinates(data, class_column, cols=None,
             }
         }
     }
+    
+    if alpha is not None:
+        assert 0 <= alpha <= 1
+        spec['encoding']['opacity'] = {'value': alpha}
 
     spec = VegaLitePlot.vgl_spec(spec, interactive=interactive,
                                  width=width, height=height)
