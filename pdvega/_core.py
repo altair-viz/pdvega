@@ -132,9 +132,8 @@ def parallel_coordinates(data, class_column, cols=None,
 
     # Transform the dataframe to be used in Vega-Lite
     if cols is not None:
-        data = data[cols]
-    else:
-        cols = data.columns
+        data = data[list(cols) + [class_column]]
+    cols = data.columns
     df = data.reset_index()
     index = (set(df.columns) - set(cols)).pop()
     assert index in df.columns

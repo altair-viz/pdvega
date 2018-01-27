@@ -390,3 +390,33 @@ def test_scatter_matrix():
                        0.8 * dpi * figsize[0] / ncols)
     assert np.allclose(plot.spec['spec']['height'],
                        0.8 * dpi * figsize[1] / ncols)
+
+
+def test_parallel_coordinates():
+    data = pd.DataFrame({'x': range(10),
+                         'y': range(10),
+                         'z': range(10),
+                         'c': list('ABABABABAB')})
+    plot = pdvega.parallel_coordinates(data, 'c')
+    validate_vegalite(plot.spec)
+    _check_encodings(plot.spec, x='variable', y='value',
+                     color='c', detail='index')
+    enc = plot.spec['encoding']
+    assert enc['x']['type'] == 'nominal'
+    assert enc['y']['type'] == 'quantitative'
+    assert enc['color']['type'] == 'nominal'
+    assert enc['detail']['type'] == 'quantitative'
+    df = _get_data(plot.spec)
+    assert set(pd.unique(df['variable'])) == {'x', 'y', 'z'}
+
+    plot = pdvega.parallel_coordinates(data, 'c', cols=['x', 'y'])
+    validate_vegalite(plot.spec)
+    _check_encodings(plot.spec, x='variable', y='value',
+                     color='c', detail='index')
+    enc = plot.spec['encoding']
+    assert enc['x']['type'] == 'nominal'
+    assert enc['y']['type'] == 'quantitative'
+    assert enc['color']['type'] == 'nominal'
+    assert enc['detail']['type'] == 'quantitative'
+    df = _get_data(plot.spec)
+    assert set(pd.unique(df['variable'])) == {'x', 'y'}
