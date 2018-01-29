@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from ._utils import (infer_vegalite_type, finalize_vegalite_spec,
-                     melt_frame, warn_if_keywords_unused)
+                     unpivot_frame, warn_if_keywords_unused)
 from ._pandas_internals import (PandasObject,
                                 register_dataframe_accessor,
                                 register_series_accessor)
@@ -366,14 +366,8 @@ class FramePlotMethods(BasePlotMethods):
             The vega-lite plot
         """
         warn_if_keywords_unused('line', kwds)
-        data = self._data
-
-        if y:
-            usecols = [y]
-        else:
-            usecols = None
-        df = melt_frame(data, index=x, usecols=usecols,
-                         var_name=var_name, value_name=value_name)
+        df = unpivot_frame(self._data, x=x, y=y,
+                           var_name=var_name, value_name=value_name)
         x = df.columns[0]
 
         spec = {
@@ -509,11 +503,8 @@ class FramePlotMethods(BasePlotMethods):
             The vega-lite plot
         """
         warn_if_keywords_unused('area', kwds)
-        data = self._data
-
-        usecols = [y] if y else None
-        df = melt_frame(data, index=x, usecols=usecols,
-                         var_name=var_name, value_name=value_name)
+        df = unpivot_frame(self._data, x=x, y=y,
+                           var_name=var_name, value_name=value_name)
         x = df.columns[0]
 
         spec = {
@@ -581,13 +572,8 @@ class FramePlotMethods(BasePlotMethods):
             The vega-lite plot
         """
         warn_if_keywords_unused('bar', kwds)
-
-        if y:
-            usecols = [y]
-        else:
-            usecols = None
-        df = melt_frame(self._data, index=x, usecols=usecols,
-                         var_name=var_name, value_name=value_name)
+        df = unpivot_frame(self._data, x=x, y=y,
+                           var_name=var_name, value_name=value_name)
         x = df.columns[0]
 
         spec = {

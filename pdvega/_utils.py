@@ -41,16 +41,21 @@ def infer_vegalite_type(data, ordinal_threshold=6):
                       "Defaulting to nominal.".format(typ))
         return 'nominal'
 
-def melt_frame(df, index=None, usecols=None,
-                var_name='variable', value_name='value'):
-    if index is None:
-        cols = df.columns
-        df = df.reset_index()
-        index = (set(df.columns) - set(cols)).pop()
-    assert index in df.columns
-    if usecols:
-        df = df[[index] + list(usecols)]
-    return df.melt([index], var_name=var_name, value_name=value_name)
+
+def unpivot_frame(frame, x=None, y=None,
+                  var_name='variable', value_name='value'):
+    """Unpivot a dataframe for use with Vega/Vega-Lite
+
+    The input is a frame with any number of columns,
+    output is a frame with three columns: x value, y values,
+    and variable names.
+    """
+    if x is None:
+        cols = frame.columns
+        frame = frame.reset_index()
+        x = (set(frame.columns) - set(cols)).pop()
+    return frame.melt(id_vars=x, value_vars=y,
+                      var_name=var_name, value_name=value_name)
 
 
 def warn_if_keywords_unused(kind, kwds):
