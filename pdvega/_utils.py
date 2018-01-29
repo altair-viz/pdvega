@@ -40,3 +40,38 @@ def infer_vegalite_type(data, ordinal_threshold=6):
         warnings.warn("I don't know how to infer vegalite type from '{0}'.  "
                       "Defaulting to nominal.".format(typ))
         return 'nominal'
+
+def melt_frame(df, index=None, usecols=None,
+                var_name='variable', value_name='value'):
+    if index is None:
+        cols = df.columns
+        df = df.reset_index()
+        index = (set(df.columns) - set(cols)).pop()
+    assert index in df.columns
+    if usecols:
+        df = df[[index] + list(usecols)]
+    return df.melt([index], var_name=var_name, value_name=value_name)
+
+
+def warn_if_keywords_unused(kind, kwds):
+    if kwds:
+        warnings.warn("Unrecognized keywords in vgplot.{0}(): {1}"
+                      "".format(kind, list(kwds.keys())))
+
+
+def finalize_vegalite_spec(spec, interactive=True, width=450, height=300):
+    spec.update({
+        "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
+        "width": width,
+        "height": height
+    })
+    if interactive:
+        spec.update({
+            "selection": {
+                "grid": {
+                    "type": "interval",
+                    "bind": "scales"
+                }
+            }
+        })
+    return spec

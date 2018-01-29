@@ -3,7 +3,8 @@ import warnings
 import numpy as np
 import pandas as pd
 
-from ._utils import infer_vegalite_type
+from ._utils import (infer_vegalite_type, finalize_vegalite_spec,
+                     melt_frame, warn_if_keywords_unused)
 from ._pandas_internals import (PandasObject,
                                 register_dataframe_accessor,
                                 register_series_accessor)
@@ -12,41 +13,6 @@ from ._pandas_internals import (PandasObject,
 
 #################################################################
 from ._axes import VegaLiteAxes
-
-def _melt_frame(df, index=None, usecols=None,
-                var_name='variable', value_name='value'):
-    if index is None:
-        cols = df.columns
-        df = df.reset_index()
-        index = (set(df.columns) - set(cols)).pop()
-    assert index in df.columns
-    if usecols:
-        df = df[[index] + list(usecols)]
-    return df.melt([index], var_name=var_name, value_name=value_name)
-
-
-def _warn_if_unused_keywords(kind, kwds):
-    if kwds:
-        warnings.warn("Unrecognized keywords in vgplot.{0}(): {1}"
-                      "".format(kind, list(kwds.keys())))
-
-
-def _finalize_spec(spec, interactive=True, width=450, height=300):
-    spec.update({
-        "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-        "width": width,
-        "height": height
-    })
-    if interactive:
-        spec.update({
-            "selection": {
-                "grid": {
-                    "type": "interval",
-                    "bind": "scales"
-                }
-            }
-        })
-    return spec
 
 
 class BasePlotMethods(PandasObject):
@@ -102,7 +68,7 @@ class SeriesPlotMethods(BasePlotMethods):
         axes : pdvega.VegaLiteAxes
             The vega-lite plot
         """
-        _warn_if_unused_keywords('line', kwds)
+        warn_if_keywords_unused('line', kwds)
         data = self._data
         df = data.reset_index()
         df.columns = map(str, df.columns)
@@ -126,10 +92,9 @@ class SeriesPlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
 
-        _finalize_spec(spec, width=width, height=height,
-                       interactive=interactive)
-
-        return VegaLiteAxes(spec, df)
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
 
     def area(self, alpha=None, interactive=True, width=450, height=300, **kwds):
         """Area plot
@@ -150,7 +115,7 @@ class SeriesPlotMethods(BasePlotMethods):
         axes : pdvega.VegaLiteAxes
             The vega-lite plot
         """
-        _warn_if_unused_keywords('area', kwds)
+        warn_if_keywords_unused('area', kwds)
         df = self._data.reset_index()
         df.columns = map(str, df.columns)
         x, y = df.columns
@@ -173,9 +138,8 @@ class SeriesPlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
 
-        spec = _finalize_spec(spec, interactive=interactive,
-                              width=width, height=height)
-
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
         return VegaLiteAxes(spec, data=df)
 
     def bar(self, alpha=None, interactive=True,
@@ -198,7 +162,7 @@ class SeriesPlotMethods(BasePlotMethods):
         axes : pdvega.VegaLiteAxes
             The vega-lite plot
         """
-        _warn_if_unused_keywords('bar', kwds)
+        warn_if_keywords_unused('bar', kwds)
 
         df = self._data.reset_index()
         df.columns = map(str, df.columns)
@@ -222,8 +186,8 @@ class SeriesPlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
 
-        spec = _finalize_spec(spec, interactive=interactive,
-                              width=width, height=height)
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
         return VegaLiteAxes(spec, data=df)
 
     def barh(self, alpha=None, interactive=True,
@@ -274,7 +238,7 @@ class SeriesPlotMethods(BasePlotMethods):
         axes : pdvega.VegaLiteAxes
             The vega-lite plot
         """
-        _warn_if_unused_keywords('hist', kwds)
+        warn_if_keywords_unused('hist', kwds)
         df = self._data.to_frame()
         df.columns = map(str, df.columns)
 
@@ -297,8 +261,8 @@ class SeriesPlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
 
-        spec = _finalize_spec(spec, interactive=interactive,
-                              width=width, height=height)
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
         return VegaLiteAxes(spec, data=df)
 
     def kde(self, bw_method=None, alpha=None,
@@ -401,14 +365,14 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.VegaLiteAxes
             The vega-lite plot
         """
-        _warn_if_unused_keywords('line', kwds)
+        warn_if_keywords_unused('line', kwds)
         data = self._data
 
         if y:
             usecols = [y]
         else:
             usecols = None
-        df = _melt_frame(data, index=x, usecols=usecols,
+        df = melt_frame(data, index=x, usecols=usecols,
                          var_name=var_name, value_name=value_name)
         x = df.columns[0]
 
@@ -436,10 +400,9 @@ class FramePlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
 
-        _finalize_spec(spec, width=width, height=height,
-                       interactive=interactive)
-
-        return VegaLiteAxes(spec, df)
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
 
     def scatter(self, x, y, c=None, s=None, alpha=None,
                 interactive=True, width=450, height=300, **kwds):
@@ -469,7 +432,7 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.VegaLiteAxes
             The vega-lite plot
         """
-        _warn_if_unused_keywords('scatter', kwds)
+        warn_if_keywords_unused('scatter', kwds)
         data = self._data
         cols = [x, y]
 
@@ -507,8 +470,8 @@ class FramePlotMethods(BasePlotMethods):
           "encoding": encoding
         }
 
-        spec = _finalize_spec(spec, interactive=interactive,
-                              width=width, height=height)
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
         return VegaLiteAxes(spec, data=data[cols])
 
     def area(self, x=None, y=None, stacked=True, alpha=None,
@@ -545,11 +508,11 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.VegaLiteAxes
             The vega-lite plot
         """
-        _warn_if_unused_keywords('area', kwds)
+        warn_if_keywords_unused('area', kwds)
         data = self._data
 
         usecols = [y] if y else None
-        df = _melt_frame(data, index=x, usecols=usecols,
+        df = melt_frame(data, index=x, usecols=usecols,
                          var_name=var_name, value_name=value_name)
         x = df.columns[0]
 
@@ -579,9 +542,8 @@ class FramePlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
 
-        spec = _finalize_spec(spec, interactive=interactive,
-                               width=width, height=height)
-
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
         return VegaLiteAxes(spec, data=df)
 
     def bar(self, x=None, y=None, stacked=False, alpha=None,
@@ -618,13 +580,13 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.VegaLiteAxes
             The vega-lite plot
         """
-        _warn_if_unused_keywords('bar', kwds)
+        warn_if_keywords_unused('bar', kwds)
 
         if y:
             usecols = [y]
         else:
             usecols = None
-        df = _melt_frame(self._data, index=x, usecols=usecols,
+        df = melt_frame(self._data, index=x, usecols=usecols,
                          var_name=var_name, value_name=value_name)
         x = df.columns[0]
 
@@ -654,8 +616,8 @@ class FramePlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
 
-        spec = _finalize_spec(spec, interactive=interactive,
-                              width=width, height=height)
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
         return VegaLiteAxes(spec, data=df)
 
     def barh(self, x=None, y=None, stacked=False, alpha=None,
@@ -738,7 +700,7 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.VegaLiteAxes
             The vega-lite plot
         """
-        _warn_if_unused_keywords('hist', kwds)
+        warn_if_keywords_unused('hist', kwds)
         if by is not None:
             raise NotImplementedError('vgplot.hist `by` keyword')
         if x is not None or y is not None:
@@ -772,8 +734,8 @@ class FramePlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
 
-        spec = _finalize_spec(spec, interactive=interactive,
-                              width=width, height=height)
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
         return VegaLiteAxes(spec, data=df)
 
     def hexbin(self, x, y, C=None, reduce_C_function=None,
@@ -812,7 +774,7 @@ class FramePlotMethods(BasePlotMethods):
             The vega-lite plot
         """
         # TODO: Use actual hexbins rather than a grid heatmap
-        _warn_if_unused_keywords('hexbin', kwds)
+        warn_if_keywords_unused('hexbin', kwds)
 
         if reduce_C_function is not None:
             raise NotImplementedError("Custom reduce_C_function in hexbin")
@@ -846,8 +808,8 @@ class FramePlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
 
-        spec = _finalize_spec(spec, interactive=interactive,
-                              width=width, height=height)
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
         return VegaLiteAxes(spec, data=df)
 
     def kde(self, x=None, y=None, bw_method=None, alpha=None,
