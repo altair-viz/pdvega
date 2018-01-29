@@ -1,212 +1,877 @@
-"""Core plotting routines"""
 import warnings
 
-from vega3 import VegaLite
 import numpy as np
 import pandas as pd
 
-from ._utils import infer_vegalite_type, finalize_vegalite_spec
+from ._utils import (infer_vegalite_type, finalize_vegalite_spec,
+                     unpivot_frame, warn_if_keywords_unused)
+from ._pandas_internals import (PandasObject,
+                                register_dataframe_accessor,
+                                register_series_accessor)
 
 
-def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
-    """Draw a matrix of scatter plots.
 
-    The result is an interactive pan/zoomable plot, with linked-brushing
-    enabled by holding the shift key.
+#################################################################
+from ._axes import VegaLiteAxes
 
-    Parameters
-    ----------
-    frame : DataFrame
-        The dataframe for which to draw the scatter matrix.
-    c : string (optional)
-        If specified, the name of the column to be used to determine the
-        color of each point.
-    s : string (optional)
-        If specified, the name of the column to be used to determine the
-        size of each point,
-    figsize : tuple (optional)
-        A length-2 tuple speficying the size of the figure in inches
-    dpi : float (default=72)
-        The dots (i.e. pixels) per inch used to convert the figure size from
-        inches to pixels.
 
-    Returns
-    -------
-    plot : VegaLite object
-        The Vega-Lite representation of the plot.
+class BasePlotMethods(PandasObject):
+    def __init__(self, data):
+        self._data = data
 
-    See Also
+    def __call__(self, kind, *args, **kwargs):
+        raise NotImplementedError()
+
+
+@register_series_accessor('vgplot')
+class SeriesPlotMethods(BasePlotMethods):
+    """Series Accessor & Method for creating Vega-Lite visualizations.
+
+    Examples
     --------
-    pandas.plotting.scatter_matrix : matplotlib version of this routine
+    >>> s.plot.line()  # doctest: +SKIP
+    >>> s.plot.area()  # doctest: +SKIP
+    >>> s.plot.bar()  # doctest: +SKIP
+    >>> s.plot.barh()  # doctest: +SKIP
+    >>> s.plot.hist()  # doctest: +SKIP
+    >>> s.plot.kde()  # doctest: +SKIP
+    >>> s.plot.density()  # doctest: +SKIP
+
+    Plotting methods can also be accessed by calling the accessor as a method
+    with the ``kind`` argument:
+    ``s.plot(kind='line', **kwds)`` is equivalent to ``s.plot.line(**kwds)``
     """
-    if kwds:
-        warnings.warn("Unrecognized keywords in pdvega.scatter_matrix: {0}"
-                      "".format(list(kwds.keys())))
-    cols = [col for col in frame.columns
-            if col not in [c, s]
-            if infer_vegalite_type(frame[col], ordinal_threshold=0) == 'quantitative']
-    spec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "repeat": {
-        "row": cols,
-        "column": cols[::-1]
-      },
-      "spec": {
-        "mark": "point",
-        "selection": {
-          "brush": {
-            "type": "interval",
-            "resolve": "union",
-            "on": "[mousedown[event.shiftKey], window:mouseup] > window:mousemove!",
-            "translate": "[mousedown[event.shiftKey], window:mouseup] > window:mousemove!",
-            "zoom": "wheel![event.shiftKey]"
+    def __call__(self, kind='line', **kwargs):
+        try:
+            plot_method = getattr(self, kind)
+        except AttributeError:
+            raise ValueError("kind='{0}' not valid for {1}"
+                             "".format(kind, self.__class__.__name__))
+        return plot_method(**kwargs)
+
+    def line(self, alpha=None, interactive=True, width=450, height=300, **kwds):
+        """Line plot
+
+        Parameters
+        ----------
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        warn_if_keywords_unused('line', kwds)
+        data = self._data
+        df = data.reset_index()
+        df.columns = map(str, df.columns)
+        x, y = df.columns
+
+        spec = {
+          "mark": "line",
+          "encoding": {
+            "x": {
+                "field": x,
+                "type": infer_vegalite_type(df[x], ordinal_threshold=0)
+            },
+            "y": {
+                "field": y,
+                "type": infer_vegalite_type(df[y], ordinal_threshold=0)
+            },
+          }
+        }
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
+
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
+
+    def area(self, alpha=None, interactive=True, width=450, height=300, **kwds):
+        """Area plot
+
+        Parameters
+        ----------
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        warn_if_keywords_unused('area', kwds)
+        df = self._data.reset_index()
+        df.columns = map(str, df.columns)
+        x, y = df.columns
+
+        spec = {
+          "mark": "area",
+          "encoding": {
+            "x": {
+                "field": x,
+                "type": infer_vegalite_type(df[x], ordinal_threshold=0)
+            },
+            "y": {
+                "field": y,
+                "type": infer_vegalite_type(df[y], ordinal_threshold=0)
+            },
           },
-          "grid": {
-            "type": "interval",
-            "resolve": "global",
-            "bind": "scales",
-            "translate": "[mousedown[!event.shiftKey], window:mouseup] > window:mousemove!",
-            "zoom": "wheel![!event.shiftKey]"
-          }
-        },
-        "encoding": {
-          "x": {"field": {"repeat": "column"},"type": "quantitative"},
-          "y": {"field": {"repeat": "row"},"type": "quantitative"},
-          "color": {
-            "condition": {
-              "selection": "brush",
-            },
-            "value": "grey"
-          }
-        },
-      }
-    }
-
-    if figsize is not None:
-        width_inches, height_inches = figsize
-        spec['spec']['width'] = 0.8 * dpi * width_inches / len(cols)
-        spec['spec']['height'] = 0.8 * dpi * height_inches / len(cols)
-
-    if s is not None:
-        spec['spec']['encoding']["size"] = {
-            "field": s,
-            "type": infer_vegalite_type(frame[s])
         }
 
-    cond = spec['spec']['encoding']['color']['condition']
-    if c is None:
-        cond['value'] = 'steelblue'
-    else:
-        cond['field'] = c
-        cond['type'] = infer_vegalite_type(frame[c])
-    return VegaLite(spec, data=frame)
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
 
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
 
-def andrews_curves(data, class_column, samples=200, alpha=None,
-                   width=450, height=300, interactive=True, **kwds):
-    if kwds:
-        warnings.warn("Unrecognized keywords in pdvega.andrews_curves(): {0}"
-                      "".format(list(kwds.keys())))
-    t = np.linspace(-np.pi, np.pi, samples)
-    vals = data.drop(class_column, axis=1).values.T
+    def bar(self, alpha=None, interactive=True,
+            width=450, height=300, **kwds):
+        """Bar plot
 
-    curves = np.outer(vals[0], np.ones_like(t))
-    for i in range(1, len(vals)):
-        ft = ((i + 1) // 2) * t
-        if i % 2 == 1:
-            curves += np.outer(vals[i], np.sin(ft))
+        Parameters
+        ----------
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        warn_if_keywords_unused('bar', kwds)
+
+        df = self._data.reset_index()
+        df.columns = map(str, df.columns)
+        x, y = df.columns
+
+        spec = {
+          "mark": "bar",
+          "encoding": {
+            "x": {
+                "field": x,
+                "type": infer_vegalite_type(df[x], ordinal_threshold=50)
+            },
+            "y": {
+                "field": y,
+                "type": infer_vegalite_type(df[y], ordinal_threshold=0)
+            },
+          },
+        }
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
+
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
+
+    def barh(self, alpha=None, interactive=True,
+             width=450, height=300, **kwds):
+        """Horizontal bar plot
+
+        Parameters
+        ----------
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        plot = self.bar(alpha=alpha, interactive=interactive,
+                        width=width, height=height, **kwds)
+        enc = plot.spec['encoding']
+        enc['x'], enc['y'] = enc['y'], enc['x']
+        return plot
+
+    def hist(self, bins=10, alpha=None, histtype='bar',
+             interactive=True, width=450, height=300, **kwds):
+        """Histogram plot
+
+        Parameters
+        ----------
+        bins : integer, optional
+            the maximum number of bins to use for the histogram (default: 10)
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        histtype : string, {'bar', 'step', 'stepfilled'}
+            The type of histogram to generate. Default is 'bar'.
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        warn_if_keywords_unused('hist', kwds)
+        df = self._data.to_frame()
+        df.columns = map(str, df.columns)
+
+        if histtype in ['bar', 'barstacked']:
+            mark = 'bar'
+        elif histtype == 'stepfilled':
+            mark = {'type': 'area', 'interpolate': 'step'}
+        elif histtype == 'step':
+            mark = {'type': 'line', 'interpolate': 'step'}
         else:
-            curves += np.outer(vals[i], np.cos(ft))
+            raise ValueError("histtype '{0}' is not recognized"
+                             "".format(histtype))
 
-    df = pd.DataFrame({'t': np.tile(np.arange(samples), curves.shape[0]),
-                       'sample': np.repeat(np.arange(curves.shape[0]), curves.shape[1]),
-                       ' ': curves.ravel(),
-                       class_column: np.repeat(data[class_column], samples)})
-
-    spec = {
-        'mark': 'line',
-        'encoding': {
-            'x': {'field': 't', 'type': 'quantitative'},
-            'y': {'field': ' ', 'type': 'quantitative'},
-            'color': {'field': class_column, 'type': infer_vegalite_type(df[class_column])},
-            'detail': {'field': 'sample', 'type': 'quantitative'}
+        spec = {
+            "mark": mark,
+            "encoding": {
+                "x": {
+                    "bin": {"maxbins": bins},
+                    "field": df.columns[0],
+                    "type": "quantitative"
+                },
+                "y": {
+                    "aggregate": "count",
+                    "type": "quantitative"
+                }
+            },
         }
-    }
-    if alpha is not None:
-        assert 0 <= alpha <= 1
-        spec['encoding']['opacity'] = {'value': alpha}
 
-    spec = finalize_vegalite_spec(spec, width=width, height=height, interactive=interactive)
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
 
-    return VegaLite(spec, data=df)
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
+
+    def kde(self, bw_method=None, alpha=None,
+            interactive=True, width=450, height=300, **kwds):
+        """Kernel Density Estimation plot
+
+        Parameters
+        ----------
+        bw_method : str, scalar or callable, optional
+            The method used to calculate the estimator bandwidth. This can be
+            'scott', 'silverman', a scalar constant or a callable.
+            See `scipy.stats.gaussian_kde` for more details.
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        from scipy.stats import gaussian_kde
+
+        data = self._data
+        tmin, tmax = data.min(), data.max()
+        trange = tmax - tmin
+        t = np.linspace(tmin - 0.5 * trange, tmax + 0.5 * trange, 1000)
+
+        kde_ser = pd.Series(gaussian_kde(data, bw_method=bw_method).evaluate(t),
+                            index=t, name=data.name)
+        kde_ser.index.name = ' '
+        f = self.__class__(kde_ser)
+        return f.line(alpha=alpha, interactive=interactive,
+                      width=width, height=height, **kwds)
+
+    density = kde
 
 
-def parallel_coordinates(data, class_column, cols=None, alpha=None,
-                         width=450, height=300, interactive=True,
-                         var_name='variable', value_name='value', **kwds):
-    """
-    Parallel coordinates plotting.
+@register_dataframe_accessor('vgplot')
+class FramePlotMethods(BasePlotMethods):
+    """DataFrame Accessor & Method for creating Vega-Lite visualizations.
 
-    Parameters
-    ----------
-    frame: DataFrame
-    class_column: str
-        Column name containing class names
-    cols: list, optional
-        A list of column names to use
-    alpha: float, optional
-        The transparency of the lines
-
-    Returns
-    -------
-    plot : VegaLite object
-        The Vega-Lite representation of the plot.
-
-    See Also
+    Examples
     --------
-    pandas.plotting.parallel_coordinates : matplotlib version of this routine
+    >>> df.plot.line()  # doctest: +SKIP
+    >>> df.plot.area()  # doctest: +SKIP
+    >>> df.plot.bar()  # doctest: +SKIP
+    >>> df.plot.barh()  # doctest: +SKIP
+    >>> df.plot.hist()  # doctest: +SKIP
+    >>> df.plot.kde()  # doctest: +SKIP
+    >>> df.plot.density()  # doctest: +SKIP
+    >>> df.plot.scatter('x', 'y')  # doctest: +SKIP
+    >>> df.plot.hexbin('x', 'y')  # doctest: +SKIP
+
+    Plotting methods can also be accessed by calling the accessor as a method
+    with the ``kind`` argument:
+    ``df.plot(kind='line', **kwds)`` is equivalent to ``df.plot.line(**kwds)``
     """
-    if kwds:
-        warnings.warn("Unrecognized keywords in pdvega.scatter_matrix: {0}"
-                      "".format(list(kwds.keys())))
+    def __call__(self, x=None, y=None, kind='line', **kwargs):
+        try:
+            plot_method = getattr(self, kind)
+        except AttributeError:
+            raise ValueError("kind='{0}' not valid for {1}"
+                             "".format(kind, self.__class__.__name__))
+        return plot_method(x=x, y=y, **kwargs)
 
-    # Transform the dataframe to be used in Vega-Lite
-    if cols is not None:
-        data = data[list(cols) + [class_column]]
-    cols = data.columns
-    df = data.reset_index()
-    index = (set(df.columns) - set(cols)).pop()
-    assert index in df.columns
-    df = df.melt([index, class_column],
-                 var_name=var_name, value_name=value_name)
+    def line(self, x=None, y=None, alpha=None,
+             var_name='variable', value_name='value',
+             interactive=True, width=450, height=300, **kwds):
+        """Line plot
 
-    spec = {
-        'mark': 'line',
-        'encoding': {
-            'color': {
-                'field': class_column,
-                'type': infer_vegalite_type(df[class_column])
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        var_name : string, optional
+            the legend title
+        value_name : string, optional
+            the y-axis label
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        warn_if_keywords_unused('line', kwds)
+        df = unpivot_frame(self._data, x=x, y=y,
+                           var_name=var_name, value_name=value_name)
+        x = df.columns[0]
+
+        spec = {
+            "mark": "line",
+            "encoding": {
+                "x": {
+                    "field": x,
+                    "type": infer_vegalite_type(df[x],
+                                                ordinal_threshold=0)
+                },
+                "y": {
+                    "field": value_name,
+                    "type": infer_vegalite_type(df[value_name],
+                                                ordinal_threshold=0)
+                },
+                "color": {
+                    "field": var_name,
+                    "type": infer_vegalite_type(df[var_name],
+                                                ordinal_threshold=10)
+                },
             },
-            'detail': {
-                'field': index,
-                'type': infer_vegalite_type(df[index])
-            },
-            'x': {
-                'field': var_name,
-                'type': infer_vegalite_type(df[var_name])
-            },
-            'y': {
-                'field': value_name,
-                'type': infer_vegalite_type(df[value_name])
-            }
         }
-    }
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
 
-    if alpha is not None:
-        assert 0 <= alpha <= 1
-        spec['encoding']['opacity'] = {'value': alpha}
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
 
-    spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                 width=width, height=height)
+    def scatter(self, x, y, c=None, s=None, alpha=None,
+                interactive=True, width=450, height=300, **kwds):
+        """Scatter plot
 
-    return VegaLite(spec, data=df)
+        Parameters
+        ----------
+        x : string
+            the column to use as the x-axis variable.
+        y : string
+            the column to use as the y-axis variable.
+        c : string, optional
+            the column to use to encode the color of the points
+        s : string, optional
+            the column to use to encode the size of the points
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        warn_if_keywords_unused('scatter', kwds)
+        data = self._data
+        cols = [x, y]
+
+        encoding = {
+          "x": {
+              "field": x,
+              "type": infer_vegalite_type(data[x], ordinal_threshold=0)
+          },
+          "y": {
+              "field": y,
+              "type": infer_vegalite_type(data[y], ordinal_threshold=0)
+          },
+        }
+
+        if c is not None:
+            cols.append(c)
+            encoding['color'] = {
+                'field': c,
+                'type': infer_vegalite_type(data[c])
+            }
+
+        if s is not None:
+            cols.append(s)
+            encoding['size'] = {
+                'field': s,
+                'type': infer_vegalite_type(data[s])
+            }
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            encoding['opacity'] = {'value': alpha}
+
+        spec = {
+          "mark": "circle",
+          "encoding": encoding
+        }
+
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=data[cols])
+
+    def area(self, x=None, y=None, stacked=True, alpha=None,
+             var_name='variable', value_name='value',
+             interactive=True, width=450, height=300, **kwds):
+        """Area plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        stacked : bool, optional
+            if True (default) then create a stacked area chart. Otherwise,
+            areas will overlap
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        var_name : string, optional
+            the legend title
+        value_name : string, optional
+            the y-axis label
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        warn_if_keywords_unused('area', kwds)
+        df = unpivot_frame(self._data, x=x, y=y,
+                           var_name=var_name, value_name=value_name)
+        x = df.columns[0]
+
+        spec = {
+          "mark": "area",
+          "encoding": {
+            "x": {
+              "field": x,
+              "type": infer_vegalite_type(df[x], ordinal_threshold=0)
+            },
+            "y": {
+              "field": value_name,
+              "type": infer_vegalite_type(df[value_name], ordinal_threshold=0),
+              "stack": 'zero' if stacked else None
+            },
+            "color": {
+              "field": var_name,
+              "type": infer_vegalite_type(df[var_name], ordinal_threshold=10)
+            }
+          }
+        }
+
+        if alpha is None and not stacked and df[var_name].nunique() > 1:
+            alpha = 0.7
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
+
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
+
+    def bar(self, x=None, y=None, stacked=False, alpha=None,
+            var_name='variable', value_name='value',
+            interactive=True, width=450, height=300, **kwds):
+        """Bar plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        stacked : bool, optional
+            if True (default) then create a stacked area chart. Otherwise,
+            areas will overlap
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        var_name : string, optional
+            the legend title
+        value_name : string, optional
+            the y-axis label
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        warn_if_keywords_unused('bar', kwds)
+        df = unpivot_frame(self._data, x=x, y=y,
+                           var_name=var_name, value_name=value_name)
+        x = df.columns[0]
+
+        spec = {
+          "mark": "bar",
+          "encoding": {
+            "x": {
+                "field": x,
+                "type": infer_vegalite_type(df[x], ordinal_threshold=50)
+            },
+            "y": {
+                "field": "value",
+                "type": infer_vegalite_type(df["value"], ordinal_threshold=0),
+                "stack": 'zero' if stacked else None
+            },
+            "color": {
+                "field": "variable",
+                "type": infer_vegalite_type(df["variable"])
+            },
+          },
+        }
+
+        if alpha is None and not stacked and df[var_name].nunique() > 1:
+            alpha = 0.7
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
+
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
+
+    def barh(self, x=None, y=None, stacked=False, alpha=None,
+             var_name='variable', value_name='value',
+             interactive=True, width=450, height=300, **kwds):
+        """Horizontal bar plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        stacked : bool, optional
+            if True (default) then create a stacked area chart. Otherwise,
+            areas will overlap
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        var_name : string, optional
+            the legend title
+        value_name : string, optional
+            the y-axis label
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        plot = self.bar(x=x, y=y, stacked=stacked, alpha=alpha,
+                        var_name=var_name, value_name=value_name,
+                        interactive=interactive, width=width, height=height,
+                        **kwds)
+        enc = plot.spec['encoding']
+        enc['x'], enc['y'] = enc['y'], enc['x']
+        return plot
+
+    def hist(self, x=None, y=None, by=None, bins=10, stacked=False, alpha=None,
+             histtype='bar', var_name='variable', value_name='value',
+             interactive=True, width=450, height=300, **kwds):
+        """Histogram plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        by : string, optional
+            the column by which to group the results
+        bins : integer, optional
+            the maximum number of bins to use for the histogram (default: 10)
+        stacked : bool, optional
+            if True (default) then create a stacked area chart. Otherwise,
+            areas will overlap
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        histtype : string, {'bar', 'step', 'stepfilled'}
+            The type of histogram to generate. Default is 'bar'.
+        var_name : string, optional
+            the legend title
+        value_name : string, optional
+            the y-axis label
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        warn_if_keywords_unused('hist', kwds)
+        if by is not None:
+            raise NotImplementedError('vgplot.hist `by` keyword')
+        if x is not None or y is not None:
+            raise NotImplementedError('"x" and "y" args to hist()')
+        df = self._data.melt(var_name=var_name, value_name=value_name)
+
+        if histtype in ['bar', 'barstacked']:
+            mark = 'bar'
+        elif histtype == 'stepfilled':
+            mark = {'type': 'area', 'interpolate': 'step'}
+        elif histtype == 'step':
+            mark = {'type': 'line', 'interpolate': 'step'}
+        else:
+            raise ValueError("histtype '{0}' is not recognized"
+                             "".format(histtype))
+
+        spec = {
+            "mark": mark,
+            "encoding": {
+                "x": {
+                    "bin": {"maxbins": bins},
+                    "field": value_name,
+                    "type": "quantitative"
+                },
+                "y": {
+                    "aggregate": "count",
+                    "type": "quantitative",
+                    "stack": ('zero' if stacked else None)
+                },
+                "color": {
+                    "field": var_name,
+                    "type": "nominal"
+                },
+            },
+        }
+
+        if alpha is None and not stacked and df[var_name].nunique() > 1:
+            alpha = 0.7
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
+
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
+
+    def hexbin(self, x, y, C=None, reduce_C_function=None,
+               gridsize=100, alpha=None,
+               interactive=True, width=450, height=300, **kwds):
+        """Heatmap plot
+
+        Note that Vega-Lite does not support hexagonal binning, so this method
+        returns a cartesian heatmap.
+
+        Parameters
+        ----------
+        x : string
+            the column to use as the x-axis variable.
+        y : string
+            the column to use as the y-axis variable.
+        C : string, optional
+            the column to use to compute the mean within each bin. If not
+            specified, the count within each bin will be used.
+        reduce_C_function : callable, optional
+            the type of reduction to be done within each bin (not implemented)
+        gridsize : int, optional
+            the number of divisions in the x and y axis (default=100)
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        # TODO: Use actual hexbins rather than a grid heatmap
+        warn_if_keywords_unused('hexbin', kwds)
+
+        if reduce_C_function is not None:
+            raise NotImplementedError("Custom reduce_C_function in hexbin")
+        if C is None:
+            df = self._data[[x, y]]
+        else:
+            df = self._data[[x, y, C]]
+
+        spec = {
+          "mark": "rect",
+          "encoding": {
+            "x": {"field": x, "bin": {"maxbins": gridsize}, "type": "quantitative"},
+            "y": {"field": y, "bin": {"maxbins": gridsize}, "type": "quantitative"},
+            "color": ({"aggregate": "count", "type": "quantitative"} if C is None else
+                      {"field": C, "aggregate": "mean", "type": "quantitative"})
+          },
+          "config": {
+            "range": {
+              "heatmap": {
+                "scheme": "greenblue"
+              }
+            },
+            "view": {
+              "stroke": "transparent"
+            }
+          },
+          "mark": "rect",
+        }
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            spec['encoding']['opacity'] = {'value': alpha}
+
+        spec = finalize_vegalite_spec(spec, interactive=interactive,
+                                      width=width, height=height)
+        return VegaLiteAxes(spec, data=df)
+
+    def kde(self, x=None, y=None, bw_method=None, alpha=None,
+            interactive=True, width=450, height=300, **kwds):
+        """Kernel Density Estimate plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        bw_method : str, scalar or callable, optional
+            The method used to calculate the estimator bandwidth. This can be
+            'scott', 'silverman', a scalar constant or a callable.
+            See `scipy.stats.gaussian_kde` for more details.
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
+        from scipy.stats import gaussian_kde as kde
+        if x is not None:
+            raise NotImplementedError('"x" argument to df.vgplot.kde()')
+
+        if y is not None:
+            df = self._data[y].to_frame()
+        else:
+            df = self._data
+
+        tmin, tmax = df.min().min(), df.max().max()
+        trange = tmax - tmin
+        t = np.linspace(tmin - 0.5 * trange, tmax + 0.5 * trange, 1000)
+
+        kde_df = pd.DataFrame({col: kde(df[col], bw_method=bw_method).evaluate(t)
+                               for col in df}, index=t)
+        kde_df.index.name = ' '
+
+        f = FramePlotMethods(kde_df)
+        return f.line(value_name='Density', alpha=alpha,
+                      interactive=interactive,
+                      width=width, height=height, **kwds)
+
+    density = kde
