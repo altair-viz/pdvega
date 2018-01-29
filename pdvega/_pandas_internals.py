@@ -1,4 +1,4 @@
-from pandas.plotting._core import FramePlotMethods, SeriesPlotMethods
+from pandas.core.base import PandasObject
 
 try:
     from pandas.api.types import infer_dtype as infer_dtype
@@ -25,6 +25,7 @@ except ImportError:
 
         def __call__(self, accessor):
             setattr(DataFrame, self.name, AccessorProperty(accessor, accessor))
+            return accessor
 
     class register_series_accessor(object):
         """Register custom accessor on Series."""
@@ -33,3 +34,4 @@ except ImportError:
 
         def __call__(self, accessor):
             setattr(Series, self.name, AccessorProperty(accessor, accessor))
+            return accessor

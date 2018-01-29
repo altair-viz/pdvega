@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from ._utils import infer_vegalite_type
-from ._plotting import VegaLitePlot
+from ._plotting import _finalize_spec
 
 
 def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
@@ -137,7 +137,7 @@ def andrews_curves(data, class_column, samples=200, alpha=None,
         assert 0 <= alpha <= 1
         spec['encoding']['opacity'] = {'value': alpha}
 
-    spec = VegaLitePlot.vgl_spec(spec, width=width, height=height, interactive=interactive)
+    spec = _finalize_spec(spec, width=width, height=height, interactive=interactive)
 
     return VegaLite(spec, data=df)
 
@@ -202,12 +202,12 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None,
             }
         }
     }
-    
+
     if alpha is not None:
         assert 0 <= alpha <= 1
         spec['encoding']['opacity'] = {'value': alpha}
 
-    spec = VegaLitePlot.vgl_spec(spec, interactive=interactive,
+    spec = _finalize_spec(spec, interactive=interactive,
                                  width=width, height=height)
 
     return VegaLite(spec, data=df)
