@@ -1,3 +1,5 @@
+import pytest
+
 import pdvega
 import pandas as pd
 import numpy as np
@@ -269,33 +271,39 @@ def test_series_area():
     _check_encodings(plot.spec, x='index', y='0')
 
 
-def test_df_hist():
+@pytest.mark.parametrize('stacked', [True, False])
+@pytest.mark.parametrize('histtype', ['bar', 'step', 'stepfilled'])
+def test_df_hist(stacked, histtype):
     df = pd.DataFrame({'x': range(10),
                        'y': range(10)})
-    plot = df.vgplot.hist(bins=5)
-    assert plot.spec['mark'] == 'bar'
-    _check_encodings(plot.spec, x='value', y=IGNORE,
-                     color='variable', opacity=IGNORE)
+
+    marks = {'bar': 'bar',
+             'step': {'type': 'line', 'interpolate': 'step'},
+             'stepfilled': {'type': 'area', 'interpolate': 'step'}}
+
+    # bar histogram
+    plot = df.vgplot.hist(bins=5, stacked=stacked, histtype=histtype)
+    assert plot.spec['mark'] == marks[histtype]
+    if stacked:
+        # No default opacity for a stacked histogram
+        _check_encodings(plot.spec, x='value', y=IGNORE, color='variable')
+    else:
+        _check_encodings(plot.spec, x='value', y=IGNORE,
+                        color='variable', opacity=IGNORE)
     assert plot.spec['encoding']['x']['bin'] == {'maxbins': 5}
     assert plot.spec['encoding']['y']['aggregate'] == 'count'
-    assert plot.spec['encoding']['y']['stack'] == None
+    assert plot.spec['encoding']['y']['stack'] == ('zero' if stacked else None)
 
 
-def test_df_hist_stacked():
-    df = pd.DataFrame({'x': range(10),
-                       'y': range(10)})
-    plot = df.vgplot.hist(bins=5, stacked=True)
-    assert plot.spec['mark'] == 'bar'
-    _check_encodings(plot.spec, x='value', y=IGNORE, color='variable')
-    assert plot.spec['encoding']['x']['bin'] == {'maxbins': 5}
-    assert plot.spec['encoding']['y']['aggregate'] == 'count'
-    assert plot.spec['encoding']['y']['stack'] == 'zero'
-
-
-def test_series_hist():
+@pytest.mark.parametrize('histtype', ['bar', 'step', 'stepfilled'])
+def test_series_hist(histtype):
     ser = pd.Series(range(10))
-    plot = ser.vgplot.hist(bins=5)
-    assert plot.spec['mark'] == 'bar'
+
+    marks = {'bar': 'bar',
+             'step': {'type': 'line', 'interpolate': 'step'},
+             'stepfilled': {'type': 'area', 'interpolate': 'step'}}
+    plot = ser.vgplot.hist(bins=5, histtype=histtype)
+    assert plot.spec['mark'] == marks[histtype]
     _check_encodings(plot.spec, x='0', y=IGNORE)
     assert plot.spec['encoding']['x']['bin'] == {'maxbins': 5}
     assert plot.spec['encoding']['y']['aggregate'] == 'count'

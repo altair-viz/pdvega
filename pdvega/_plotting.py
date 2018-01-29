@@ -216,8 +216,8 @@ class SeriesPlotMethods(BasePlotMethods):
         enc['x'], enc['y'] = enc['y'], enc['x']
         return plot
 
-    def hist(self, bins=10, alpha=None, interactive=True,
-             width=450, height=300, **kwds):
+    def hist(self, bins=10, alpha=None, histtype='bar',
+             interactive=True, width=450, height=300, **kwds):
         """Histogram plot
 
         Parameters
@@ -226,6 +226,8 @@ class SeriesPlotMethods(BasePlotMethods):
             the maximum number of bins to use for the histogram (default: 10)
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        histtype : string, {'bar', 'step', 'stepfilled'}
+            The type of histogram to generate. Default is 'bar'.
         interactive : bool, optional
             if True (default) then produce an interactive plot
         width : int, optional
@@ -242,8 +244,18 @@ class SeriesPlotMethods(BasePlotMethods):
         df = self._data.to_frame()
         df.columns = map(str, df.columns)
 
+        if histtype in ['bar', 'barstacked']:
+            mark = 'bar'
+        elif histtype == 'stepfilled':
+            mark = {'type': 'area', 'interpolate': 'step'}
+        elif histtype == 'step':
+            mark = {'type': 'line', 'interpolate': 'step'}
+        else:
+            raise ValueError("histtype '{0}' is not recognized"
+                             "".format(histtype))
+
         spec = {
-            "mark": "bar",
+            "mark": mark,
             "encoding": {
                 "x": {
                     "bin": {"maxbins": bins},
@@ -649,7 +661,7 @@ class FramePlotMethods(BasePlotMethods):
         return plot
 
     def hist(self, x=None, y=None, by=None, bins=10, stacked=False, alpha=None,
-             var_name='variable', value_name='value',
+             histtype='bar', var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
         """Histogram plot
 
@@ -670,6 +682,8 @@ class FramePlotMethods(BasePlotMethods):
             areas will overlap
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        histtype : string, {'bar', 'step', 'stepfilled'}
+            The type of histogram to generate. Default is 'bar'.
         var_name : string, optional
             the legend title
         value_name : string, optional
@@ -693,8 +707,18 @@ class FramePlotMethods(BasePlotMethods):
             raise NotImplementedError('"x" and "y" args to hist()')
         df = self._data.melt(var_name=var_name, value_name=value_name)
 
+        if histtype in ['bar', 'barstacked']:
+            mark = 'bar'
+        elif histtype == 'stepfilled':
+            mark = {'type': 'area', 'interpolate': 'step'}
+        elif histtype == 'step':
+            mark = {'type': 'line', 'interpolate': 'step'}
+        else:
+            raise ValueError("histtype '{0}' is not recognized"
+                             "".format(histtype))
+
         spec = {
-            "mark": "bar",
+            "mark": mark,
             "encoding": {
                 "x": {
                     "bin": {"maxbins": bins},
