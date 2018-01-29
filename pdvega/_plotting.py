@@ -59,6 +59,22 @@ class BasePlotMethods(PandasObject):
 
 @register_series_accessor('vgplot')
 class SeriesPlotMethods(BasePlotMethods):
+    """Series Accessor & Method for creating Vega-Lite visualizations.
+
+    Examples
+    --------
+    >>> s.plot.line()  # doctest: +SKIP
+    >>> s.plot.area()  # doctest: +SKIP
+    >>> s.plot.bar()  # doctest: +SKIP
+    >>> s.plot.barh()  # doctest: +SKIP
+    >>> s.plot.hist()  # doctest: +SKIP
+    >>> s.plot.kde()  # doctest: +SKIP
+    >>> s.plot.density()  # doctest: +SKIP
+
+    Plotting methods can also be accessed by calling the accessor as a method
+    with the ``kind`` argument:
+    ``s.plot(kind='line', **kwds)`` is equivalent to ``s.plot.line(**kwds)``
+    """
     def __call__(self, kind='line', **kwargs):
         try:
             plot_method = getattr(self, kind)
@@ -67,8 +83,25 @@ class SeriesPlotMethods(BasePlotMethods):
                              "".format(kind, self.__class__.__name__))
         return plot_method(**kwargs)
 
-    def line(self, alpha=None,
-             interactive=True, width=450, height=300, **kwds):
+    def line(self, alpha=None, interactive=True, width=450, height=300, **kwds):
+        """Line plot
+
+        Parameters
+        ----------
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         _warn_if_unused_keywords('line', kwds)
         data = self._data
         df = data.reset_index()
@@ -98,8 +131,25 @@ class SeriesPlotMethods(BasePlotMethods):
 
         return VegaLiteAxes(spec, df)
 
-    def area(self, interactive=True, width=450, height=300, alpha=None,
-             **kwds):
+    def area(self, alpha=None, interactive=True, width=450, height=300, **kwds):
+        """Area plot
+
+        Parameters
+        ----------
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         _warn_if_unused_keywords('area', kwds)
         df = self._data.reset_index()
         df.columns = map(str, df.columns)
@@ -130,6 +180,24 @@ class SeriesPlotMethods(BasePlotMethods):
 
     def bar(self, alpha=None, interactive=True,
             width=450, height=300, **kwds):
+        """Bar plot
+
+        Parameters
+        ----------
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         _warn_if_unused_keywords('bar', kwds)
 
         df = self._data.reset_index()
@@ -160,6 +228,24 @@ class SeriesPlotMethods(BasePlotMethods):
 
     def barh(self, alpha=None, interactive=True,
              width=450, height=300, **kwds):
+        """Horizontal bar plot
+
+        Parameters
+        ----------
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         plot = self.bar(alpha=alpha, interactive=interactive,
                         width=width, height=height, **kwds)
         enc = plot.spec['encoding']
@@ -168,6 +254,26 @@ class SeriesPlotMethods(BasePlotMethods):
 
     def hist(self, bins=10, alpha=None, interactive=True,
              width=450, height=300, **kwds):
+        """Histogram plot
+
+        Parameters
+        ----------
+        bins : integer, optional
+            the maximum number of bins to use for the histogram (default: 10)
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         _warn_if_unused_keywords('hist', kwds)
         df = self._data.to_frame()
         df.columns = map(str, df.columns)
@@ -197,6 +303,28 @@ class SeriesPlotMethods(BasePlotMethods):
 
     def kde(self, bw_method=None, alpha=None,
             interactive=True, width=450, height=300, **kwds):
+        """Kernel Density Estimation plot
+
+        Parameters
+        ----------
+        bw_method : str, scalar or callable, optional
+            The method used to calculate the estimator bandwidth. This can be
+            'scott', 'silverman', a scalar constant or a callable.
+            See `scipy.stats.gaussian_kde` for more details.
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         from scipy.stats import gaussian_kde
 
         data = self._data
@@ -216,6 +344,24 @@ class SeriesPlotMethods(BasePlotMethods):
 
 @register_dataframe_accessor('vgplot')
 class FramePlotMethods(BasePlotMethods):
+    """DataFrame Accessor & Method for creating Vega-Lite visualizations.
+
+    Examples
+    --------
+    >>> df.plot.line()  # doctest: +SKIP
+    >>> df.plot.area()  # doctest: +SKIP
+    >>> df.plot.bar()  # doctest: +SKIP
+    >>> df.plot.barh()  # doctest: +SKIP
+    >>> df.plot.hist()  # doctest: +SKIP
+    >>> df.plot.kde()  # doctest: +SKIP
+    >>> df.plot.density()  # doctest: +SKIP
+    >>> df.plot.scatter('x', 'y')  # doctest: +SKIP
+    >>> df.plot.hexbin('x', 'y')  # doctest: +SKIP
+
+    Plotting methods can also be accessed by calling the accessor as a method
+    with the ``kind`` argument:
+    ``df.plot(kind='line', **kwds)`` is equivalent to ``df.plot.line(**kwds)``
+    """
     def __call__(self, x=None, y=None, kind='line', **kwargs):
         try:
             plot_method = getattr(self, kind)
@@ -227,6 +373,34 @@ class FramePlotMethods(BasePlotMethods):
     def line(self, x=None, y=None, alpha=None,
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
+        """Line plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        var_name : string, optional
+            the legend title
+        value_name : string, optional
+            the y-axis label
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         _warn_if_unused_keywords('line', kwds)
         data = self._data
 
@@ -269,6 +443,32 @@ class FramePlotMethods(BasePlotMethods):
 
     def scatter(self, x, y, c=None, s=None, alpha=None,
                 interactive=True, width=450, height=300, **kwds):
+        """Scatter plot
+
+        Parameters
+        ----------
+        x : string
+            the column to use as the x-axis variable.
+        y : string
+            the column to use as the y-axis variable.
+        c : string, optional
+            the column to use to encode the color of the points
+        s : string, optional
+            the column to use to encode the size of the points
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         _warn_if_unused_keywords('scatter', kwds)
         data = self._data
         cols = [x, y]
@@ -314,6 +514,37 @@ class FramePlotMethods(BasePlotMethods):
     def area(self, x=None, y=None, stacked=True, alpha=None,
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
+        """Area plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        stacked : bool, optional
+            if True (default) then create a stacked area chart. Otherwise,
+            areas will overlap
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        var_name : string, optional
+            the legend title
+        value_name : string, optional
+            the y-axis label
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         _warn_if_unused_keywords('area', kwds)
         data = self._data
 
@@ -356,6 +587,37 @@ class FramePlotMethods(BasePlotMethods):
     def bar(self, x=None, y=None, stacked=False, alpha=None,
             var_name='variable', value_name='value',
             interactive=True, width=450, height=300, **kwds):
+        """Bar plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        stacked : bool, optional
+            if True (default) then create a stacked area chart. Otherwise,
+            areas will overlap
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        var_name : string, optional
+            the legend title
+        value_name : string, optional
+            the y-axis label
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         _warn_if_unused_keywords('bar', kwds)
 
         if y:
@@ -399,6 +661,37 @@ class FramePlotMethods(BasePlotMethods):
     def barh(self, x=None, y=None, stacked=False, alpha=None,
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
+        """Horizontal bar plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        stacked : bool, optional
+            if True (default) then create a stacked area chart. Otherwise,
+            areas will overlap
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        var_name : string, optional
+            the legend title
+        value_name : string, optional
+            the y-axis label
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         plot = self.bar(x=x, y=y, stacked=stacked, alpha=alpha,
                         var_name=var_name, value_name=value_name,
                         interactive=interactive, width=width, height=height,
@@ -410,6 +703,41 @@ class FramePlotMethods(BasePlotMethods):
     def hist(self, x=None, y=None, by=None, bins=10, stacked=False, alpha=None,
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
+        """Histogram plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        by : string, optional
+            the column by which to group the results
+        bins : integer, optional
+            the maximum number of bins to use for the histogram (default: 10)
+        stacked : bool, optional
+            if True (default) then create a stacked area chart. Otherwise,
+            areas will overlap
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        var_name : string, optional
+            the legend title
+        value_name : string, optional
+            the y-axis label
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         _warn_if_unused_keywords('hist', kwds)
         if by is not None:
             raise NotImplementedError('vgplot.hist `by` keyword')
@@ -451,6 +779,38 @@ class FramePlotMethods(BasePlotMethods):
     def hexbin(self, x, y, C=None, reduce_C_function=None,
                gridsize=100, alpha=None,
                interactive=True, width=450, height=300, **kwds):
+        """Heatmap plot
+
+        Note that Vega-Lite does not support hexagonal binning, so this method
+        returns a cartesian heatmap.
+
+        Parameters
+        ----------
+        x : string
+            the column to use as the x-axis variable.
+        y : string
+            the column to use as the y-axis variable.
+        C : string, optional
+            the column to use to compute the mean within each bin. If not
+            specified, the count within each bin will be used.
+        reduce_C_function : callable, optional
+            the type of reduction to be done within each bin (not implemented)
+        gridsize : int, optional
+            the number of divisions in the x and y axis (default=100)
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         # TODO: Use actual hexbins rather than a grid heatmap
         _warn_if_unused_keywords('hexbin', kwds)
 
@@ -490,9 +850,39 @@ class FramePlotMethods(BasePlotMethods):
                               width=width, height=height)
         return VegaLiteAxes(spec, data=df)
 
-    def kde(self, y=None, bw_method=None, alpha=None,
+    def kde(self, x=None, y=None, bw_method=None, alpha=None,
             interactive=True, width=450, height=300, **kwds):
+        """Kernel Density Estimate plot
+
+        Parameters
+        ----------
+        x : string, optional
+            the column to use as the x-axis variable. If not specified, the
+            index will be used.
+        y : string, optional
+            the column to use as the y-axis variable. If not specified, all
+            columns (except x if specified) will be used.
+        bw_method : str, scalar or callable, optional
+            The method used to calculate the estimator bandwidth. This can be
+            'scott', 'silverman', a scalar constant or a callable.
+            See `scipy.stats.gaussian_kde` for more details.
+        alpha : float, optional
+            transparency level, 0 <= alpha <= 1
+        interactive : bool, optional
+            if True (default) then produce an interactive plot
+        width : int, optional
+            the width of the plot in pixels
+        height : int, optional
+            the height of the plot in pixels
+
+        Returns
+        -------
+        axes : pdvega.VegaLiteAxes
+            The vega-lite plot
+        """
         from scipy.stats import gaussian_kde as kde
+        if x is not None:
+            raise NotImplementedError('"x" argument to df.vgplot.kde()')
 
         if y is not None:
             df = self._data[y].to_frame()
