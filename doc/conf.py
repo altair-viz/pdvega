@@ -36,6 +36,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.githubpages',
     'numpydoc.numpydoc',
+    'matplotlib.sphinxext.plot_directive',
     'pdvega_ext.pdvegaplot',
 ]
 
@@ -307,6 +308,10 @@ texinfo_documents = [
 
 # Hide extra class members
 numpydoc_show_class_members = False
+
+# For the matplotlib plot extension
+plot_html_show_source_link = False
+plot_html_show_formats = False
 
 # For the pdvegaplot extension
 # pdvegaplot_links = {'editor': True, 'source': True, 'export': True}
