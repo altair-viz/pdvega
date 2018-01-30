@@ -52,6 +52,8 @@ class SeriesPlotMethods(BasePlotMethods):
     def line(self, alpha=None, interactive=True, width=450, height=300, **kwds):
         """Line plot for Series data
 
+        >>> series.vgplot.line()  # doctest: +SKIP
+
         Parameters
         ----------
         alpha : float, optional
@@ -99,6 +101,8 @@ class SeriesPlotMethods(BasePlotMethods):
     def area(self, alpha=None, interactive=True, width=450, height=300, **kwds):
         """Area plot for Series data
 
+        >>> series.vgplot.area()  # doctest: +SKIP
+
         Parameters
         ----------
         alpha : float, optional
@@ -145,6 +149,8 @@ class SeriesPlotMethods(BasePlotMethods):
     def bar(self, alpha=None, interactive=True,
             width=450, height=300, **kwds):
         """Bar plot for Series data
+
+        >>> series.vgplot.bar()  # doctest: +SKIP
 
         Parameters
         ----------
@@ -194,6 +200,8 @@ class SeriesPlotMethods(BasePlotMethods):
              width=450, height=300, **kwds):
         """Horizontal bar plot for Series data
 
+        >>> series.vgplot.barh()  # doctest: +SKIP
+
         Parameters
         ----------
         alpha : float, optional
@@ -219,6 +227,8 @@ class SeriesPlotMethods(BasePlotMethods):
     def hist(self, bins=10, alpha=None, histtype='bar',
              interactive=True, width=450, height=300, **kwds):
         """Histogram plot for Series data
+
+        >>> series.vgplot.hist()  # doctest: +SKIP
 
         Parameters
         ----------
@@ -281,6 +291,8 @@ class SeriesPlotMethods(BasePlotMethods):
             interactive=True, width=450, height=300, **kwds):
         """Kernel Density Estimation plot for Series data
 
+        >>> series.vgplot.kde()  # doctest: +SKIP
+
         Parameters
         ----------
         bw_method : str, scalar or callable, optional
@@ -331,8 +343,8 @@ class FramePlotMethods(BasePlotMethods):
     >>> df.plot.hist()  # doctest: +SKIP
     >>> df.plot.kde()  # doctest: +SKIP
     >>> df.plot.density()  # doctest: +SKIP
-    >>> df.plot.scatter('x', 'y')  # doctest: +SKIP
-    >>> df.plot.hexbin('x', 'y')  # doctest: +SKIP
+    >>> df.plot.scatter(x, y)  # doctest: +SKIP
+    >>> df.plot.hexbin(x, y)  # doctest: +SKIP
 
     Plotting methods can also be accessed by calling the accessor as a method
     with the ``kind`` argument:
@@ -350,6 +362,8 @@ class FramePlotMethods(BasePlotMethods):
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
         """Line plot for DataFrame data
+
+        >>> dataframe.vgplot.line()  # doctest: +SKIP
 
         Parameters
         ----------
@@ -413,6 +427,8 @@ class FramePlotMethods(BasePlotMethods):
     def scatter(self, x, y, c=None, s=None, alpha=None,
                 interactive=True, width=450, height=300, **kwds):
         """Scatter plot for DataFrame data
+
+        >>> dataframe.vgplot.scatter(x, y)  # doctest: +SKIP
 
         Parameters
         ----------
@@ -485,6 +501,8 @@ class FramePlotMethods(BasePlotMethods):
              interactive=True, width=450, height=300, **kwds):
         """Area plot for DataFrame data
 
+        >>> dataframe.vgplot.area()  # doctest: +SKIP
+
         Parameters
         ----------
         x : string, optional
@@ -553,6 +571,8 @@ class FramePlotMethods(BasePlotMethods):
             var_name='variable', value_name='value',
             interactive=True, width=450, height=300, **kwds):
         """Bar plot for DataFrame data
+
+        >>> dataframe.vgplot.bar()  # doctest: +SKIP
 
         Parameters
         ----------
@@ -623,6 +643,8 @@ class FramePlotMethods(BasePlotMethods):
              interactive=True, width=450, height=300, **kwds):
         """Horizontal bar plot for DataFrame data
 
+        >>> dataframe.vgplot.barh()  # doctest: +SKIP
+
         Parameters
         ----------
         x : string, optional
@@ -664,6 +686,8 @@ class FramePlotMethods(BasePlotMethods):
              histtype='bar', var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
         """Histogram plot for DataFrame data
+
+        >>> dataframe.vgplot.hist()  # doctest: +SKIP
 
         Parameters
         ----------
@@ -756,6 +780,8 @@ class FramePlotMethods(BasePlotMethods):
         Note that Vega-Lite does not support hexagonal binning, so this method
         returns a cartesian heatmap.
 
+        >>> dataframe.vgplot.hexbin()  # doctest: +SKIP
+
         Parameters
         ----------
         x : string
@@ -827,6 +853,8 @@ class FramePlotMethods(BasePlotMethods):
     def kde(self, x=None, y=None, bw_method=None, alpha=None,
             interactive=True, width=450, height=300, **kwds):
         """Kernel Density Estimate plot for DataFrame data
+
+        >>> dataframe.vgplot.kde()  # doctest: +SKIP
 
         Parameters
         ----------
