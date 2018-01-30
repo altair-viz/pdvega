@@ -50,7 +50,7 @@ class SeriesPlotMethods(BasePlotMethods):
         return plot_method(**kwargs)
 
     def line(self, alpha=None, interactive=True, width=450, height=300, **kwds):
-        """Line plot
+        """Line plot for Series data
 
         Parameters
         ----------
@@ -97,7 +97,7 @@ class SeriesPlotMethods(BasePlotMethods):
         return VegaLiteAxes(spec, data=df)
 
     def area(self, alpha=None, interactive=True, width=450, height=300, **kwds):
-        """Area plot
+        """Area plot for Series data
 
         Parameters
         ----------
@@ -144,7 +144,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
     def bar(self, alpha=None, interactive=True,
             width=450, height=300, **kwds):
-        """Bar plot
+        """Bar plot for Series data
 
         Parameters
         ----------
@@ -192,7 +192,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
     def barh(self, alpha=None, interactive=True,
              width=450, height=300, **kwds):
-        """Horizontal bar plot
+        """Horizontal bar plot for Series data
 
         Parameters
         ----------
@@ -218,7 +218,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
     def hist(self, bins=10, alpha=None, histtype='bar',
              interactive=True, width=450, height=300, **kwds):
-        """Histogram plot
+        """Histogram plot for Series data
 
         Parameters
         ----------
@@ -279,7 +279,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
     def kde(self, bw_method=None, alpha=None,
             interactive=True, width=450, height=300, **kwds):
-        """Kernel Density Estimation plot
+        """Kernel Density Estimation plot for Series data
 
         Parameters
         ----------
@@ -349,7 +349,7 @@ class FramePlotMethods(BasePlotMethods):
     def line(self, x=None, y=None, alpha=None,
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
-        """Line plot
+        """Line plot for DataFrame data
 
         Parameters
         ----------
@@ -412,7 +412,7 @@ class FramePlotMethods(BasePlotMethods):
 
     def scatter(self, x, y, c=None, s=None, alpha=None,
                 interactive=True, width=450, height=300, **kwds):
-        """Scatter plot
+        """Scatter plot for DataFrame data
 
         Parameters
         ----------
@@ -483,7 +483,7 @@ class FramePlotMethods(BasePlotMethods):
     def area(self, x=None, y=None, stacked=True, alpha=None,
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
-        """Area plot
+        """Area plot for DataFrame data
 
         Parameters
         ----------
@@ -552,7 +552,7 @@ class FramePlotMethods(BasePlotMethods):
     def bar(self, x=None, y=None, stacked=False, alpha=None,
             var_name='variable', value_name='value',
             interactive=True, width=450, height=300, **kwds):
-        """Bar plot
+        """Bar plot for DataFrame data
 
         Parameters
         ----------
@@ -621,7 +621,7 @@ class FramePlotMethods(BasePlotMethods):
     def barh(self, x=None, y=None, stacked=False, alpha=None,
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
-        """Horizontal bar plot
+        """Horizontal bar plot for DataFrame data
 
         Parameters
         ----------
@@ -663,7 +663,7 @@ class FramePlotMethods(BasePlotMethods):
     def hist(self, x=None, y=None, by=None, bins=10, stacked=False, alpha=None,
              histtype='bar', var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
-        """Histogram plot
+        """Histogram plot for DataFrame data
 
         Parameters
         ----------
@@ -748,10 +748,10 @@ class FramePlotMethods(BasePlotMethods):
                                       width=width, height=height)
         return VegaLiteAxes(spec, data=df)
 
-    def hexbin(self, x, y, C=None, reduce_C_function=None,
-               gridsize=100, alpha=None,
-               interactive=True, width=450, height=300, **kwds):
-        """Heatmap plot
+    def heatmap(self, x, y, C=None, reduce_C_function=None,
+                gridsize=100, alpha=None,
+                interactive=True, width=450, height=300, **kwds):
+        """Heatmap plot for DataFrame data
 
         Note that Vega-Lite does not support hexagonal binning, so this method
         returns a cartesian heatmap.
@@ -822,9 +822,11 @@ class FramePlotMethods(BasePlotMethods):
                                       width=width, height=height)
         return VegaLiteAxes(spec, data=df)
 
+    hexbin = heatmap
+
     def kde(self, x=None, y=None, bw_method=None, alpha=None,
             interactive=True, width=450, height=300, **kwds):
-        """Kernel Density Estimate plot
+        """Kernel Density Estimate plot for DataFrame data
 
         Parameters
         ----------
