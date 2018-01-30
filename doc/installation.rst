@@ -65,8 +65,8 @@ Saving Visualizations to PNG or SVG
 -----------------------------------
 To save a visualization to PNG, you can use the link generated below the
 rendered plot. Programmatic saving of figures is not currently supported
-from within Python, though it is possible using the ``vl2png`` command-line
-tool provided in the `vega-lite`_ npm package.
+from within Python, though it is possible using the ``vl2png`` and ``vl2svg``
+command-line tools provided in the `vega-lite`_ npm package.
 
 
 .. _Jupyter notebook: http://jupyter.org/

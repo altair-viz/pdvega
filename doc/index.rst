@@ -1,25 +1,44 @@
-PdVega: Interactive Vega Plots for Pandas
-=========================================
+PdVega: Interactive Vega-Lite Plots for Pandas
+==============================================
 
 ``pdvega`` is a library that allows you to quickly create interactive
 `Vega-Lite`_ plots from Pandas dataframes, using an API that is nearly
-identical to Pandas' built-in `matplotlib plotting API <https://pandas.pydata.org/pandas-docs/stable/visualization.html>`_, and designed for easy use
-within the `Jupyter notebook`_.
+identical to Pandas' built-in `plotting API <https://pandas.pydata.org/pandas-docs/stable/visualization.html>`_,
+and designed for easy use within the `Jupyter notebook`_.
+
+.. pdvega-plot::
+
+    import pandas as pd
+    import numpy as np
+    data = pd.DataFrame({'x': np.random.randn(200),
+                         'y': np.random.randn(200)})
+
+    import pdvega  # adds vgplot attribute to pandas
+    data.vgplot.scatter('x', 'y')
+
+The result is an interactive plot rendered using `Vega-Lite`_, a visualization
+specification that allows users to declaratively describe which
+data features should map to which visualization features using a well-defined
+JSON schema. The result is beautiful and dynamic data visualizations with a
+minimum of boiler-plate.
+
+``pdvega`` aims to make the construction of these specifications
+more accessible to Python users, via a familiar plotting API.
 
 Quick Start
 -----------
-To get started with ``pdvega``, run the following installation commands:
-
-.. code-block:: bash
+``pdvega`` is designed to be used primarily with the `Jupyter notebook`_.
+To get started, first install ``pdvega`` with the following commands::
 
     $ pip install pdvega
     $ jupyter nbextension install --sys-prefix --py vega3
 
 (for details on installation and dependencies, see :ref:`installation`).
 
-With the package installed, you can use the ``vgplot`` attribute of Pandas
-objects to quickly create a Vega-Lite plot (for convenience, we load an
-example dataframe using the `vega_datasets`_ package):
+With the package installed and imported, you can use the ``vgplot`` attribute
+of Pandas ``Series`` and ``DataFrame`` objects to quickly create a Vega-Lite
+plot. For convenience here, we will load example datasets using the
+`vega_datasets`_ package:
 
 .. pdvega-plot::
 
@@ -36,7 +55,8 @@ Notice that by default plots created with ``pdvega`` are interactive: you can
 use your mouse or track pad to pan and zoom the plot.
 
 By design, ``pdvega`` has a plotting API that is nearly identical to Pandas'
-existing matplotlib API; just replace ``data.plot`` with ``data.vgplot``, where
+existing `matplotlib API <https://pandas.pydata.org/pandas-docs/stable/visualization.html>`_;
+just replace ``data.plot`` with ``data.vgplot``, where
 ``data`` refers to any Pandas ``Series`` or ``DataFrame`` object:
 
 .. plot::
@@ -66,18 +86,19 @@ existing matplotlib API; just replace ``data.plot`` with ``data.vgplot``, where
     stocks.vgplot.line(y='AAPL', alpha=0.5)
 
 ``pdvega`` does not (yet?) support every available argument supported by
-``DataFrame.plot`` methods, but it covers the most commonly-used ones.
+``DataFrame.plot`` methods, but it covers the most commonly-used arguments.
 
 To see more examples of visualizations created using the ``vgplot`` attribute
 of pandas ``Series`` and ``DataFrame`` objects, see :ref:`core-plotting`.
 
-Statistical Plots
------------------
+More Complex Plots
+------------------
 
 The ``pdvega`` package additionally supports many of the more sophisticated
-statistical visualization routines available in ``pandas.plotting``;
-for example, here is a multi-panel scatter-plot matrix of the well-known
-iris dataset
+plotting routines available in the
+`pandas.plotting <https://pandas.pydata.org/pandas-docs/stable/visualization.html#plotting-tools>`_
+submodule; for example, here is a multi-panel scatter-plot matrix of Fisher's
+`Iris dataset`_:
 
 .. pdvega-setup::
 
@@ -105,6 +126,7 @@ Documentation
    installation
    core
    plotting
+   API  
 
 
 Indices and tables
@@ -118,3 +140,4 @@ Indices and tables
 .. _Vega-Lite: http://vega.github.io/vega-lite
 .. _Jupyter notebook: http://jupyter.org/
 .. _vega_datasets: http://github.com/jakevdp/vega_datasets
+.. _Iris dataset: https://en.wikipedia.org/wiki/Iris_flower_data_set
