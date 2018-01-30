@@ -215,8 +215,8 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None,
 def lag_plot(data, lag=1, **kwds):
     """Lag plot for time series.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     data: pandas.Series
         the time series to plot
     lag: integer
@@ -224,8 +224,8 @@ def lag_plot(data, lag=1, **kwds):
     kwds:
         Additional keywords passed to data.vgplot.scatter
 
-    Returns:
-    --------
+    Returns
+    -------
     plot: VegaLite plot object
     """
     if lag != int(lag) or int(lag) <= 0:
