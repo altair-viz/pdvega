@@ -1,10 +1,10 @@
 """Core plotting routines"""
 import warnings
 
-from vega3 import VegaLite
 import numpy as np
 import pandas as pd
 
+from ._axes import VegaLiteAxes
 from ._utils import infer_vegalite_type, finalize_vegalite_spec
 
 
@@ -99,7 +99,7 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
     else:
         cond['field'] = c
         cond['type'] = infer_vegalite_type(frame[c])
-    return VegaLite(spec, data=frame)
+    return VegaLiteAxes(spec, data=frame)
 
 
 def andrews_curves(data, class_column, samples=200, alpha=None,
@@ -138,7 +138,7 @@ def andrews_curves(data, class_column, samples=200, alpha=None,
 
     spec = finalize_vegalite_spec(spec, width=width, height=height, interactive=interactive)
 
-    return VegaLite(spec, data=df)
+    return VegaLiteAxes(spec, data=df)
 
 
 def parallel_coordinates(data, class_column, cols=None, alpha=None,
@@ -209,7 +209,7 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None,
     spec = finalize_vegalite_spec(spec, interactive=interactive,
                                  width=width, height=height)
 
-    return VegaLite(spec, data=df)
+    return VegaLiteAxes(spec, data=df)
 
 
 def lag_plot(data, lag=1, **kwds):
