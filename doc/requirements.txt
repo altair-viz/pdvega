@@ -1,0 +1,5 @@
+sphinx
+jinja2
+numpydoc
+vega3
+vega_datasets
