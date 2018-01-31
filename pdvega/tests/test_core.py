@@ -26,7 +26,8 @@ def test_line_xy():
     plot = df.vgplot.line(x='x', y='y')
     utils.validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'line'
-    utils.check_encodings(plot.spec, x='x', y='value', color='variable')
+    utils.check_encodings(plot.spec, x='x', y='value',
+                          color='variable', order='index')
     data = utils.get_data(plot.spec)
     assert set(pd.unique(data['variable'])) == {'y'}
 

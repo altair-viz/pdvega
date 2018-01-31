@@ -392,9 +392,17 @@ class FramePlotMethods(BasePlotMethods):
             The vega-lite plot
         """
         warn_if_keywords_unused('line', kwds)
-        df = unpivot_frame(self._data, x=x, y=y,
-                           var_name=var_name, value_name=value_name)
-        x = df.columns[0]
+        use_order = (x is not None)
+        
+        if use_order:
+            df = self._data.reset_index()
+            order = df.columns[0]
+            df = unpivot_frame(df, x=(x, order), y=y,
+                               var_name=var_name, value_name=value_name)
+        else:
+            df = unpivot_frame(self._data, x=x, y=y,
+                               var_name=var_name, value_name=value_name)
+            x = df.columns[0]
 
         spec = {
             "mark": "line",
@@ -416,6 +424,12 @@ class FramePlotMethods(BasePlotMethods):
                 },
             },
         }
+        if use_order:
+            spec['encoding']['order'] = {
+                'field': order,
+                'type': infer_vegalite_type(df[order])
+            }
+            
         if alpha is not None:
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
