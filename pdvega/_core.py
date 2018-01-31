@@ -29,17 +29,17 @@ class SeriesPlotMethods(BasePlotMethods):
 
     Examples
     --------
-    >>> s.plot.line()  # doctest: +SKIP
-    >>> s.plot.area()  # doctest: +SKIP
-    >>> s.plot.bar()  # doctest: +SKIP
-    >>> s.plot.barh()  # doctest: +SKIP
-    >>> s.plot.hist()  # doctest: +SKIP
-    >>> s.plot.kde()  # doctest: +SKIP
-    >>> s.plot.density()  # doctest: +SKIP
+    >>> s.vgplot.line()  # doctest: +SKIP
+    >>> s.vgplot.area()  # doctest: +SKIP
+    >>> s.vgplot.bar()  # doctest: +SKIP
+    >>> s.vgplot.barh()  # doctest: +SKIP
+    >>> s.vgplot.hist()  # doctest: +SKIP
+    >>> s.vgplot.kde()  # doctest: +SKIP
+    >>> s.vgplot.density()  # doctest: +SKIP
 
     Plotting methods can also be accessed by calling the accessor as a method
-    with the ``kind`` argument:
-    ``s.plot(kind='line', **kwds)`` is equivalent to ``s.plot.line(**kwds)``
+    with the ``kind`` argument: ``s.vgplot(kind='line', **kwds)``
+    is equivalent to ``s.vgplot.line(**kwds)``
     """
     def __call__(self, kind='line', **kwargs):
         try:
@@ -336,19 +336,19 @@ class FramePlotMethods(BasePlotMethods):
 
     Examples
     --------
-    >>> df.plot.line()  # doctest: +SKIP
-    >>> df.plot.area()  # doctest: +SKIP
-    >>> df.plot.bar()  # doctest: +SKIP
-    >>> df.plot.barh()  # doctest: +SKIP
-    >>> df.plot.hist()  # doctest: +SKIP
-    >>> df.plot.kde()  # doctest: +SKIP
-    >>> df.plot.density()  # doctest: +SKIP
-    >>> df.plot.scatter(x, y)  # doctest: +SKIP
-    >>> df.plot.hexbin(x, y)  # doctest: +SKIP
+    >>> df.vgplot.line()  # doctest: +SKIP
+    >>> df.vgplot.area()  # doctest: +SKIP
+    >>> df.vgplot.bar()  # doctest: +SKIP
+    >>> df.vgplot.barh()  # doctest: +SKIP
+    >>> df.vgplot.hist()  # doctest: +SKIP
+    >>> df.vgplot.kde()  # doctest: +SKIP
+    >>> df.vgplot.density()  # doctest: +SKIP
+    >>> df.vgplot.scatter(x, y)  # doctest: +SKIP
+    >>> df.vgplot.hexbin(x, y)  # doctest: +SKIP
 
     Plotting methods can also be accessed by calling the accessor as a method
-    with the ``kind`` argument:
-    ``df.plot(kind='line', **kwds)`` is equivalent to ``df.plot.line(**kwds)``
+    with the ``kind`` argument: ``df.vgplot(kind='line', **kwds)``
+    is equivalent to ``df.vgplot.line(**kwds)``
     """
     def __call__(self, x=None, y=None, kind='line', **kwargs):
         try:
