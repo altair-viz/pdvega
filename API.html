@@ -1,0 +1,1335 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>API Reference &mdash; pdvega 0.1.0.dev0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/pdvega-plot.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="pdvega 0.1.0.dev0 documentation" href="index.html"/>
+        <link rel="prev" title="Advanced Plotting: Using Vega-Lite Directly" href="advanced.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pdvega
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing and Using <code class="docutils literal"><span class="pre">pdvega</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Simple Visualizations with <code class="docutils literal"><span class="pre">data.vgplot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Statistical Visualization with <code class="docutils literal"><span class="pre">pdvega.plotting</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Plotting: Using Vega-Lite Directly</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pdvega</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>API Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/API.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-pdvega">
+<span id="api-reference"></span><h1>API Reference<a class="headerlink" href="#module-pdvega" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pdvega.FramePlotMethods">
+<em class="property">class </em><code class="descclassname">pdvega.</code><code class="descname">FramePlotMethods</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods" title="Permalink to this definition">¶</a></dt>
+<dd><p>DataFrame Accessor &amp; Method for creating Vega-Lite visualizations.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">line</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">barh</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">kde</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">density</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">hexbin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>Plotting methods can also be accessed by calling the accessor as a method
+with the <code class="docutils literal"><span class="pre">kind</span></code> argument: <code class="docutils literal"><span class="pre">df.vgplot(kind='line',</span> <span class="pre">**kwds)</span></code>
+is equivalent to <code class="docutils literal"><span class="pre">df.vgplot.line(**kwds)</span></code></p>
+<dl class="method">
+<dt id="pdvega.FramePlotMethods.area">
+<code class="descname">area</code><span class="sig-paren">(</span><em>x=None</em>, <em>y=None</em>, <em>stacked=True</em>, <em>alpha=None</em>, <em>var_name='variable'</em>, <em>value_name='value'</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods.area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Area plot for DataFrame data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the x-axis variable. If not specified, the
+index will be used.</p>
+</div></blockquote>
+<p><strong>y</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the y-axis variable. If not specified, all
+columns (except x if specified) will be used.</p>
+</div></blockquote>
+<p><strong>stacked</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then create a stacked area chart. Otherwise,
+areas will overlap</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>var_name</strong> : string, optional</p>
+<blockquote>
+<div><p>the legend title</p>
+</div></blockquote>
+<p><strong>value_name</strong> : string, optional</p>
+<blockquote>
+<div><p>the y-axis label</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.FramePlotMethods.bar">
+<code class="descname">bar</code><span class="sig-paren">(</span><em>x=None</em>, <em>y=None</em>, <em>stacked=False</em>, <em>alpha=None</em>, <em>var_name='variable'</em>, <em>value_name='value'</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods.bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bar plot for DataFrame data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the x-axis variable. If not specified, the
+index will be used.</p>
+</div></blockquote>
+<p><strong>y</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the y-axis variable. If not specified, all
+columns (except x if specified) will be used.</p>
+</div></blockquote>
+<p><strong>stacked</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then create a stacked area chart. Otherwise,
+areas will overlap</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>var_name</strong> : string, optional</p>
+<blockquote>
+<div><p>the legend title</p>
+</div></blockquote>
+<p><strong>value_name</strong> : string, optional</p>
+<blockquote>
+<div><p>the y-axis label</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.FramePlotMethods.barh">
+<code class="descname">barh</code><span class="sig-paren">(</span><em>x=None</em>, <em>y=None</em>, <em>stacked=False</em>, <em>alpha=None</em>, <em>var_name='variable'</em>, <em>value_name='value'</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods.barh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Horizontal bar plot for DataFrame data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">barh</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the x-axis variable. If not specified, the
+index will be used.</p>
+</div></blockquote>
+<p><strong>y</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the y-axis variable. If not specified, all
+columns (except x if specified) will be used.</p>
+</div></blockquote>
+<p><strong>stacked</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then create a stacked area chart. Otherwise,
+areas will overlap</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>var_name</strong> : string, optional</p>
+<blockquote>
+<div><p>the legend title</p>
+</div></blockquote>
+<p><strong>value_name</strong> : string, optional</p>
+<blockquote>
+<div><p>the y-axis label</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.FramePlotMethods.density">
+<code class="descname">density</code><span class="sig-paren">(</span><em>x=None</em>, <em>y=None</em>, <em>bw_method=None</em>, <em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kernel Density Estimate plot for DataFrame data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">kde</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the x-axis variable. If not specified, the
+index will be used.</p>
+</div></blockquote>
+<p><strong>y</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the y-axis variable. If not specified, all
+columns (except x if specified) will be used.</p>
+</div></blockquote>
+<p><strong>bw_method</strong> : str, scalar or callable, optional</p>
+<blockquote>
+<div><p>The method used to calculate the estimator bandwidth. This can be
+‘scott’, ‘silverman’, a scalar constant or a callable.
+See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.FramePlotMethods.heatmap">
+<code class="descname">heatmap</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>C=None</em>, <em>reduce_C_function=None</em>, <em>gridsize=100</em>, <em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods.heatmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Heatmap plot for DataFrame data</p>
+<p>Note that Vega-Lite does not support hexagonal binning, so this method
+returns a cartesian heatmap.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">hexbin</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : string</p>
+<blockquote>
+<div><p>the column to use as the x-axis variable.</p>
+</div></blockquote>
+<p><strong>y</strong> : string</p>
+<blockquote>
+<div><p>the column to use as the y-axis variable.</p>
+</div></blockquote>
+<p><strong>C</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use to compute the mean within each bin. If not
+specified, the count within each bin will be used.</p>
+</div></blockquote>
+<p><strong>reduce_C_function</strong> : callable, optional</p>
+<blockquote>
+<div><p>the type of reduction to be done within each bin (not implemented)</p>
+</div></blockquote>
+<p><strong>gridsize</strong> : int, optional</p>
+<blockquote>
+<div><p>the number of divisions in the x and y axis (default=100)</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.FramePlotMethods.hexbin">
+<code class="descname">hexbin</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>C=None</em>, <em>reduce_C_function=None</em>, <em>gridsize=100</em>, <em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods.hexbin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Heatmap plot for DataFrame data</p>
+<p>Note that Vega-Lite does not support hexagonal binning, so this method
+returns a cartesian heatmap.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">hexbin</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : string</p>
+<blockquote>
+<div><p>the column to use as the x-axis variable.</p>
+</div></blockquote>
+<p><strong>y</strong> : string</p>
+<blockquote>
+<div><p>the column to use as the y-axis variable.</p>
+</div></blockquote>
+<p><strong>C</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use to compute the mean within each bin. If not
+specified, the count within each bin will be used.</p>
+</div></blockquote>
+<p><strong>reduce_C_function</strong> : callable, optional</p>
+<blockquote>
+<div><p>the type of reduction to be done within each bin (not implemented)</p>
+</div></blockquote>
+<p><strong>gridsize</strong> : int, optional</p>
+<blockquote>
+<div><p>the number of divisions in the x and y axis (default=100)</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.FramePlotMethods.hist">
+<code class="descname">hist</code><span class="sig-paren">(</span><em>x=None</em>, <em>y=None</em>, <em>by=None</em>, <em>bins=10</em>, <em>stacked=False</em>, <em>alpha=None</em>, <em>histtype='bar'</em>, <em>var_name='variable'</em>, <em>value_name='value'</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods.hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Histogram plot for DataFrame data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the x-axis variable. If not specified, the
+index will be used.</p>
+</div></blockquote>
+<p><strong>y</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the y-axis variable. If not specified, all
+columns (except x if specified) will be used.</p>
+</div></blockquote>
+<p><strong>by</strong> : string, optional</p>
+<blockquote>
+<div><p>the column by which to group the results</p>
+</div></blockquote>
+<p><strong>bins</strong> : integer, optional</p>
+<blockquote>
+<div><p>the maximum number of bins to use for the histogram (default: 10)</p>
+</div></blockquote>
+<p><strong>stacked</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then create a stacked area chart. Otherwise,
+areas will overlap</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>histtype</strong> : string, {‘bar’, ‘step’, ‘stepfilled’}</p>
+<blockquote>
+<div><p>The type of histogram to generate. Default is ‘bar’.</p>
+</div></blockquote>
+<p><strong>var_name</strong> : string, optional</p>
+<blockquote>
+<div><p>the legend title</p>
+</div></blockquote>
+<p><strong>value_name</strong> : string, optional</p>
+<blockquote>
+<div><p>the y-axis label</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.FramePlotMethods.kde">
+<code class="descname">kde</code><span class="sig-paren">(</span><em>x=None</em>, <em>y=None</em>, <em>bw_method=None</em>, <em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods.kde" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kernel Density Estimate plot for DataFrame data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">kde</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the x-axis variable. If not specified, the
+index will be used.</p>
+</div></blockquote>
+<p><strong>y</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the y-axis variable. If not specified, all
+columns (except x if specified) will be used.</p>
+</div></blockquote>
+<p><strong>bw_method</strong> : str, scalar or callable, optional</p>
+<blockquote>
+<div><p>The method used to calculate the estimator bandwidth. This can be
+‘scott’, ‘silverman’, a scalar constant or a callable.
+See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.FramePlotMethods.line">
+<code class="descname">line</code><span class="sig-paren">(</span><em>x=None</em>, <em>y=None</em>, <em>alpha=None</em>, <em>var_name='variable'</em>, <em>value_name='value'</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line plot for DataFrame data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">line</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the x-axis variable. If not specified, the
+index will be used.</p>
+</div></blockquote>
+<p><strong>y</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use as the y-axis variable. If not specified, all
+columns (except x if specified) will be used.</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>var_name</strong> : string, optional</p>
+<blockquote>
+<div><p>the legend title</p>
+</div></blockquote>
+<p><strong>value_name</strong> : string, optional</p>
+<blockquote>
+<div><p>the y-axis label</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.FramePlotMethods.scatter">
+<code class="descname">scatter</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>c=None</em>, <em>s=None</em>, <em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods.scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scatter plot for DataFrame data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : string</p>
+<blockquote>
+<div><p>the column to use as the x-axis variable.</p>
+</div></blockquote>
+<p><strong>y</strong> : string</p>
+<blockquote>
+<div><p>the column to use as the y-axis variable.</p>
+</div></blockquote>
+<p><strong>c</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use to encode the color of the points</p>
+</div></blockquote>
+<p><strong>s</strong> : string, optional</p>
+<blockquote>
+<div><p>the column to use to encode the size of the points</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pdvega.SeriesPlotMethods">
+<em class="property">class </em><code class="descclassname">pdvega.</code><code class="descname">SeriesPlotMethods</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.SeriesPlotMethods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Series Accessor &amp; Method for creating Vega-Lite visualizations.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">line</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">barh</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">kde</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">density</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p>Plotting methods can also be accessed by calling the accessor as a method
+with the <code class="docutils literal"><span class="pre">kind</span></code> argument: <code class="docutils literal"><span class="pre">s.vgplot(kind='line',</span> <span class="pre">**kwds)</span></code>
+is equivalent to <code class="docutils literal"><span class="pre">s.vgplot.line(**kwds)</span></code></p>
+<dl class="method">
+<dt id="pdvega.SeriesPlotMethods.area">
+<code class="descname">area</code><span class="sig-paren">(</span><em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.SeriesPlotMethods.area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Area plot for Series data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">series</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.SeriesPlotMethods.bar">
+<code class="descname">bar</code><span class="sig-paren">(</span><em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.SeriesPlotMethods.bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bar plot for Series data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">series</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.SeriesPlotMethods.barh">
+<code class="descname">barh</code><span class="sig-paren">(</span><em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.SeriesPlotMethods.barh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Horizontal bar plot for Series data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">series</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">barh</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.SeriesPlotMethods.density">
+<code class="descname">density</code><span class="sig-paren">(</span><em>bw_method=None</em>, <em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.SeriesPlotMethods.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kernel Density Estimation plot for Series data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">series</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">kde</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bw_method</strong> : str, scalar or callable, optional</p>
+<blockquote>
+<div><p>The method used to calculate the estimator bandwidth. This can be
+‘scott’, ‘silverman’, a scalar constant or a callable.
+See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.SeriesPlotMethods.hist">
+<code class="descname">hist</code><span class="sig-paren">(</span><em>bins=10</em>, <em>alpha=None</em>, <em>histtype='bar'</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.SeriesPlotMethods.hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Histogram plot for Series data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">series</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bins</strong> : integer, optional</p>
+<blockquote>
+<div><p>the maximum number of bins to use for the histogram (default: 10)</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>histtype</strong> : string, {‘bar’, ‘step’, ‘stepfilled’}</p>
+<blockquote>
+<div><p>The type of histogram to generate. Default is ‘bar’.</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.SeriesPlotMethods.kde">
+<code class="descname">kde</code><span class="sig-paren">(</span><em>bw_method=None</em>, <em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.SeriesPlotMethods.kde" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kernel Density Estimation plot for Series data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">series</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">kde</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bw_method</strong> : str, scalar or callable, optional</p>
+<blockquote>
+<div><p>The method used to calculate the estimator bandwidth. This can be
+‘scott’, ‘silverman’, a scalar constant or a callable.
+See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdvega.SeriesPlotMethods.line">
+<code class="descname">line</code><span class="sig-paren">(</span><em>alpha=None</em>, <em>interactive=True</em>, <em>width=450</em>, <em>height=300</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.SeriesPlotMethods.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line plot for Series data</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">series</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">line</span><span class="p">()</span>  
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>transparency level, 0 &lt;= alpha &lt;= 1</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>if True (default) then produce an interactive plot</p>
+</div></blockquote>
+<p><strong>width</strong> : int, optional</p>
+<blockquote>
+<div><p>the width of the plot in pixels</p>
+</div></blockquote>
+<p><strong>height</strong> : int, optional</p>
+<blockquote>
+<div><p>the height of the plot in pixels</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<blockquote class="last">
+<div><p>The vega-lite plot</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pdvega.VegaLiteAxes">
+<em class="property">class </em><code class="descclassname">pdvega.</code><code class="descname">VegaLiteAxes</code><span class="sig-paren">(</span><em>spec=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.VegaLiteAxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing a pdvega plot axes</p>
+<dl class="method">
+<dt id="pdvega.VegaLiteAxes.display">
+<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.VegaLiteAxes.display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdvega.VegaLiteAxes.data">
+<code class="descname">data</code><a class="headerlink" href="#pdvega.VegaLiteAxes.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdvega.VegaLiteAxes.spec">
+<code class="descname">spec</code><a class="headerlink" href="#pdvega.VegaLiteAxes.spec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdvega.VegaLiteAxes.spec_no_data">
+<code class="descname">spec_no_data</code><a class="headerlink" href="#pdvega.VegaLiteAxes.spec_no_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pdvega.andrews_curves">
+<code class="descclassname">pdvega.</code><code class="descname">andrews_curves</code><span class="sig-paren">(</span><em>data</em>, <em>class_column</em>, <em>samples=200</em>, <em>alpha=None</em>, <em>width=450</em>, <em>height=300</em>, <em>interactive=True</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.andrews_curves" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdvega.lag_plot">
+<code class="descclassname">pdvega.</code><code class="descname">lag_plot</code><span class="sig-paren">(</span><em>data</em>, <em>lag=1</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.lag_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lag plot for time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data: pandas.Series</strong></p>
+<blockquote>
+<div><p>the time series to plot</p>
+</div></blockquote>
+<p><strong>lag: integer</strong></p>
+<blockquote>
+<div><p>The lag of the scatter plot, default=1</p>
+</div></blockquote>
+<p><strong>kwds:</strong></p>
+<blockquote>
+<div><p>Additional keywords passed to data.vgplot.scatter</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">plot: VegaLite plot object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdvega.parallel_coordinates">
+<code class="descclassname">pdvega.</code><code class="descname">parallel_coordinates</code><span class="sig-paren">(</span><em>data</em>, <em>class_column</em>, <em>cols=None</em>, <em>alpha=None</em>, <em>width=450</em>, <em>height=300</em>, <em>interactive=True</em>, <em>var_name='variable'</em>, <em>value_name='value'</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.parallel_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parallel coordinates plotting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>frame: DataFrame</strong></p>
+<p><strong>class_column: str</strong></p>
+<blockquote>
+<div><p>Column name containing class names</p>
+</div></blockquote>
+<p><strong>cols: list, optional</strong></p>
+<blockquote>
+<div><p>A list of column names to use</p>
+</div></blockquote>
+<p><strong>alpha: float, optional</strong></p>
+<blockquote>
+<div><p>The transparency of the lines</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>plot</strong> : VegaLite object</p>
+<blockquote class="last">
+<div><p>The Vega-Lite representation of the plot.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">pandas.plotting.parallel_coordinates</span></code></dt>
+<dd>matplotlib version of this routine</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdvega.scatter_matrix">
+<code class="descclassname">pdvega.</code><code class="descname">scatter_matrix</code><span class="sig-paren">(</span><em>frame</em>, <em>c=None</em>, <em>s=None</em>, <em>figsize=None</em>, <em>dpi=72.0</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.scatter_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a matrix of scatter plots.</p>
+<p>The result is an interactive pan/zoomable plot, with linked-brushing
+enabled by holding the shift key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>frame</strong> : DataFrame</p>
+<blockquote>
+<div><p>The dataframe for which to draw the scatter matrix.</p>
+</div></blockquote>
+<p><strong>c</strong> : string (optional)</p>
+<blockquote>
+<div><p>If specified, the name of the column to be used to determine the
+color of each point.</p>
+</div></blockquote>
+<p><strong>s</strong> : string (optional)</p>
+<blockquote>
+<div><p>If specified, the name of the column to be used to determine the
+size of each point,</p>
+</div></blockquote>
+<p><strong>figsize</strong> : tuple (optional)</p>
+<blockquote>
+<div><p>A length-2 tuple speficying the size of the figure in inches</p>
+</div></blockquote>
+<p><strong>dpi</strong> : float (default=72)</p>
+<blockquote>
+<div><p>The dots (i.e. pixels) per inch used to convert the figure size from
+inches to pixels.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>plot</strong> : VegaLite object</p>
+<blockquote class="last">
+<div><p>The Vega-Lite representation of the plot.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">pandas.plotting.scatter_matrix</span></code></dt>
+<dd>matplotlib version of this routine</dd>
+</dl>
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="advanced.html" class="btn btn-neutral" title="Advanced Plotting: Using Vega-Lite Directly" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jake VanderPlas.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@3.0.10"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@2.1.2"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@3.0.0"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

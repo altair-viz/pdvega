@@ -1,0 +1,678 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Simple Visualizations with data.vgplot &mdash; pdvega 0.1.0.dev0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/pdvega-plot.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="pdvega 0.1.0.dev0 documentation" href="index.html"/>
+        <link rel="next" title="Statistical Visualization with pdvega.plotting" href="plotting.html"/>
+        <link rel="prev" title="Installing and Using pdvega" href="installation.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pdvega
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing and Using <code class="docutils literal"><span class="pre">pdvega</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Simple Visualizations with <code class="docutils literal"><span class="pre">data.vgplot</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#datasets">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#line-plots-with-vgplot-line">Line Plots with <code class="docutils literal"><span class="pre">vgplot.line</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scatter-plots-with-vgplot-scatter">Scatter Plots with <code class="docutils literal"><span class="pre">vgplot.scatter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#area-plots-with-vgplot-area">Area Plots with <code class="docutils literal"><span class="pre">vgplot.area</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bar-charts-with-vgplot-bar">Bar Charts with <code class="docutils literal"><span class="pre">vgplot.bar</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#histograms-with-vgplot-hist">Histograms with <code class="docutils literal"><span class="pre">vgplot.hist</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kde-density-plots-with-vgplot-kde">KDE/Density plots with <code class="docutils literal"><span class="pre">vgplot.kde</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pie-charts">Pie Charts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#heatmaps">Heatmaps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-plot-types">Other Plot Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Statistical Visualization with <code class="docutils literal"><span class="pre">pdvega.plotting</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Plotting: Using Vega-Lite Directly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pdvega</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Simple Visualizations with <code class="docutils literal"><span class="pre">data.vgplot</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/core.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="simple-visualizations-with-data-vgplot">
+<span id="core-plotting"></span><h1>Simple Visualizations with <code class="docutils literal"><span class="pre">data.vgplot</span></code><a class="headerlink" href="#simple-visualizations-with-data-vgplot" title="Permalink to this headline">¶</a></h1>
+<p>The core interface of <code class="docutils literal"><span class="pre">pdvega</span></code> is the <code class="docutils literal"><span class="pre">vgplot</span></code> attribute that it adds to
+Pandas <code class="docutils literal"><span class="pre">DataFrame</span></code> and <code class="docutils literal"><span class="pre">Series</span></code> objects:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pdvega</span>
+</pre></div>
+</div>
+<p id="pdvega-plot-0">Like the <code class="docutils literal"><span class="pre">plot</span></code> attribute that is built-in to Pandas, there are two ways of
+creating plots with <code class="docutils literal"><span class="pre">vgplot</span></code>: first, you can call the <code class="docutils literal"><span class="pre">vgplot</span></code> attribute
+of a Pandas object directly:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-1"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">vega_datasets</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="n">iris</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iris</span><span class="p">()</span>
+
+<span class="n">iris</span><span class="o">.</span><span class="n">vgplot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;sepalLength&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;petalLength&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;species&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-1">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-1", "//0.0.0.0:8000//core-rst-pdvega-plot-1.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Equivalently, you can call the specific method associated with each plot type:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-2"><div class="highlight"><pre><span></span><span class="n">iris</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;sepalLength&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;petalLength&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;species&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-2">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-2", "//0.0.0.0:8000//core-rst-pdvega-plot-2.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>The benefit of the second approach is that it allows exploration of available
+plot types via tab completion, and the individual functions also provide more
+detailed documentation of the arguments available for each method.</p>
+<p>The <code class="docutils literal"><span class="pre">vgplot</span></code> interface exposes nine basic plot types; we will show examples
+of these below.</p>
+<div class="section" id="datasets">
+<h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h2>
+<p>For the examples on this page, we will use a number of datasets made available
+in the <a class="reference external" href="http://github.com/jakevdp/vega_datasets">vega_datasets</a> package:</p>
+<div class="highlight-python" id="pdvega-plot-3"><div class="highlight"><pre><span></span><span class="n">iris</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iris</span><span class="p">()</span>
+<span class="n">stocks</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">stocks</span><span class="p">(</span><span class="n">pivoted</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">cars</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">cars</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>These datasets are stored in the form of pandas dataframes:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">   petalLength  petalWidth  sepalLength  sepalWidth species</span>
+<span class="go">0          1.4         0.2          5.1         3.5  setosa</span>
+<span class="go">1          1.4         0.2          4.9         3.0  setosa</span>
+<span class="go">2          1.3         0.2          4.7         3.2  setosa</span>
+<span class="go">3          1.5         0.2          4.6         3.1  setosa</span>
+<span class="go">4          1.4         0.2          5.0         3.6  setosa</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stocks</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">symbol       AAPL   AMZN  GOOG     IBM   MSFT</span>
+<span class="go">date</span>
+<span class="go">2000-01-01  25.94  64.56   NaN  100.52  39.81</span>
+<span class="go">2000-02-01  28.66  68.87   NaN   92.11  36.35</span>
+<span class="go">2000-03-01  33.95  67.00   NaN  106.11  43.22</span>
+<span class="go">2000-04-01  31.01  55.19   NaN   99.95  28.37</span>
+<span class="go">2000-05-01  21.00  48.31   NaN   96.31  25.45</span>
+
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cars</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">   Acceleration  Cylinders  Displacement  Horsepower  Miles_per_Gallon  \</span>
+<span class="go">0          12.0          8         307.0       130.0              18.0</span>
+<span class="go">1          11.5          8         350.0       165.0              15.0</span>
+<span class="go">2          11.0          8         318.0       150.0              18.0</span>
+<span class="go">3          12.0          8         304.0       150.0              16.0</span>
+<span class="go">4          10.5          8         302.0       140.0              17.0</span>
+
+<span class="go">                        Name Origin  Weight_in_lbs        Year</span>
+<span class="go">0  chevrolet chevelle malibu    USA           3504  1970-01-01</span>
+<span class="go">1          buick skylark 320    USA           3693  1970-01-01</span>
+<span class="go">2         plymouth satellite    USA           3436  1970-01-01</span>
+<span class="go">3              amc rebel sst    USA           3433  1970-01-01</span>
+<span class="go">4                ford torino    USA           3449  1970-01-01</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="line-plots-with-vgplot-line">
+<span id="vgplot-line"></span><h2>Line Plots with <code class="docutils literal"><span class="pre">vgplot.line</span></code><a class="headerlink" href="#line-plots-with-vgplot-line" title="Permalink to this headline">¶</a></h2>
+<p>The default plot type for <code class="docutils literal"><span class="pre">vgplot</span></code> is a line plot:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-4"><div class="highlight"><pre><span></span><span class="n">stocks</span><span class="o">.</span><span class="n">vgplot</span><span class="p">()</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-4">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-4", "//0.0.0.0:8000//core-rst-pdvega-plot-4.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Unless otherwise specified, the index of the DataFrame or series is used as the
+x-axis variable, and a separate line will be created for the y-values in each
+column in the dataframe. If you’d like to plot a subset of the columns, you can use
+pandas indexing to select the columns you are interested in:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-5"><div class="highlight"><pre><span></span><span class="n">stocks</span><span class="p">[[</span><span class="s1">&#39;AAPL&#39;</span><span class="p">,</span> <span class="s1">&#39;AMZN&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">line</span><span class="p">()</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-5">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-5", "//0.0.0.0:8000//core-rst-pdvega-plot-5.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Optionally, you can specify the column names to use for the x-axis and y-axis:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-6"><div class="highlight"><pre><span></span><span class="n">stocks</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;AAPL&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;AMZN&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-6">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-6", "//0.0.0.0:8000//core-rst-pdvega-plot-6.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Line plots can be further customized; see the function documentation for
+more information:</p>
+<ul class="simple">
+<li>Series line plot: <a class="reference internal" href="API.html#pdvega.SeriesPlotMethods.line" title="pdvega.SeriesPlotMethods.line"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.SeriesPlotMethods.line()</span></code></a></li>
+<li>DataFrame line plot: <a class="reference internal" href="API.html#pdvega.FramePlotMethods.line" title="pdvega.FramePlotMethods.line"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.FramePlotMethods.line()</span></code></a></li>
+</ul>
+</div>
+<div class="section" id="scatter-plots-with-vgplot-scatter">
+<span id="vgplot-scatter"></span><h2>Scatter Plots with <code class="docutils literal"><span class="pre">vgplot.scatter</span></code><a class="headerlink" href="#scatter-plots-with-vgplot-scatter" title="Permalink to this headline">¶</a></h2>
+<p>The previous plot might make more sense in the form of a scatter plot.
+This can be done with <code class="docutils literal"><span class="pre">vgplot.scatter()</span></code>:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-7"><div class="highlight"><pre><span></span><span class="n">stocks</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;AAPL&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;AMZN&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-7">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-7", "//0.0.0.0:8000//core-rst-pdvega-plot-7.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>You can also encode the color and size of scatter plots; let’s switch to the
+cars dataset to see the relationship between some of these variables:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-8"><div class="highlight"><pre><span></span><span class="n">cars</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Horsepower&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Miles_per_Gallon&#39;</span><span class="p">,</span>
+                    <span class="n">c</span><span class="o">=</span><span class="s1">&#39;Origin&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="s1">&#39;Weight_in_lbs&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-8">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-8", "//0.0.0.0:8000//core-rst-pdvega-plot-8.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>This is one slight difference from the Pandas plot interface: in Pandas the
+<code class="docutils literal"><span class="pre">c</span></code> and <code class="docutils literal"><span class="pre">s</span></code> parameters must be passed as arrays, while here we pass them
+as column names.</p>
+<p>Scatter plots can be further customized; see <a class="reference internal" href="API.html#pdvega.FramePlotMethods.scatter" title="pdvega.FramePlotMethods.scatter"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.FramePlotMethods.scatter()</span></code></a>
+for more information.</p>
+</div>
+<div class="section" id="area-plots-with-vgplot-area">
+<span id="vgplot-area"></span><h2>Area Plots with <code class="docutils literal"><span class="pre">vgplot.area</span></code><a class="headerlink" href="#area-plots-with-vgplot-area" title="Permalink to this headline">¶</a></h2>
+<p>Area plots are quite similar to line plots, but curves are filled and stacked,
+meaning the top curve reflects the sum of all the ones below:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-9"><div class="highlight"><pre><span></span><span class="n">stocks</span><span class="p">[[</span><span class="s1">&#39;MSFT&#39;</span><span class="p">,</span> <span class="s1">&#39;AAPL&#39;</span><span class="p">,</span> <span class="s1">&#39;AMZN&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-9">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-9", "//0.0.0.0:8000//core-rst-pdvega-plot-9.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Area charts can also be unstacked and overlaid, in which case transparency
+can be useful:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-10"><div class="highlight"><pre><span></span><span class="n">stocks</span><span class="p">[[</span><span class="s1">&#39;MSFT&#39;</span><span class="p">,</span> <span class="s1">&#39;AAPL&#39;</span><span class="p">,</span> <span class="s1">&#39;AMZN&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">stacked</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-10">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-10", "//0.0.0.0:8000//core-rst-pdvega-plot-10.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Area plots can be further customized; see the function documentation for
+more information:</p>
+<ul class="simple">
+<li>Series area plot: <a class="reference internal" href="API.html#pdvega.SeriesPlotMethods.area" title="pdvega.SeriesPlotMethods.area"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.SeriesPlotMethods.area()</span></code></a></li>
+<li>DataFrame area plot: <a class="reference internal" href="API.html#pdvega.FramePlotMethods.area" title="pdvega.FramePlotMethods.area"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.FramePlotMethods.area()</span></code></a></li>
+</ul>
+</div>
+<div class="section" id="bar-charts-with-vgplot-bar">
+<span id="vgplot-bar"></span><h2>Bar Charts with <code class="docutils literal"><span class="pre">vgplot.bar</span></code><a class="headerlink" href="#bar-charts-with-vgplot-bar" title="Permalink to this headline">¶</a></h2>
+<p>Bar charts are supported using <code class="docutils literal"><span class="pre">vgplot.bar()</span></code>. Let’s create a small dataset
+to use for this:</p>
+<div class="highlight-python" id="pdvega-plot-11"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-python" id="core-rst-pdvega-source-12"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-12">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-12", "//0.0.0.0:8000//core-rst-pdvega-plot-12.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Multiple bar plots will be layered on top of each other; like with area charts,
+they can be stacked using the <code class="docutils literal"><span class="pre">stacked=True</span></code> option:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-13"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">stacked</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-13">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-13", "//0.0.0.0:8000//core-rst-pdvega-plot-13.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Additionally, horizontal bar plots can be created with <code class="docutils literal"><span class="pre">barh</span></code>:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-14"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">stacked</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-14">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-14", "//0.0.0.0:8000//core-rst-pdvega-plot-14.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Bar charts can be further customized; see the function documentation for
+more information:</p>
+<ul class="simple">
+<li>Series bar plots: <a class="reference internal" href="API.html#pdvega.SeriesPlotMethods.bar" title="pdvega.SeriesPlotMethods.bar"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.SeriesPlotMethods.bar()</span></code></a>, <a class="reference internal" href="API.html#pdvega.SeriesPlotMethods.barh" title="pdvega.SeriesPlotMethods.barh"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.SeriesPlotMethods.barh()</span></code></a></li>
+<li>DataFrame bar plots: <a class="reference internal" href="API.html#pdvega.FramePlotMethods.bar" title="pdvega.FramePlotMethods.bar"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.FramePlotMethods.bar()</span></code></a>, <a class="reference internal" href="API.html#pdvega.FramePlotMethods.barh" title="pdvega.FramePlotMethods.barh"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.FramePlotMethods.barh()</span></code></a></li>
+</ul>
+</div>
+<div class="section" id="histograms-with-vgplot-hist">
+<span id="vgplot-hist"></span><h2>Histograms with <code class="docutils literal"><span class="pre">vgplot.hist</span></code><a class="headerlink" href="#histograms-with-vgplot-hist" title="Permalink to this headline">¶</a></h2>
+<p>Histograms can be created with the <code class="docutils literal"><span class="pre">vgplot.hist()</span></code> method.</p>
+<p>Let’s create some data to make some distributions:</p>
+<div class="highlight-python" id="pdvega-plot-15"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                   <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span>
+                   <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">},</span>
+                  <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>We’ll specify 50 bins, and create a layered histogram with a 50% transparency:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-16"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-16">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-16", "//0.0.0.0:8000//core-rst-pdvega-plot-16.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Alternatively, we can stack the histogram, and use <code class="docutils literal"><span class="pre">histtype</span></code> to specify that
+we want a filled step chart rather than a bar chart:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-17"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">histtype</span><span class="o">=</span><span class="s1">&#39;stepfilled&#39;</span><span class="p">,</span> <span class="n">stacked</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-17">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-17", "//0.0.0.0:8000//core-rst-pdvega-plot-17.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Histograms can be further customized; see the function documentation for
+more information:</p>
+<ul class="simple">
+<li>Series histogram: <a class="reference internal" href="API.html#pdvega.SeriesPlotMethods.hist" title="pdvega.SeriesPlotMethods.hist"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.SeriesPlotMethods.hist()</span></code></a></li>
+<li>DataFrame histogram: <a class="reference internal" href="API.html#pdvega.FramePlotMethods.hist" title="pdvega.FramePlotMethods.hist"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.FramePlotMethods.hist()</span></code></a></li>
+</ul>
+</div>
+<div class="section" id="kde-density-plots-with-vgplot-kde">
+<span id="vgplot-kde"></span><h2>KDE/Density plots with <code class="docutils literal"><span class="pre">vgplot.kde</span></code><a class="headerlink" href="#kde-density-plots-with-vgplot-kde" title="Permalink to this headline">¶</a></h2>
+<p>Similar to a histogram is a kernel density estimation plot (kde) which creates
+a smooth curve representing the density of points. This can be created with
+the <code class="docutils literal"><span class="pre">vgplot.kde</span></code> method. We’ll use the same data we did in the histogram
+section:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-18"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">kde</span><span class="p">()</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-18">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-18", "//0.0.0.0:8000//core-rst-pdvega-plot-18.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>KDE plots can be further customized; see the function documentation for
+more information:</p>
+<ul class="simple">
+<li>Series kde plots: <a class="reference internal" href="API.html#pdvega.SeriesPlotMethods.kde" title="pdvega.SeriesPlotMethods.kde"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.SeriesPlotMethods.kde()</span></code></a></li>
+<li>DataFrame kde plots: <a class="reference internal" href="API.html#pdvega.FramePlotMethods.kde" title="pdvega.FramePlotMethods.kde"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.FramePlotMethods.kde()</span></code></a></li>
+</ul>
+</div>
+<div class="section" id="pie-charts">
+<span id="vgplot-pie-chart"></span><h2>Pie Charts<a class="headerlink" href="#pie-charts" title="Permalink to this headline">¶</a></h2>
+<p>No.</p>
+</div>
+<div class="section" id="heatmaps">
+<span id="vgplot-heatmap"></span><h2>Heatmaps<a class="headerlink" href="#heatmaps" title="Permalink to this headline">¶</a></h2>
+<p>Pandas plotting has a function to create a hexagonally-binned heatmap of
+two-dimensional data. Unfortunately neither Vega nor Vega-Lite currently
+support hexagonal binning. But they do support cartesian heatmaps, and this
+functionality is included in <code class="docutils literal"><span class="pre">pdvega</span></code>:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-19"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">gridsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-19">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-19", "//0.0.0.0:8000//core-rst-pdvega-plot-19.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Here the <code class="docutils literal"><span class="pre">gridsize</span></code> parameter indicates approximately how many grid points
+span the plot. Alternatively, instead of computing the count within each bin,
+we can compute the mean of a third column, specified by the <code class="docutils literal"><span class="pre">C</span></code> parameter:</p>
+<div class="highlight-python" id="core-rst-pdvega-source-20"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">vgplot</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">gridsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="core-rst-pdvega-plot-20">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#core-rst-pdvega-plot-20", "//0.0.0.0:8000//core-rst-pdvega-plot-20.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Heatmap plots can be further customized; see <a class="reference internal" href="API.html#pdvega.FramePlotMethods.heatmap" title="pdvega.FramePlotMethods.heatmap"><code class="xref py py-meth docutils literal"><span class="pre">pdvega.FramePlotMethods.heatmap()</span></code></a>
+for more information.</p>
+</div>
+<div class="section" id="other-plot-types">
+<h2>Other Plot Types<a class="headerlink" href="#other-plot-types" title="Permalink to this headline">¶</a></h2>
+<p>The above plots are the basic plot types supported by <code class="docutils literal"><span class="pre">pdvega</span></code>; more sophisticated
+plots are available in the <code class="xref py py-mod docutils literal"><span class="pre">pdvega.plotting</span></code> module.
+For examples of these, refer to <a class="reference internal" href="plotting.html#statistical-plotting"><span class="std std-ref">Statistical Visualization with pdvega.plotting</span></a>.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plotting.html" class="btn btn-neutral float-right" title="Statistical Visualization with pdvega.plotting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="Installing and Using pdvega" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jake VanderPlas.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@3.0.10"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@2.1.2"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@3.0.0"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

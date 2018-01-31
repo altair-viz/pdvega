@@ -1,0 +1,362 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Advanced Plotting: Using Vega-Lite Directly &mdash; pdvega 0.1.0.dev0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/pdvega-plot.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="pdvega 0.1.0.dev0 documentation" href="index.html"/>
+        <link rel="next" title="API Reference" href="API.html"/>
+        <link rel="prev" title="Statistical Visualization with pdvega.plotting" href="plotting.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pdvega
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing and Using <code class="docutils literal"><span class="pre">pdvega</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Simple Visualizations with <code class="docutils literal"><span class="pre">data.vgplot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Statistical Visualization with <code class="docutils literal"><span class="pre">pdvega.plotting</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced Plotting: Using Vega-Lite Directly</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#skipping-vgplot-entirely">Skipping <code class="docutils literal"><span class="pre">vgplot</span></code> entirely</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pdvega</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Advanced Plotting: Using Vega-Lite Directly</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/advanced.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="advanced-plotting-using-vega-lite-directly">
+<span id="advanced-plotting"></span><h1>Advanced Plotting: Using Vega-Lite Directly<a class="headerlink" href="#advanced-plotting-using-vega-lite-directly" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">pdvega</span></code> API is rather simplistic at the moment; it doesn’t give easy
+access to many of the features that Vega-Lite supports.
+In the future, we would like to tie <code class="docutils literal"><span class="pre">pdvega</span></code> to the <a class="reference external" href="http://altair-viz.github.io/">Altair</a> project, which
+would allow plot outputs to be adjusted flexibly from within a Python API.</p>
+<p>In the meantime, it is possible to make more fine-tuned adjustments to your
+plot specifications by working directly in the specification dictionary.</p>
+<p>For example, consider this plot:</p>
+<div class="highlight-python" id="advanced-rst-pdvega-source-1"><span id="pdvega-plot-0"></span><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">vega_datasets</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="n">iris</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iris</span><span class="p">()</span>
+
+<span class="n">iris</span><span class="o">.</span><span class="n">vgplot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;sepalLength&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;petalLength&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;species&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="advanced-rst-pdvega-plot-1">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#advanced-rst-pdvega-plot-1", "//0.0.0.0:8000//advanced-rst-pdvega-plot-1.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Vega-Lite’s default behavior is to include the zero-value in the scale, unless
+the user explicitly turns that requirement off in the JSON spec.</p>
+<p><code class="docutils literal"><span class="pre">pdvega</span></code> is not designed to give easy access to every option available in the
+Vega-Lite schema, but it is possible to modify the specification manually.
+We can access the raw Vega-Lite specification from any plot using the <code class="docutils literal"><span class="pre">spec</span></code>
+attribute. For convenience, there is also a <code class="docutils literal"><span class="pre">spec_no_data</span></code> attribute that
+returns the spec without the the embedded data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">vgplot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;sepalLength&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;petalLength&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;species&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="o">.</span><span class="n">spec_no_data</span>
+<span class="go">{&#39;$schema&#39;: &#39;https://vega.github.io/schema/vega-lite/v2.json&#39;,</span>
+<span class="go">&#39;encoding&#39;: {&#39;color&#39;: {&#39;field&#39;: &#39;species&#39;, &#39;type&#39;: &#39;nominal&#39;},</span>
+<span class="go"> &#39;x&#39;: {&#39;field&#39;: &#39;sepalLength&#39;, &#39;type&#39;: &#39;quantitative&#39;},</span>
+<span class="go"> &#39;y&#39;: {&#39;field&#39;: &#39;petalLength&#39;, &#39;type&#39;: &#39;quantitative&#39;}},</span>
+<span class="go">&#39;height&#39;: 300,</span>
+<span class="go">&#39;mark&#39;: &#39;circle&#39;,</span>
+<span class="go">&#39;selection&#39;: {&#39;grid&#39;: {&#39;bind&#39;: &#39;scales&#39;, &#39;type&#39;: &#39;interval&#39;}},</span>
+<span class="go">&#39;width&#39;: 450}</span>
+</pre></div>
+</div>
+<p>This dictionary contains the specification that tells the vega-lite renderer
+how to map data to visual components in the plot. You can read more details on
+the <a class="reference external" href="http://vega.github.io/vega-lite/">Vega-Lite</a> website. In particular, if you look at the options for
+<a class="reference external" href="https://vega.github.io/vega-lite/docs/scale.html">Vega-Lite scales</a>, you can see that there is a <code class="docutils literal"><span class="pre">&quot;scale&quot;</span></code> property of the “x”
+encoding which allows turning off the zero behavior.
+Knowing this, we can update the specification manually to get the desired result:</p>
+<div class="highlight-python" id="advanced-rst-pdvega-source-3"><span id="pdvega-plot-2"></span><div class="highlight"><pre><span></span><span class="n">plot</span><span class="o">.</span><span class="n">spec</span><span class="p">[</span><span class="s1">&#39;encoding&#39;</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="s1">&#39;scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;zero&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+<span class="n">plot</span>
+</pre></div>
+</div>
+
+<div id="advanced-rst-pdvega-plot-3">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#advanced-rst-pdvega-plot-3", "//0.0.0.0:8000//advanced-rst-pdvega-plot-3.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>Using this type of approach, you can customize your plots in any way that Vega-Lite
+allows.</p>
+<p>This is admittedly a bit of a clumsy solution for plot customization; mucking around
+in the internals of the JSON specification requires a deep knowledge of the vega-lite
+schema, and the renderer is not very forgiving if and when you
+make an error or typo.
+In the future, we plan to make <code class="docutils literal"><span class="pre">pdvega</span></code> plots output <a class="reference external" href="http://altair-viz.github.io/">Altair</a>
+objects, which will allow this sort of customization to be done much more cleanly
+with Altair’s Python API.</p>
+<div class="section" id="skipping-vgplot-entirely">
+<h2>Skipping <code class="docutils literal"><span class="pre">vgplot</span></code> entirely<a class="headerlink" href="#skipping-vgplot-entirely" title="Permalink to this headline">¶</a></h2>
+<p>If you would like to skip pdvega’s vgplot API entirely and build your Vega-Lite plot
+from scratch, pdvega’s <a class="reference internal" href="API.html#pdvega.VegaLiteAxes" title="pdvega.VegaLiteAxes"><code class="xref py py-class docutils literal"><span class="pre">VegaLiteAxes</span></code></a> object lets you do this directly.
+For example:</p>
+<div class="highlight-python" id="advanced-rst-pdvega-source-4"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pdvega</span> <span class="kn">import</span> <span class="n">VegaLiteAxes</span>
+
+<span class="n">spec</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s1">&#39;$schema&#39;</span><span class="p">:</span> <span class="s1">&#39;https://vega.github.io/schema/vega-lite/v2.json&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;mark&#39;</span><span class="p">:</span> <span class="s1">&#39;point&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;encoding&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;nominal&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;petalWidth&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;quantitative&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;petalLength&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;quantitative&#39;</span><span class="p">}</span>
+  <span class="p">},</span>
+  <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+  <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">450</span><span class="p">,</span>
+  <span class="c1"># this selection is what makes the plot interactive</span>
+  <span class="s1">&#39;selection&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;grid&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;bind&#39;</span><span class="p">:</span> <span class="s1">&#39;scales&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;interval&#39;</span><span class="p">}},</span>
+<span class="p">}</span>
+<span class="n">VegaLiteAxes</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">iris</span><span class="p">)</span>
+</pre></div>
+</div>
+
+<div id="advanced-rst-pdvega-plot-4">
+<script>
+  // embed when document is loaded, to ensure vega library is available
+  // this works on all modern browsers, except IE8 and older
+  document.addEventListener("DOMContentLoaded", function(event) {
+    vegaEmbed("#advanced-rst-pdvega-plot-4", "//0.0.0.0:8000//advanced-rst-pdvega-plot-4.vl.json").then(function(result) {
+      console.log(result);
+    }).catch(console.error);
+  });
+</script>
+</div><p>For ideas on what sort of visualizations you can create in this way,
+check out the specifications on the <a class="reference external" href="https://vega.github.io/vega-lite/examples/">Vega-Lite examples</a> page.
+The <a class="reference external" href="https://vega.github.io/editor/#/custom/vega-lite">Vega online editor</a> is also a useful resource for developing visualizations
+directly in Vega or Vega-Lite.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="API.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plotting.html" class="btn btn-neutral" title="Statistical Visualization with pdvega.plotting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jake VanderPlas.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@3.0.10"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@2.1.2"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@3.0.0"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
