@@ -126,7 +126,8 @@ Documentation
    installation
    core
    plotting
-   API  
+   advanced
+   API
 
 
 Indices and tables
