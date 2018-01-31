@@ -28,4 +28,4 @@ touch .nojekyll
 # add commit, and push to github
 git add . --all
 git commit -m "$MSG"
-git push origin master
+git push origin gh-pages
