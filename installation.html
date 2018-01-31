@@ -199,7 +199,7 @@ command as the last statement in the cell. For example:</p>
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-    vegaEmbed("#installation-rst-pdvega-plot-0", "/pdvega/installation-rst-pdvega-plot-0.vl.json").then(function(result) {
+    vegaEmbed("#installation-rst-pdvega-plot-0", "https://jakevdp.github.io/pdvega/installation-rst-pdvega-plot-0.vl.json").then(function(result) {
       console.log(result);
     }).catch(console.error);
   });
@@ -216,7 +216,7 @@ saved in a variable:</p>
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-    vegaEmbed("#installation-rst-pdvega-plot-1", "/pdvega/installation-rst-pdvega-plot-1.vl.json").then(function(result) {
+    vegaEmbed("#installation-rst-pdvega-plot-1", "https://jakevdp.github.io/pdvega/installation-rst-pdvega-plot-1.vl.json").then(function(result) {
       console.log(result);
     }).catch(console.error);
   });
