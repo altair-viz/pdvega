@@ -57,6 +57,17 @@ def unpivot_frame(frame, x=None, y=None,
         cols = frame.columns
         frame = frame.reset_index()
         x = (set(frame.columns) - set(cols)).pop()
+    # frame.melt doesn't properly check for nonexisting columns, so we
+    # start by indexing here. Tuples of column names also need to be
+    # converted to lists for checking indexing
+    if isinstance(x, tuple):
+        x = list(x)
+    if isinstance(y, tuple):
+        y = list(y)
+    if x is not None:
+        _ = frame[x]
+    if y is not None:
+        _ = frame[y]
     return frame.melt(id_vars=x, value_vars=y,
                       var_name=var_name, value_name=value_name)
 

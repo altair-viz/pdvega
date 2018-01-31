@@ -393,7 +393,7 @@ class FramePlotMethods(BasePlotMethods):
         """
         warn_if_keywords_unused('line', kwds)
         use_order = (x is not None)
-        
+
         if use_order:
             df = self._data.reset_index()
             order = df.columns[0]
@@ -429,7 +429,7 @@ class FramePlotMethods(BasePlotMethods):
                 'field': order,
                 'type': infer_vegalite_type(df[order])
             }
-            
+
         if alpha is not None:
             assert 0 <= alpha <= 1
             spec['encoding']['opacity'] = {'value': alpha}
