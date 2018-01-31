@@ -11,6 +11,10 @@ class VegaLiteAxes(object):
         return self.vlspec.spec
 
     @property
+    def spec_no_data(self):
+        return {key: val for key, val in self.spec.items() if key != 'data'}
+
+    @property
     def data(self):
         return self.vlspec.data
 
