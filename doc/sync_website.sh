@@ -6,8 +6,8 @@ MSG="doc build for commit $GITHASH"
 cd _build
 
 # clone the repo if needed
-if test -d pdvega; 
-then echo "using existing cloned astropy directory";
+if test -d pdvega;
+then echo "using existing cloned pdvega directory";
 else git clone git@github.com:jakevdp/pdvega.git;
 fi
 
@@ -21,6 +21,9 @@ git ls-files -z | xargs -0 rm -f
 
 # sync files from html build
 rsync -r ../html/ ./
+
+# ensure there is a nojekyl file for github pages
+touch .nojekyll
 
 # add commit, and push to github
 git add . --all
