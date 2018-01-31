@@ -189,7 +189,7 @@ plot specifications by working directly in the specification dictionary.</p>
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-    vegaEmbed("#advanced-rst-pdvega-plot-1", "//0.0.0.0:8000//advanced-rst-pdvega-plot-1.vl.json").then(function(result) {
+    vegaEmbed("#advanced-rst-pdvega-plot-1", "//jakevdp.github.io/pdvega//advanced-rst-pdvega-plot-1.vl.json").then(function(result) {
       console.log(result);
     }).catch(console.error);
   });
@@ -229,7 +229,7 @@ Knowing this, we can update the specification manually to get the desired result
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-    vegaEmbed("#advanced-rst-pdvega-plot-3", "//0.0.0.0:8000//advanced-rst-pdvega-plot-3.vl.json").then(function(result) {
+    vegaEmbed("#advanced-rst-pdvega-plot-3", "//jakevdp.github.io/pdvega//advanced-rst-pdvega-plot-3.vl.json").then(function(result) {
       console.log(result);
     }).catch(console.error);
   });
@@ -263,6 +263,8 @@ For example:</p>
   <span class="c1"># this selection is what makes the plot interactive</span>
   <span class="s1">&#39;selection&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;grid&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;bind&#39;</span><span class="p">:</span> <span class="s1">&#39;scales&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;interval&#39;</span><span class="p">}},</span>
 <span class="p">}</span>
+
+<span class="c1"># Build the vgplot specification</span>
 <span class="n">VegaLiteAxes</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">iris</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -272,7 +274,7 @@ For example:</p>
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-    vegaEmbed("#advanced-rst-pdvega-plot-4", "//0.0.0.0:8000//advanced-rst-pdvega-plot-4.vl.json").then(function(result) {
+    vegaEmbed("#advanced-rst-pdvega-plot-4", "//jakevdp.github.io/pdvega//advanced-rst-pdvega-plot-4.vl.json").then(function(result) {
       console.log(result);
     }).catch(console.error);
   });

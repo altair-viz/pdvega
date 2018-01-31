@@ -99,6 +99,8 @@ For example:
      # this selection is what makes the plot interactive
      'selection': {'grid': {'bind': 'scales', 'type': 'interval'}},
    }
+
+   # Build the vgplot specification
    VegaLiteAxes(spec, iris)
 
 For ideas on what sort of visualizations you can create in this way,
