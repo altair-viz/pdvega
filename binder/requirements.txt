@@ -1,0 +1,4 @@
+scipy
+matplotlib
+pdvega==0.1
+vega_datasets
