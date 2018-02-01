@@ -108,7 +108,7 @@ submodule; for example, here is a multi-panel scatter-plot matrix of Fisher's
 .. pdvega-plot::
 
     iris = data.iris()
-    pdvega.scatter_matrix(iris, 'species', figsize=(8, 8))
+    pdvega.scatter_matrix(iris, 'species', figsize=(7, 7))
 
 In this plot, you can click and drag for linked panning and zooming, or you can
 click and drag while holding the SHIFT key to do linked brushing of the points.
