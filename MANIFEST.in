@@ -1,0 +1,5 @@
+include *.md
+include LICENSE
+include Makefile
+recursive-include images/*.png
+recursive-include pdvega *.py *.json *.csv *.tsv
