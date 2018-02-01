@@ -47,6 +47,17 @@ saved in a variable:
     data.vgplot()
 
 
+Using ``pdvega`` in JupyterLab
+------------------------------
+`JupyterLab`_ is the next phase
+of evolution for the Jupyter notebook. For reasons related to its under-the-hood
+implementation, the current version of ``pdvega`` will not work in JupyterLab: the
+main reason is that the new MIME-based rendering used by JupyterLab is not yet supported
+in the `vega3`_ library that ``pdvega`` depends on.
+
+We hope to address this incompatibility soon!
+
+
 Using ``pdvega`` Outside Jupyter
 --------------------------------
 If you wish to use ``pdvega`` outside the Jupyter notebook, you can save the
@@ -70,6 +81,7 @@ command-line tools provided in the `vega-lite`_ npm package.
 
 
 .. _Jupyter notebook: http://jupyter.org/
+.. _JupyterLab: http://jupyterlab-tutorial.readthedocs.io/en/latest/
 .. _Pandas: http://pandas.pydata.org/
 .. _vega3: http://pypi.python.org/pypi/vega3/
 .. _vega-embed: https://vega.github.io/vega-lite/usage/embed.html
