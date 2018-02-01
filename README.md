@@ -36,7 +36,7 @@ df.vgplot.scatter(x='x', y='y')
 
 ![vega-lite scatter output](images/vg-scatter.png?raw=true)
 
-The above image is a screenshot of the interactive output; please see the
+The above image is a static screenshot of the interactive output; please see the
 [Documentation](http://jakevdp.github.io/pdvega/) for a full set of live
 usage examples.
 
@@ -54,7 +54,21 @@ the Jupyter extensions that allows plots to be displayed in the Jupyter
 notebook. For more information on installation and dependencies, see the
 [Installation docs](https://jakevdp.github.io/pdvega/installation.html).
 
-## Relationship to Altair
+## Why Vega-Lite?
+When working with data, one of the biggest challenges is ensuring reproducibility of results.
+When you create a figure and export it to PNG or PDF, the data become baked-in to the rendering in a
+way that is difficult or impossible for others to extract. [Vega](http://vega.github.io/vega) and
+[Vega-Lite](http://vega.github.io/vega-lite) change this: instead of packaging a figure by encoding its
+pixel values, they package a figure by describing, in a declarative manner, the relationship between
+data values and visual encodings through a JSON specification.
+
+This means that the Vega-Lite figures produced by ``pdvega`` are portable: you can send someone the
+resulting JSON specification and they can choose whether to render it interactively online, convert it to
+a PNG or EPS for static publication, or even enhance and extend the figure to learn more about the data.
+
+``pdvega`` is a step in bringing this vision of figure portability and reproducibility to the Python world.
+
+### Relationship to Altair
 
 [Altair](http://altair-viz.github.io) is a project that seeks to design an intuitive declarative API for generating Vega-Lite and Vega visualizations, using Pandas dataframes as data sources.
 
