@@ -1,6 +1,5 @@
 import warnings
 
-import numpy as np
 import pandas as pd
 
 from ._pandas_internals import infer_dtype as pd_infer_dtype

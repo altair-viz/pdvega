@@ -1,14 +1,13 @@
 import pytest
 
 import pandas as pd
-import numpy as np
 
 from pdvega.tests import utils
 
 
 def test_line_simple():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.line()
     utils.validate_vegalite(plot.spec)
@@ -19,8 +18,8 @@ def test_line_simple():
 
 
 def test_line_xy():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2],
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2],
                        'z': range(5)})
 
     plot = df.vgplot.line(x='x', y='y')
@@ -41,8 +40,8 @@ def test_series_line():
 
 
 def test_scatter_simple():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.scatter(x='x', y='y')
     utils.validate_vegalite(plot.spec)
@@ -51,8 +50,8 @@ def test_scatter_simple():
 
 
 def test_scatter_color_size():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2],
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2],
                        'c': range(5),
                        's': range(5)})
 
@@ -63,8 +62,8 @@ def test_scatter_color_size():
 
 
 def test_bar_simple():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.bar()
     utils.validate_vegalite(plot.spec)
@@ -77,8 +76,8 @@ def test_bar_simple():
 
 
 def test_bar_stacked():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.bar(stacked=True)
     utils.validate_vegalite(plot.spec)
@@ -90,8 +89,8 @@ def test_bar_stacked():
 
 
 def test_bar_xy():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.bar(x='x', y='y')
     utils.validate_vegalite(plot.spec)
@@ -103,8 +102,8 @@ def test_bar_xy():
 
 
 def test_bar_xy_stacked():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.bar(x='x', y='y', stacked=True)
     utils.validate_vegalite(plot.spec)
@@ -116,7 +115,7 @@ def test_bar_xy_stacked():
 
 
 def test_series_bar():
-    ser = pd.Series([4,5,4,5], index=['A', 'B', 'C', 'D'])
+    ser = pd.Series([4, 5, 4, 5], index=['A', 'B', 'C', 'D'])
     plot = ser.vgplot.bar()
     utils.validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'bar'
@@ -124,8 +123,8 @@ def test_series_bar():
 
 
 def test_barh_simple():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.barh()
     utils.validate_vegalite(plot.spec)
@@ -138,8 +137,8 @@ def test_barh_simple():
 
 
 def test_barh_stacked():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.barh(stacked=True)
     utils.validate_vegalite(plot.spec)
@@ -151,8 +150,8 @@ def test_barh_stacked():
 
 
 def test_barh_xy():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.barh(x='x', y='y')
     utils.validate_vegalite(plot.spec)
@@ -164,8 +163,8 @@ def test_barh_xy():
 
 
 def test_barh_xy_stacked():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.barh(x='x', y='y', stacked=True)
     utils.validate_vegalite(plot.spec)
@@ -177,7 +176,7 @@ def test_barh_xy_stacked():
 
 
 def test_series_barh():
-    ser = pd.Series([4,5,4,5], index=['A', 'B', 'C', 'D'])
+    ser = pd.Series([4, 5, 4, 5], index=['A', 'B', 'C', 'D'])
     plot = ser.vgplot.barh()
     utils.validate_vegalite(plot.spec)
     assert plot.spec['mark'] == 'bar'
@@ -185,8 +184,8 @@ def test_series_barh():
 
 
 def test_df_area_simple():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.area()
     utils.validate_vegalite(plot.spec)
@@ -198,8 +197,8 @@ def test_df_area_simple():
 
 
 def test_df_area_unstacked():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2]})
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
 
     plot = df.vgplot.area(stacked=False)
     utils.validate_vegalite(plot.spec)
@@ -213,8 +212,8 @@ def test_df_area_unstacked():
 
 
 def test_df_area_xy():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2],
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2],
                        'z': range(5)})
 
     plot = df.vgplot.area(x='x', y='y')
@@ -227,8 +226,8 @@ def test_df_area_xy():
 
 
 def test_df_area_xy_unstacked():
-    df = pd.DataFrame({'x': [1,4,2,3,5],
-                       'y': [6,3,4,5,2],
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2],
                        'z': range(5)})
 
     plot = df.vgplot.area(x='x', y='y', stacked=False)
@@ -291,7 +290,7 @@ def test_df_hexbin():
     df = pd.DataFrame({'x': range(10),
                        'y': range(10),
                        'C': range(10)})
-    gridsize=10
+    gridsize = 10
     plot = df.vgplot.hexbin(x='x', y='y', gridsize=gridsize)
     assert plot.spec['mark'] == 'rect'
     utils.check_encodings(plot.spec, x='x', y='y', color=utils.IGNORE)
@@ -304,7 +303,7 @@ def test_df_hexbin_C():
     df = pd.DataFrame({'x': range(10),
                        'y': range(10),
                        'C': range(10)})
-    gridsize=10
+    gridsize = 10
     plot = df.vgplot.hexbin(x='x', y='y', C='C', gridsize=gridsize)
     assert plot.spec['mark'] == 'rect'
     utils.check_encodings(plot.spec, x='x', y='y', color='C')

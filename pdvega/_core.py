@@ -1,5 +1,3 @@
-import warnings
-
 import numpy as np
 import pandas as pd
 
@@ -9,9 +7,6 @@ from ._pandas_internals import (PandasObject,
                                 register_dataframe_accessor,
                                 register_series_accessor)
 
-
-
-#################################################################
 from ._axes import Axes
 
 

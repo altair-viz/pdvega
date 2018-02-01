@@ -1,5 +1,4 @@
 import pytest
-import jsonschema
 
 import numpy as np
 import pandas as pd

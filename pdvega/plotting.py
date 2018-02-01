@@ -73,8 +73,8 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
           }
         },
         "encoding": {
-          "x": {"field": {"repeat": "column"},"type": "quantitative"},
-          "y": {"field": {"repeat": "row"},"type": "quantitative"},
+          "x": {"field": {"repeat": "column"}, "type": "quantitative"},
+          "y": {"field": {"repeat": "row"}, "type": "quantitative"},
           "color": {
             "condition": {
               "selection": "brush",
@@ -210,7 +210,7 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None,
         spec['encoding']['opacity'] = {'value': alpha}
 
     spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                 width=width, height=height)
+                                  width=width, height=height)
 
     return Axes(spec, data=df)
 
@@ -241,6 +241,6 @@ def lag_plot(data, lag=1, **kwds):
     lags = pd.DataFrame({y1: values[:-lag].T.ravel(),
                          y2: values[lag:].T.ravel()})
     if isinstance(data, pd.DataFrame):
-         lags['variable'] = np.repeat(data.columns, lags.shape[0] / data.shape[1])
-         kwds['c'] = 'variable'
+        lags['variable'] = np.repeat(data.columns, lags.shape[0] / data.shape[1])
+        kwds['c'] = 'variable'
     return lags.vgplot.scatter(y1, y2, **kwds)

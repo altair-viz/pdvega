@@ -1,16 +1,10 @@
 """Common tests for all plotting routines"""
 import pytest
-import jsonschema
-import itertools
 
 import pandas as pd
 import pdvega
 
-from pdvega.schema import VEGALITE_SCHEMA
-
-
-def validate_vegalite(spec):
-    return jsonschema.validate(spec, VEGALITE_SCHEMA)
+from .utils import validate_vegalite
 
 
 @pytest.fixture
@@ -23,6 +17,7 @@ def data():
         'a': list('ABCABCABCA'),
         'b': list('ABCABCABCA')
     })
+
 
 COMMON_ARGS = {
     'alpha': [None, 0.5],
