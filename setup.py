@@ -25,16 +25,17 @@ def version(path):
 
 DESCRIPTION = "Pandas plotting interface to Vega and Vega-Lite"
 LONG_DESCRIPTION = """
-This package is an experiment in making vega and vega-lite plots easier to
-generate in Python, using the existing pandas visualization API.
+pdvega makes it easy to create Vega-Lite plots from pandas dataframes,
+using the familiar pandas visualization API. For more information, see
+the `pdvega documentation <http://jakevdp.github.io/pdvega/>`_.
 """
 NAME = "pdvega"
 AUTHOR = "Jake VanderPlas"
 AUTHOR_EMAIL = "jakevdp@gmail.com"
 MAINTAINER = "Jake VanderPlas"
 MAINTAINER_EMAIL = "jakevdp@gmail.com"
-URL = 'http://github.com/jakevdp/pdvega'
-DOWNLOAD_URL = 'http://github.com/jakevdp/pdvega'
+URL = 'http://jakevdp.github.io/pdvega/'
+DOWNLOAD_URL = 'http://github.com/jakevdp/pdvega/'
 LICENSE = 'MIT'
 
 VERSION = version('pdvega/__init__.py')
