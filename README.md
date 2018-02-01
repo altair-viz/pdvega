@@ -26,7 +26,7 @@ df.plot.scatter(x='x', y='y')
 
 The goal of ``pdvega`` is that any time you use ``dataframe.plot``, you'll be
 able to replace it with ``dataframe.vgplot`` and instead get a similar
-(but prettier and more interactive) visualization output in Vega-Lite:
+(but prettier and more interactive) visualization output in Vega-Lite that you can easily export to share or customize:
 
 ```python
 import pdvega  # import adds vgplot attribute to pandas
