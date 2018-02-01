@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Advanced Plotting: Using Vega-Lite Directly &mdash; pdvega 0.1.0.dev0 documentation</title>
+  <title>Advanced Plotting: Using Vega-Lite Directly &mdash; pdvega 0.1.0 documentation</title>
   
 
   
@@ -41,7 +41,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="pdvega 0.1.0.dev0 documentation" href="index.html"/>
+    <link rel="top" title="pdvega 0.1.0 documentation" href="index.html"/>
         <link rel="next" title="API Reference" href="API.html"/>
         <link rel="prev" title="Statistical Visualization with pdvega.plotting" href="plotting.html"/> 
 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.3
+                0.1
               </div>
             
           
@@ -246,9 +246,9 @@ with Altair’s Python API.</p>
 <div class="section" id="skipping-vgplot-entirely">
 <h2>Skipping <code class="docutils literal"><span class="pre">vgplot</span></code> entirely<a class="headerlink" href="#skipping-vgplot-entirely" title="Permalink to this headline">¶</a></h2>
 <p>If you would like to skip pdvega’s vgplot API entirely and build your Vega-Lite plot
-from scratch, pdvega’s <a class="reference internal" href="API.html#pdvega.VegaLiteAxes" title="pdvega.VegaLiteAxes"><code class="xref py py-class docutils literal"><span class="pre">VegaLiteAxes</span></code></a> object lets you do this directly.
+from scratch, pdvega’s <a class="reference internal" href="API.html#pdvega.Axes" title="pdvega.Axes"><code class="xref py py-class docutils literal"><span class="pre">Axes</span></code></a> object lets you do this directly.
 For example:</p>
-<div class="highlight-python" id="advanced-rst-pdvega-source-4"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pdvega</span> <span class="kn">import</span> <span class="n">VegaLiteAxes</span>
+<div class="highlight-python" id="advanced-rst-pdvega-source-4"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pdvega</span> <span class="kn">import</span> <span class="n">Axes</span>
 
 <span class="n">spec</span> <span class="o">=</span> <span class="p">{</span>
   <span class="s1">&#39;$schema&#39;</span><span class="p">:</span> <span class="s1">&#39;https://vega.github.io/schema/vega-lite/v2.json&#39;</span><span class="p">,</span>
@@ -265,7 +265,7 @@ For example:</p>
 <span class="p">}</span>
 
 <span class="c1"># Build the vgplot specification</span>
-<span class="n">VegaLiteAxes</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">iris</span><span class="p">)</span>
+<span class="n">Axes</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">iris</span><span class="p">)</span>
 </pre></div>
 </div>
 
@@ -330,7 +330,7 @@ directly in Vega or Vega-Lite.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.0.dev0',
+            VERSION:'0.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

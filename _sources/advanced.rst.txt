@@ -79,12 +79,12 @@ with Altair's Python API.
 Skipping ``vgplot`` entirely
 ----------------------------
 If you would like to skip pdvega's vgplot API entirely and build your Vega-Lite plot
-from scratch, pdvega's :class:`~pdvega.VegaLiteAxes` object lets you do this directly.
+from scratch, pdvega's :class:`~pdvega.Axes` object lets you do this directly.
 For example:
 
 .. pdvega-plot::
 
-   from pdvega import VegaLiteAxes
+   from pdvega import Axes
 
    spec = {
      '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
@@ -101,7 +101,7 @@ For example:
    }
 
    # Build the vgplot specification
-   VegaLiteAxes(spec, iris)
+   Axes(spec, iris)
 
 For ideas on what sort of visualizations you can create in this way,
 check out the specifications on the `Vega-Lite examples`_ page.

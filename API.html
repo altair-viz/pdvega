@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API Reference &mdash; pdvega 0.1.0.dev0 documentation</title>
+  <title>API Reference &mdash; pdvega 0.1.0 documentation</title>
   
 
   
@@ -41,7 +41,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="pdvega 0.1.0.dev0 documentation" href="index.html"/>
+    <link rel="top" title="pdvega 0.1.0 documentation" href="index.html"/>
         <link rel="prev" title="Advanced Plotting: Using Vega-Lite Directly" href="advanced.html"/> 
 
   
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                1.3
+                0.1
               </div>
             
           
@@ -167,6 +167,32 @@
   <div class="section" id="module-pdvega">
 <span id="api-reference"></span><h1>API Reference<a class="headerlink" href="#module-pdvega" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
+<dt id="pdvega.Axes">
+<em class="property">class </em><code class="descclassname">pdvega.</code><code class="descname">Axes</code><span class="sig-paren">(</span><em>spec=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.Axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing a pdvega plot axes</p>
+<dl class="method">
+<dt id="pdvega.Axes.display">
+<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.Axes.display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdvega.Axes.data">
+<code class="descname">data</code><a class="headerlink" href="#pdvega.Axes.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdvega.Axes.spec">
+<code class="descname">spec</code><a class="headerlink" href="#pdvega.Axes.spec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdvega.Axes.spec_no_data">
+<code class="descname">spec_no_data</code><a class="headerlink" href="#pdvega.Axes.spec_no_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pdvega.FramePlotMethods">
 <em class="property">class </em><code class="descclassname">pdvega.</code><code class="descname">FramePlotMethods</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.FramePlotMethods" title="Permalink to this definition">¶</a></dt>
 <dd><p>DataFrame Accessor &amp; Method for creating Vega-Lite visualizations.</p>
@@ -237,7 +263,7 @@ areas will overlap</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -299,7 +325,7 @@ areas will overlap</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -361,7 +387,7 @@ areas will overlap</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -416,7 +442,7 @@ See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -478,7 +504,7 @@ specified, the count within each bin will be used.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -540,7 +566,7 @@ specified, the count within each bin will be used.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -614,7 +640,7 @@ areas will overlap</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -669,7 +695,7 @@ See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -726,7 +752,7 @@ columns (except x if specified) will be used.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -781,7 +807,7 @@ columns (except x if specified) will be used.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -839,7 +865,7 @@ is equivalent to <code class="docutils literal"><span class="pre">s.vgplot.line(
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -878,7 +904,7 @@ is equivalent to <code class="docutils literal"><span class="pre">s.vgplot.line(
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -917,7 +943,7 @@ is equivalent to <code class="docutils literal"><span class="pre">s.vgplot.line(
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -962,7 +988,7 @@ See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -1009,7 +1035,7 @@ See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -1054,7 +1080,7 @@ See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -1093,7 +1119,7 @@ See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.VegaLiteAxes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>axes</strong> : pdvega.Axes</p>
 <blockquote class="last">
 <div><p>The vega-lite plot</p>
 </div></blockquote>
@@ -1102,32 +1128,6 @@ See <cite>scipy.stats.gaussian_kde</cite> for more details.</p>
 </tbody>
 </table>
 </dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pdvega.VegaLiteAxes">
-<em class="property">class </em><code class="descclassname">pdvega.</code><code class="descname">VegaLiteAxes</code><span class="sig-paren">(</span><em>spec=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.VegaLiteAxes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class representing a pdvega plot axes</p>
-<dl class="method">
-<dt id="pdvega.VegaLiteAxes.display">
-<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pdvega.VegaLiteAxes.display" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pdvega.VegaLiteAxes.data">
-<code class="descname">data</code><a class="headerlink" href="#pdvega.VegaLiteAxes.data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pdvega.VegaLiteAxes.spec">
-<code class="descname">spec</code><a class="headerlink" href="#pdvega.VegaLiteAxes.spec" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pdvega.VegaLiteAxes.spec_no_data">
-<code class="descname">spec_no_data</code><a class="headerlink" href="#pdvega.VegaLiteAxes.spec_no_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -1301,7 +1301,7 @@ inches to pixels.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.0.dev0',
+            VERSION:'0.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
