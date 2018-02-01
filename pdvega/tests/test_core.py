@@ -311,6 +311,14 @@ def test_df_hexbin_C():
     assert plot.spec['encoding']['y']['bin'] == {"maxbins": gridsize}
     assert plot.spec['encoding']['color']['aggregate'] == "mean"
 
+def test_df_hexbin_Cfunc():
+    df = pd.DataFrame({'x': range(10),
+                       'y': range(10),
+                       'C': range(10)})
+    plot = df.vgplot.hexbin(x='x', y='y', C='C', reduce_C_function=min)
+    utils.check_encodings(plot.spec, x='x', y='y', color='C')
+    assert plot.spec['encoding']['color']['aggregate'] == "min"
+
 
 def test_df_kde():
     df = pd.DataFrame({'x': range(10),

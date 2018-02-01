@@ -1,5 +1,6 @@
 import warnings
 
+import numpy as np
 import pandas as pd
 
 from ._pandas_internals import infer_dtype as pd_infer_dtype
@@ -97,3 +98,36 @@ def finalize_vegalite_spec(spec, interactive=True, width=450, height=300):
             }
         })
     return spec
+
+
+def validate_aggregation(agg):
+    """Validate an aggregation for use in Vega-Lite.
+
+    Translate agg to one of the following supported named aggregations:
+    ['mean', 'sum', 'median', 'min', 'max', 'count']
+
+    Parameters
+    ----------
+    agg : string or callable
+        A string
+
+    Supported reductions are ['mean', 'sum', 'median', 'min', 'max', 'count'].
+
+    If agg is a numpy function, the return value is the string representation.
+
+    If agg is unrecognized, raise a ValueError
+    """
+    if agg is None:
+        return agg
+    supported_aggs = ['mean', 'sum', 'median', 'min', 'max', 'count']
+    numpy_aggs = {getattr(np, a): a
+                  for a in ['mean', 'sum', 'median', 'min', 'max']}
+    builtin_aggs = {min: 'min', max: 'max', sum: 'sum'}
+
+    agg = numpy_aggs.get(agg, agg)
+    agg = builtin_aggs.get(agg, agg)
+
+    if agg not in supported_aggs:
+        raise ValueError("Unrecognized Vega-Lite aggregation: {0}".format(agg))
+
+    return agg

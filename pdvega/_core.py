@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 
 from ._utils import (infer_vegalite_type, finalize_vegalite_spec,
-                     unpivot_frame, warn_if_keywords_unused)
+                     unpivot_frame, warn_if_keywords_unused,
+                     validate_aggregation)
 from ._pandas_internals import (PandasObject,
                                 register_dataframe_accessor,
                                 register_series_accessor)
@@ -781,7 +782,7 @@ class FramePlotMethods(BasePlotMethods):
                                       width=width, height=height)
         return Axes(spec, data=df)
 
-    def heatmap(self, x, y, C=None, reduce_C_function=None,
+    def heatmap(self, x, y, C=None, reduce_C_function='mean',
                 gridsize=100, alpha=None,
                 interactive=True, width=450, height=300, **kwds):
         """Heatmap plot for DataFrame data
@@ -800,8 +801,10 @@ class FramePlotMethods(BasePlotMethods):
         C : string, optional
             the column to use to compute the mean within each bin. If not
             specified, the count within each bin will be used.
-        reduce_C_function : callable, optional
-            the type of reduction to be done within each bin (not implemented)
+        reduce_C_function : string, default = 'mean'
+            One of ['mean', 'sum', 'median', 'min', 'max', 'count'], or
+            associated numpy or python builtin functions. Note that arbitrary
+            callable functions are not supported.
         gridsize : int, optional
             the number of divisions in the x and y axis (default=100)
         alpha : float, optional
@@ -820,9 +823,8 @@ class FramePlotMethods(BasePlotMethods):
         """
         # TODO: Use actual hexbins rather than a grid heatmap
         warn_if_keywords_unused('hexbin', kwds)
+        reduce_C_function = validate_aggregation(reduce_C_function)
 
-        if reduce_C_function is not None:
-            raise NotImplementedError("Custom reduce_C_function in hexbin")
         if C is None:
             df = self._data[[x, y]]
         else:
@@ -834,7 +836,7 @@ class FramePlotMethods(BasePlotMethods):
             "x": {"field": x, "bin": {"maxbins": gridsize}, "type": "quantitative"},
             "y": {"field": y, "bin": {"maxbins": gridsize}, "type": "quantitative"},
             "color": ({"aggregate": "count", "type": "quantitative"} if C is None else
-                      {"field": C, "aggregate": "mean", "type": "quantitative"})
+                      {"field": C, "aggregate": reduce_C_function, "type": "quantitative"})
           },
           "config": {
             "range": {
