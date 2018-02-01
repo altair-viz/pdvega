@@ -29,7 +29,7 @@ This is done by ``pdvega.scatter_matrix``, which has an API based on
 
 .. pdvega-plot::
 
-   pdvega.scatter_matrix(iris, "species", figsize=(8, 8))
+   pdvega.scatter_matrix(iris, "species", figsize=(7, 7))
 
 Notice that this version is interactive in two ways: if you click and drag on
 any frame of the plot, all frames scales are dynamically adjusted in concert.
@@ -60,7 +60,7 @@ in the dimensions of petal width and length.
 Andrews Curves
 --------------
 
-A similar approach to visualizing data dimensions is known as *andrews curves*:
+A similar approach to visualizing data dimensions is known as *Andrews curves*:
 the idea is to construct a Fourier series from the features of each object,
 in order to qualitatively visualize the aggregate differences between classes.
 This can be done with the :func:`pdvega.andrews_curves` function, which follows
