@@ -74,8 +74,12 @@ def unpivot_frame(frame, x=None, y=None,
 
 def warn_if_keywords_unused(kind, kwds):
     if kwds:
+        if len(kwds) == 1:
+            keys = tuple(kwds.keys())[0]
+        else:
+            keys = tuple(kwds.keys())
         warnings.warn("Unrecognized keywords in vgplot.{0}(): {1}"
-                      "".format(kind, list(kwds.keys())))
+                      "".format(kind, repr(keys)))
 
 
 def finalize_vegalite_spec(spec, interactive=True, width=450, height=300):
