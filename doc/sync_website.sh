@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# clean the build directory & make the website with the right internal addresses
+make clean
+sphinx-build -M html . _build -D pdvegaplot_url_root="https://jakevdp.github.io/pdvega/"
+
 # get git hash for commit message
 GITHASH=$(git rev-parse HEAD)
 MSG="doc build for commit $GITHASH"

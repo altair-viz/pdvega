@@ -249,7 +249,7 @@ def html_visit_pdvega_plot(self, node):
             os.makedirs(dest_dir)
         filename = "{0}.vl.json".format(node['div_id'])
         # TODO: let this url be configured
-        url = "{0}/{1}.vl.json".format(node['url_root'], node['div_id'])
+        url = "{0}{1}.vl.json".format(node['url_root'], node['div_id'])
         dest_path = os.path.join(dest_dir, filename)
         with open(dest_path, 'w') as f:
             json.dump(spec, f)
