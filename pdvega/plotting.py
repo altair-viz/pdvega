@@ -7,6 +7,9 @@ import pandas as pd
 from ._axes import VegaLiteAxes
 from ._utils import infer_vegalite_type, finalize_vegalite_spec
 
+__all__ = ['scatter_matrix', 'andrews_curves', 'parallel_coordinates',
+           'lag_plot']
+
 
 def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
     """Draw a matrix of scatter plots.
