@@ -133,6 +133,9 @@ Documentation
    advanced
    API
 
+`pdvega` is MIT-licensed and the source is available on `GitHub <http://github.com/jakevdp/pdvega>`_.
+If any questions or issues come up as you use it, please get in touch via
+`Git Issues <http://github.com/jakevdp/pdvega/issues>`_.
 
 Indices and tables
 ------------------
