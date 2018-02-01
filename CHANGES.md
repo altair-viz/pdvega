@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-Release v0.1 (Unreleased)
--------------------------
+Release v0.1 (January 31, 2018)
+-------------------------------
 
 - Initial release:
 
