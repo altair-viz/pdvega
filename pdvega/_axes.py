@@ -1,7 +1,7 @@
 from vega3 import VegaLite
 
 
-class VegaLiteAxes(object):
+class Axes(object):
     """Class representing a pdvega plot axes"""
     def __init__(self, spec=None, data=None):
         self.vlspec = VegaLite(spec, data)

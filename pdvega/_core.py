@@ -12,7 +12,7 @@ from ._pandas_internals import (PandasObject,
 
 
 #################################################################
-from ._axes import VegaLiteAxes
+from ._axes import Axes
 
 
 class BasePlotMethods(PandasObject):
@@ -67,7 +67,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         warn_if_keywords_unused('line', kwds)
@@ -96,7 +96,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return VegaLiteAxes(spec, data=df)
+        return Axes(spec, data=df)
 
     def area(self, alpha=None, interactive=True, width=450, height=300, **kwds):
         """Area plot for Series data
@@ -116,7 +116,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         warn_if_keywords_unused('area', kwds)
@@ -144,7 +144,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return VegaLiteAxes(spec, data=df)
+        return Axes(spec, data=df)
 
     def bar(self, alpha=None, interactive=True,
             width=450, height=300, **kwds):
@@ -165,7 +165,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         warn_if_keywords_unused('bar', kwds)
@@ -194,7 +194,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return VegaLiteAxes(spec, data=df)
+        return Axes(spec, data=df)
 
     def barh(self, alpha=None, interactive=True,
              width=450, height=300, **kwds):
@@ -215,7 +215,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         plot = self.bar(alpha=alpha, interactive=interactive,
@@ -247,7 +247,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         warn_if_keywords_unused('hist', kwds)
@@ -285,7 +285,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return VegaLiteAxes(spec, data=df)
+        return Axes(spec, data=df)
 
     def kde(self, bw_method=None, alpha=None,
             interactive=True, width=450, height=300, **kwds):
@@ -310,7 +310,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         from scipy.stats import gaussian_kde
@@ -388,7 +388,7 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         warn_if_keywords_unused('line', kwds)
@@ -436,7 +436,7 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return VegaLiteAxes(spec, data=df)
+        return Axes(spec, data=df)
 
     def scatter(self, x, y, c=None, s=None, alpha=None,
                 interactive=True, width=450, height=300, **kwds):
@@ -465,7 +465,7 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         warn_if_keywords_unused('scatter', kwds)
@@ -508,7 +508,7 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return VegaLiteAxes(spec, data=data[cols])
+        return Axes(spec, data=data[cols])
 
     def area(self, x=None, y=None, stacked=True, alpha=None,
              var_name='variable', value_name='value',
@@ -543,7 +543,7 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         warn_if_keywords_unused('area', kwds)
@@ -579,7 +579,7 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return VegaLiteAxes(spec, data=df)
+        return Axes(spec, data=df)
 
     def bar(self, x=None, y=None, stacked=False, alpha=None,
             var_name='variable', value_name='value',
@@ -614,7 +614,7 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         warn_if_keywords_unused('bar', kwds)
@@ -650,7 +650,7 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return VegaLiteAxes(spec, data=df)
+        return Axes(spec, data=df)
 
     def barh(self, x=None, y=None, stacked=False, alpha=None,
              var_name='variable', value_name='value',
@@ -685,7 +685,7 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         plot = self.bar(x=x, y=y, stacked=stacked, alpha=alpha,
@@ -735,7 +735,7 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         warn_if_keywords_unused('hist', kwds)
@@ -784,7 +784,7 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return VegaLiteAxes(spec, data=df)
+        return Axes(spec, data=df)
 
     def heatmap(self, x, y, C=None, reduce_C_function=None,
                 gridsize=100, alpha=None,
@@ -820,7 +820,7 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         # TODO: Use actual hexbins rather than a grid heatmap
@@ -860,7 +860,7 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return VegaLiteAxes(spec, data=df)
+        return Axes(spec, data=df)
 
     hexbin = heatmap
 
@@ -893,7 +893,7 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.VegaLiteAxes
+        axes : pdvega.Axes
             The vega-lite plot
         """
         from scipy.stats import gaussian_kde as kde

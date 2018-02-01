@@ -4,7 +4,7 @@ import warnings
 import numpy as np
 import pandas as pd
 
-from ._axes import VegaLiteAxes
+from ._axes import Axes
 from ._utils import infer_vegalite_type, finalize_vegalite_spec
 
 __all__ = ['scatter_matrix', 'andrews_curves', 'parallel_coordinates',
@@ -102,7 +102,7 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
     else:
         cond['field'] = c
         cond['type'] = infer_vegalite_type(frame[c])
-    return VegaLiteAxes(spec, data=frame)
+    return Axes(spec, data=frame)
 
 
 def andrews_curves(data, class_column, samples=200, alpha=None,
@@ -141,7 +141,7 @@ def andrews_curves(data, class_column, samples=200, alpha=None,
 
     spec = finalize_vegalite_spec(spec, width=width, height=height, interactive=interactive)
 
-    return VegaLiteAxes(spec, data=df)
+    return Axes(spec, data=df)
 
 
 def parallel_coordinates(data, class_column, cols=None, alpha=None,
@@ -212,7 +212,7 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None,
     spec = finalize_vegalite_spec(spec, interactive=interactive,
                                  width=width, height=height)
 
-    return VegaLiteAxes(spec, data=df)
+    return Axes(spec, data=df)
 
 
 def lag_plot(data, lag=1, **kwds):

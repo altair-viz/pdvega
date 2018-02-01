@@ -65,7 +65,7 @@ from sphinx.locale import _
 from sphinx import addnodes, directives
 from sphinx.util.nodes import set_source_info
 
-from pdvega import VegaLiteAxes
+from pdvega import Axes
 from .utils import exec_then_eval
 
 # These default URLs can be changed in conf.py; see setup() below.
@@ -229,7 +229,7 @@ def html_visit_pdvega_plot(self, node):
                                         e.__class__.__name__, str(e)))
         raise nodes.SkipNode
 
-    if isinstance(output, VegaLiteAxes):
+    if isinstance(output, Axes):
         # Last line should be a Vega-Lite chart; get the spec:
         spec = output.spec
 
