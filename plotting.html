@@ -184,7 +184,7 @@ features using a simple scatter plot. For data with several attributes, it can
 be useful to visualize the pairwise relationships between all pairs of dimensions.
 This is done by <code class="docutils literal"><span class="pre">pdvega.scatter_matrix</span></code>, which has an API based on
 <code class="xref py py-func docutils literal"><span class="pre">pandas.plotting.scatter_matrix()</span></code>:</p>
-<div class="highlight-python" id="plotting-rst-pdvega-source-1"><div class="highlight"><pre><span></span><span class="n">pdvega</span><span class="o">.</span><span class="n">scatter_matrix</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span> <span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<div class="highlight-python" id="plotting-rst-pdvega-source-1"><div class="highlight"><pre><span></span><span class="n">pdvega</span><span class="o">.</span><span class="n">scatter_matrix</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span> <span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 </pre></div>
 </div>
 
@@ -229,7 +229,7 @@ in the dimensions of petal width and length.</p>
 </div>
 <div class="section" id="andrews-curves">
 <span id="pdvega-andrews-curves"></span><h2>Andrews Curves<a class="headerlink" href="#andrews-curves" title="Permalink to this headline">¶</a></h2>
-<p>A similar approach to visualizing data dimensions is known as <em>andrews curves</em>:
+<p>A similar approach to visualizing data dimensions is known as <em>Andrews curves</em>:
 the idea is to construct a Fourier series from the features of each object,
 in order to qualitatively visualize the aggregate differences between classes.
 This can be done with the <a class="reference internal" href="API.html#pdvega.andrews_curves" title="pdvega.andrews_curves"><code class="xref py py-func docutils literal"><span class="pre">pdvega.andrews_curves()</span></code></a> function, which follows
