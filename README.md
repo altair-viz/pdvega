@@ -35,8 +35,9 @@ df.vgplot.scatter(x='x', y='y')
 
 ![vega-lite scatter output](images/vg-scatter.png?raw=true)
 
-Please see the [Documentation](http://jakevdp.github.io/pdvega/) for a full
-set of usage examples.
+The above image is a screenshot of the interactive output; please see the
+[Documentation](http://jakevdp.github.io/pdvega/) for a full set of live
+usage examples.
 
 ## Installation
 
