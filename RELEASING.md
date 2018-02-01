@@ -1,6 +1,6 @@
 1. Update version in pdvega/__init__.py to, e.g. 0.2
 
-2. Update version in conf.py (in two places!)
+2. Update version in doc/conf.py (in two places!)
 
 3. Make sure CHANGES.md is up to date for the release
 
