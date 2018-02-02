@@ -1,8 +1,24 @@
 from vega3 import VegaLite
 
 
+class MaxRowsExceeded(ValueError):
+    _msg_template = ("Number of rows in data ({0}) is larger than the maximum "
+    "allowed (ax.max_rows={1}). Such large dataframes can cause issues when "
+    "the data is embedded for viewing. If you wish to override this, you can "
+    "set the ``max_rows`` attribute of your plot Axes instance to a larger "
+    "number. For example:\n\n"
+    "  ax = data.vgplot.line()\n"
+    "  ax.max_rows = {0}\n"
+    "  ax.display()\n")
+    def __init__(self, rows, rows_max):
+        msg = self._msg_template.format(rows, rows_max)
+        super(MaxRowsExceeded, self).__init__(msg)
+
+
 class Axes(object):
     """Class representing a pdvega plot axes"""
+    max_rows = 10000  # default value; can be overridden by the class instances
+
     def __init__(self, spec=None, data=None):
         self._spec = spec or {}
         self._data = data
@@ -53,14 +69,37 @@ class Axes(object):
     def spec_no_data(self):
         return {key: val for key, val in self.spec.items() if key != 'data'}
 
+    def _check_max_rows(self):
+        """
+        Ensure that the number of rows in the largest dataset embedded in the
+        spec or its layers is smaller than self.max_rows, which defaults to
+        10000 unless overridden by the Axes instance.
+
+        Raises
+        ------
+        MaxRowsExceeded :
+            if the dataset is too large.
+        """
+        nrows = 0
+        specs = [self.spec] + self.spec.get('layer', [])
+        for spec in specs:
+            if 'data' in spec and 'values' in spec['data']:
+                nrows = max(nrows, len(spec['data']['values']))
+        if nrows > self.max_rows:
+            raise MaxRowsExceeded(nrows, self.max_rows)
+
     def _ipython_display_(self):
         if self._vlspec is None:
             self._vlspec = VegaLite(self._spec, self._data)
+        # check max rows after VegaLite modifies the spec
+        self._check_max_rows()
         return self._vlspec._ipython_display_()
 
     def display(self):
         if self._vlspec is None:
             self._vlspec = VegaLite(self._spec, self._data)
+        # check max rows after VegaLite modifies the spec
+        self._check_max_rows()
         return self._vlspec.display()
 
     def _add_layer(self, spec, data=None):
