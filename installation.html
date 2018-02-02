@@ -99,6 +99,7 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installing and Using <code class="docutils literal"><span class="pre">pdvega</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#using-pdvega-in-the-jupyter-notebook">Using <code class="docutils literal"><span class="pre">pdvega</span></code> in the Jupyter Notebook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-pdvega-in-jupyterlab">Using <code class="docutils literal"><span class="pre">pdvega</span></code> in JupyterLab</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-pdvega-outside-jupyter">Using <code class="docutils literal"><span class="pre">pdvega</span></code> Outside Jupyter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#saving-visualizations-to-png-or-svg">Saving Visualizations to PNG or SVG</a></li>
 </ul>
@@ -222,6 +223,15 @@ saved in a variable:</p>
   });
 </script>
 </div></div>
+<div class="section" id="using-pdvega-in-jupyterlab">
+<h2>Using <code class="docutils literal"><span class="pre">pdvega</span></code> in JupyterLab<a class="headerlink" href="#using-pdvega-in-jupyterlab" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://jupyterlab-tutorial.readthedocs.io/en/latest/">JupyterLab</a> is the next phase
+of evolution for the Jupyter notebook. For reasons related to its under-the-hood
+implementation, the current version of <code class="docutils literal"><span class="pre">pdvega</span></code> will not work in JupyterLab: the
+main reason is that the new MIME-based rendering used by JupyterLab is not yet supported
+in the <a class="reference external" href="http://pypi.python.org/pypi/vega3/">vega3</a> library that <code class="docutils literal"><span class="pre">pdvega</span></code> depends on.</p>
+<p>We hope to address this incompatibility soon!</p>
+</div>
 <div class="section" id="using-pdvega-outside-jupyter">
 <h2>Using <code class="docutils literal"><span class="pre">pdvega</span></code> Outside Jupyter<a class="headerlink" href="#using-pdvega-outside-jupyter" title="Permalink to this headline">¶</a></h2>
 <p>If you wish to use <code class="docutils literal"><span class="pre">pdvega</span></code> outside the Jupyter notebook, you can save the
