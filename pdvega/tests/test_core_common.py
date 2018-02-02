@@ -227,3 +227,41 @@ def test_frame_plot_kwd_warnings(data, kind, info):
 
     with pytest.warns(UserWarning):
         plot = data.vgplot(kind=kind, unrecognized1=None, unrecognized2=None, **kwds)
+
+
+@pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
+def test_series_plot_ax(data, kind, info):
+    ax = pdvega.Axes()
+    col = info['col']
+    kwds = info.get('kwds', {})
+    data = data[col]
+
+    plot = data.vgplot(kind=kind, ax=ax, **kwds)
+    validate_vegalite(plot.spec)
+    assert plot is ax
+    assert 'layer' not in plot.spec
+
+    data2 = 2 * data
+    plot = data2.vgplot(kind=kind, ax=ax, **kwds)
+    validate_vegalite(plot.spec)
+    assert plot is ax
+    assert 'layer' in plot.spec
+
+
+@pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
+def test_frame_plot_ax(data, kind, info):
+    ax = pdvega.Axes()
+    cols = info['usecols']
+    kwds = info.get('kwds', {})
+    data = data[cols]
+
+    plot = data.vgplot(kind=kind, ax=ax, **kwds)
+    validate_vegalite(plot.spec)
+    assert plot is ax
+    assert 'layer' not in plot.spec
+
+    data2 = 2 * data
+    plot = data2.vgplot(kind=kind, ax=ax, **kwds)
+    validate_vegalite(plot.spec)
+    assert plot is ax
+    assert 'layer' in plot.spec

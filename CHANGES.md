@@ -3,6 +3,8 @@ Change Log
 
 Release v0.2 (Unreleased)
 -------------------------
+- Fixed x-axis of Andrews curves
+- Added layering support via the ``ax`` argument to all non-compound plot types
 
 Release v0.1 (January 31, 2018)
 -------------------------------

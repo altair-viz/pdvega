@@ -45,7 +45,7 @@ class SeriesPlotMethods(BasePlotMethods):
                              "".format(kind, self.__class__.__name__))
         return plot_method(**kwargs)
 
-    def line(self, alpha=None, interactive=True, width=450, height=300, **kwds):
+    def line(self, alpha=None, ax=None, interactive=True, width=450, height=300, **kwds):
         """Line plot for Series data
 
         >>> series.vgplot.line()  # doctest: +SKIP
@@ -54,6 +54,8 @@ class SeriesPlotMethods(BasePlotMethods):
         ----------
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         interactive : bool, optional
             if True (default) then produce an interactive plot
         width : int, optional
@@ -92,9 +94,11 @@ class SeriesPlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return Axes(spec, data=df)
+        if ax is None:
+            ax = Axes()
+        return ax._add_layer(spec, data=df)
 
-    def area(self, alpha=None, interactive=True, width=450, height=300, **kwds):
+    def area(self, alpha=None, ax=None, interactive=True, width=450, height=300, **kwds):
         """Area plot for Series data
 
         >>> series.vgplot.area()  # doctest: +SKIP
@@ -103,6 +107,8 @@ class SeriesPlotMethods(BasePlotMethods):
         ----------
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         interactive : bool, optional
             if True (default) then produce an interactive plot
         width : int, optional
@@ -140,9 +146,11 @@ class SeriesPlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return Axes(spec, data=df)
+        if ax is None:
+            ax = Axes()
+        return ax._add_layer(spec, data=df)
 
-    def bar(self, alpha=None, interactive=True,
+    def bar(self, alpha=None, ax=None, interactive=True,
             width=450, height=300, **kwds):
         """Bar plot for Series data
 
@@ -154,6 +162,8 @@ class SeriesPlotMethods(BasePlotMethods):
             transparency level, 0 <= alpha <= 1
         interactive : bool, optional
             if True (default) then produce an interactive plot
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -190,9 +200,11 @@ class SeriesPlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return Axes(spec, data=df)
+        if ax is None:
+            ax = Axes()
+        return ax._add_layer(spec, data=df)
 
-    def barh(self, alpha=None, interactive=True,
+    def barh(self, alpha=None, ax=None, interactive=True,
              width=450, height=300, **kwds):
         """Horizontal bar plot for Series data
 
@@ -202,6 +214,8 @@ class SeriesPlotMethods(BasePlotMethods):
         ----------
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         interactive : bool, optional
             if True (default) then produce an interactive plot
         width : int, optional
@@ -215,12 +229,15 @@ class SeriesPlotMethods(BasePlotMethods):
             The vega-lite plot
         """
         plot = self.bar(alpha=alpha, interactive=interactive,
-                        width=width, height=height, **kwds)
-        enc = plot.spec['encoding']
+                        width=width, height=height, ax=ax, **kwds)
+        if 'encoding' in plot.spec:
+            enc = plot.spec['encoding']
+        else:
+            enc = plot.spec['layer'][-1]['encoding']
         enc['x'], enc['y'] = enc['y'], enc['x']
         return plot
 
-    def hist(self, bins=10, alpha=None, histtype='bar',
+    def hist(self, bins=10, alpha=None, ax=None, histtype='bar',
              interactive=True, width=450, height=300, **kwds):
         """Histogram plot for Series data
 
@@ -234,6 +251,8 @@ class SeriesPlotMethods(BasePlotMethods):
             transparency level, 0 <= alpha <= 1
         histtype : string, {'bar', 'step', 'stepfilled'}
             The type of histogram to generate. Default is 'bar'.
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         interactive : bool, optional
             if True (default) then produce an interactive plot
         width : int, optional
@@ -281,9 +300,11 @@ class SeriesPlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return Axes(spec, data=df)
+        if ax is None:
+            ax = Axes()
+        return ax._add_layer(spec, data=df)
 
-    def kde(self, bw_method=None, alpha=None,
+    def kde(self, bw_method=None, alpha=None, ax=None,
             interactive=True, width=450, height=300, **kwds):
         """Kernel Density Estimation plot for Series data
 
@@ -297,6 +318,8 @@ class SeriesPlotMethods(BasePlotMethods):
             See `scipy.stats.gaussian_kde` for more details.
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         interactive : bool, optional
             if True (default) then produce an interactive plot
         width : int, optional
@@ -321,7 +344,7 @@ class SeriesPlotMethods(BasePlotMethods):
         kde_ser.index.name = ' '
         f = self.__class__(kde_ser)
         return f.line(alpha=alpha, interactive=interactive,
-                      width=width, height=height, **kwds)
+                      width=width, height=height, ax=ax, **kwds)
 
     density = kde
 
@@ -354,7 +377,7 @@ class FramePlotMethods(BasePlotMethods):
                              "".format(kind, self.__class__.__name__))
         return plot_method(x=x, y=y, **kwargs)
 
-    def line(self, x=None, y=None, alpha=None,
+    def line(self, x=None, y=None, alpha=None, ax=None,
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
         """Line plot for DataFrame data
@@ -371,6 +394,8 @@ class FramePlotMethods(BasePlotMethods):
             columns (except x if specified) will be used.
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         var_name : string, optional
             the legend title
         value_name : string, optional
@@ -432,9 +457,11 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return Axes(spec, data=df)
+        if ax is None:
+            ax = Axes()
+        return ax._add_layer(spec, data=df)
 
-    def scatter(self, x, y, c=None, s=None, alpha=None,
+    def scatter(self, x, y, c=None, s=None, alpha=None, ax=None,
                 interactive=True, width=450, height=300, **kwds):
         """Scatter plot for DataFrame data
 
@@ -452,6 +479,8 @@ class FramePlotMethods(BasePlotMethods):
             the column to use to encode the size of the points
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         interactive : bool, optional
             if True (default) then produce an interactive plot
         width : int, optional
@@ -504,9 +533,11 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return Axes(spec, data=data[cols])
+        if ax is None:
+            ax = Axes()
+        return ax._add_layer(spec, data=data[cols])
 
-    def area(self, x=None, y=None, stacked=True, alpha=None,
+    def area(self, x=None, y=None, stacked=True, alpha=None, ax=None,
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
         """Area plot for DataFrame data
@@ -526,6 +557,8 @@ class FramePlotMethods(BasePlotMethods):
             areas will overlap
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         var_name : string, optional
             the legend title
         value_name : string, optional
@@ -575,9 +608,11 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return Axes(spec, data=df)
+        if ax is None:
+            ax = Axes()
+        return ax._add_layer(spec, data=df)
 
-    def bar(self, x=None, y=None, stacked=False, alpha=None,
+    def bar(self, x=None, y=None, stacked=False, alpha=None, ax=None,
             var_name='variable', value_name='value',
             interactive=True, width=450, height=300, **kwds):
         """Bar plot for DataFrame data
@@ -597,6 +632,8 @@ class FramePlotMethods(BasePlotMethods):
             areas will overlap
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         var_name : string, optional
             the legend title
         value_name : string, optional
@@ -646,9 +683,11 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return Axes(spec, data=df)
+        if ax is None:
+            ax = Axes()
+        return ax._add_layer(spec, data=df)
 
-    def barh(self, x=None, y=None, stacked=False, alpha=None,
+    def barh(self, x=None, y=None, stacked=False, alpha=None, ax=None,
              var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
         """Horizontal bar plot for DataFrame data
@@ -668,6 +707,8 @@ class FramePlotMethods(BasePlotMethods):
             areas will overlap
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         var_name : string, optional
             the legend title
         value_name : string, optional
@@ -684,16 +725,19 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        plot = self.bar(x=x, y=y, stacked=stacked, alpha=alpha,
+        plot = self.bar(x=x, y=y, stacked=stacked, alpha=alpha, ax=ax,
                         var_name=var_name, value_name=value_name,
                         interactive=interactive, width=width, height=height,
                         **kwds)
-        enc = plot.spec['encoding']
+        if 'encoding' in plot.spec:
+            enc = plot.spec['encoding']
+        else:
+            enc = plot.spec['layer'][-1]['encoding']
         enc['x'], enc['y'] = enc['y'], enc['x']
         return plot
 
     def hist(self, x=None, y=None, by=None, bins=10, stacked=False, alpha=None,
-             histtype='bar', var_name='variable', value_name='value',
+             ax=None, histtype='bar', var_name='variable', value_name='value',
              interactive=True, width=450, height=300, **kwds):
         """Histogram plot for DataFrame data
 
@@ -716,6 +760,8 @@ class FramePlotMethods(BasePlotMethods):
             areas will overlap
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         histtype : string, {'bar', 'step', 'stepfilled'}
             The type of histogram to generate. Default is 'bar'.
         var_name : string, optional
@@ -780,10 +826,12 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return Axes(spec, data=df)
+        if ax is None:
+            ax = Axes()
+        return ax._add_layer(spec, data=df)
 
     def heatmap(self, x, y, C=None, reduce_C_function='mean',
-                gridsize=100, alpha=None,
+                gridsize=100, alpha=None, ax=None,
                 interactive=True, width=450, height=300, **kwds):
         """Heatmap plot for DataFrame data
 
@@ -809,6 +857,8 @@ class FramePlotMethods(BasePlotMethods):
             the number of divisions in the x and y axis (default=100)
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         interactive : bool, optional
             if True (default) then produce an interactive plot
         width : int, optional
@@ -857,11 +907,13 @@ class FramePlotMethods(BasePlotMethods):
 
         spec = finalize_vegalite_spec(spec, interactive=interactive,
                                       width=width, height=height)
-        return Axes(spec, data=df)
+        if ax is None:
+            ax = Axes()
+        return ax._add_layer(spec, data=df)
 
     hexbin = heatmap
 
-    def kde(self, x=None, y=None, bw_method=None, alpha=None,
+    def kde(self, x=None, y=None, bw_method=None, alpha=None, ax=None,
             interactive=True, width=450, height=300, **kwds):
         """Kernel Density Estimate plot for DataFrame data
 
@@ -881,6 +933,8 @@ class FramePlotMethods(BasePlotMethods):
             See `scipy.stats.gaussian_kde` for more details.
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
+        ax : Axes, optional
+            If specified, add the plot as a layer to the given axis
         interactive : bool, optional
             if True (default) then produce an interactive plot
         width : int, optional
@@ -911,7 +965,7 @@ class FramePlotMethods(BasePlotMethods):
         kde_df.index.name = ' '
 
         f = FramePlotMethods(kde_df)
-        return f.line(value_name='Density', alpha=alpha,
+        return f.line(value_name='Density', alpha=alpha, ax=ax,
                       interactive=interactive,
                       width=width, height=height, **kwds)
 

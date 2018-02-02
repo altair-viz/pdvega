@@ -105,8 +105,47 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
     return Axes(spec, data=frame)
 
 
-def andrews_curves(data, class_column, samples=200, alpha=None,
+def andrews_curves(data, class_column, samples=200, alpha=None, ax=None,
                    width=450, height=300, interactive=True, **kwds):
+    """
+    Generates an Andrews curves visualization for visualising clusters of
+    multivariate data.
+
+    Andrews curves have the functional form:
+
+    f(t) = x_1/sqrt(2) + x_2 sin(t) + x_3 cos(t) +
+           x_4 sin(2t) + x_5 cos(2t) + ...
+
+    Where x coefficients correspond to the values of each dimension and t is
+    linearly spaced between -pi and +pi. Each row of frame then corresponds to
+    a single curve.
+
+    Parameters:
+    -----------
+    data : DataFrame
+        Data to be plotted, preferably normalized to (0.0, 1.0)
+    class_column : string
+        Name of the column containing class names
+    samples : integer
+        Number of points to plot in each curve
+    alpha: float, optional
+        The transparency of the lines
+    ax : Axes, optional
+        If specified, add the plot as a layer to the given axis
+    interactive : bool, optional
+        if True (default) then produce an interactive plot
+    width : int, optional
+        the width of the plot in pixels
+    height : int, optional
+        the height of the plot in pixels
+    **kwds: keywords
+        Additional options
+
+    Returns:
+    --------
+    ax: Matplotlib axis object
+
+    """
     if kwds:
         warnings.warn("Unrecognized keywords in pdvega.andrews_curves(): {0}"
                       "".format(list(kwds.keys())))
@@ -121,7 +160,7 @@ def andrews_curves(data, class_column, samples=200, alpha=None,
         else:
             curves += np.outer(vals[i], np.cos(ft))
 
-    df = pd.DataFrame({'t': np.tile(np.arange(samples), curves.shape[0]),
+    df = pd.DataFrame({'t': np.tile(t, curves.shape[0]),
                        'sample': np.repeat(np.arange(curves.shape[0]), curves.shape[1]),
                        ' ': curves.ravel(),
                        class_column: np.repeat(data[class_column], samples)})
@@ -141,10 +180,12 @@ def andrews_curves(data, class_column, samples=200, alpha=None,
 
     spec = finalize_vegalite_spec(spec, width=width, height=height, interactive=interactive)
 
-    return Axes(spec, data=df)
+    if ax is None:
+        ax = Axes()
+    return ax._add_layer(spec, data=df)
 
 
-def parallel_coordinates(data, class_column, cols=None, alpha=None,
+def parallel_coordinates(data, class_column, cols=None, alpha=None, ax=None,
                          width=450, height=300, interactive=True,
                          var_name='variable', value_name='value', **kwds):
     """
@@ -159,6 +200,18 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None,
         A list of column names to use
     alpha: float, optional
         The transparency of the lines
+    ax : Axes, optional
+        If specified, add the plot as a layer to the given axis
+    interactive : bool, optional
+        if True (default) then produce an interactive plot
+    width : int, optional
+        the width of the plot in pixels
+    height : int, optional
+        the height of the plot in pixels
+    var_name : string, optional
+        the legend title
+    value_name : string, optional
+        the y-axis label
 
     Returns
     -------
@@ -211,11 +264,12 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None,
 
     spec = finalize_vegalite_spec(spec, interactive=interactive,
                                   width=width, height=height)
+    if ax is None:
+        ax = Axes()
+    return ax._add_layer(spec, data=df)
 
-    return Axes(spec, data=df)
 
-
-def lag_plot(data, lag=1, **kwds):
+def lag_plot(data, lag=1, kind='scatter', ax=None, **kwds):
     """Lag plot for time series.
 
     Parameters
@@ -224,7 +278,11 @@ def lag_plot(data, lag=1, **kwds):
         the time series to plot
     lag: integer
         The lag of the scatter plot, default=1
-    kwds:
+    kind: string
+        The kind of plot to use (e.g. 'scatter', 'line')
+    ax : Axes, optional
+        If specified, add the plot as a layer to the given axis
+    **kwds:
         Additional keywords passed to data.vgplot.scatter
 
     Returns
@@ -243,4 +301,4 @@ def lag_plot(data, lag=1, **kwds):
     if isinstance(data, pd.DataFrame):
         lags['variable'] = np.repeat(data.columns, lags.shape[0] / data.shape[1])
         kwds['c'] = 'variable'
-    return lags.vgplot.scatter(y1, y2, **kwds)
+    return lags.vgplot(kind=kind, x=y1, y=y2, ax=ax, **kwds)
