@@ -59,7 +59,7 @@ class Axes(object):
             return self._data
 
     @data.setter
-    def data(self):
+    def data(self, data):
         if self._vlspec is not None:
             self._vlspec.data = data
         else:
