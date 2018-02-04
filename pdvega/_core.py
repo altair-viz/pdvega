@@ -535,7 +535,7 @@ class FramePlotMethods(BasePlotMethods):
                                       width=width, height=height)
         if ax is None:
             ax = Axes()
-        return ax._add_layer(spec, data=data[cols])
+        return ax._add_layer(spec, data=data[list(set(cols))])
 
     def area(self, x=None, y=None, stacked=True, alpha=None, ax=None,
              var_name='variable', value_name='value',

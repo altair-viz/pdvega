@@ -61,6 +61,16 @@ def test_scatter_color_size():
     utils.check_encodings(plot.spec, x='x', y='y', color='c', size='s')
 
 
+def test_scatter_common_columns():
+    df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
+                       'y': [6, 3, 4, 5, 2]})
+
+    plot = df.vgplot.scatter(x='x', y='y', c='y')
+    utils.validate_vegalite(plot.spec)
+    assert plot.spec['mark'] == 'circle'
+    utils.check_encodings(plot.spec, x='x', y='y', color='y')
+
+
 def test_bar_simple():
     df = pd.DataFrame({'x': [1, 4, 2, 3, 5],
                        'y': [6, 3, 4, 5, 2]})
