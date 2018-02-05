@@ -897,8 +897,7 @@ class FramePlotMethods(BasePlotMethods):
             "view": {
               "stroke": "transparent"
             }
-          },
-          "mark": "rect",
+          }
         }
 
         if alpha is not None:
