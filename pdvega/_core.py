@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import altair as alt
 
 from ._utils import (infer_vegalite_type, finalize_vegalite_spec,
                      unpivot_frame, warn_if_keywords_unused,
@@ -8,7 +9,7 @@ from ._pandas_internals import (PandasObject,
                                 register_dataframe_accessor,
                                 register_series_accessor)
 
-from ._axes import Axes
+# from ._axes import Axes
 
 
 class BasePlotMethods(PandasObject):
@@ -45,6 +46,9 @@ class SeriesPlotMethods(BasePlotMethods):
                              "".format(kind, self.__class__.__name__))
         return plot_method(**kwargs)
 
+    def _plot(self, interactive=True, width=450, height=300):
+        return alt.Chart(data=self._data).properties(width=width, height=height)
+
     def line(self, alpha=None, ax=None, interactive=True, width=450, height=300, **kwds):
         """Line plot for Series data
 
@@ -73,6 +77,8 @@ class SeriesPlotMethods(BasePlotMethods):
         df = data.reset_index()
         df.columns = map(str, df.columns)
         x, y = df.columns
+
+        # return self._plot(width=width, height=height).mark_
 
         spec = {
           "mark": "line",
@@ -150,7 +156,7 @@ class SeriesPlotMethods(BasePlotMethods):
             ax = Axes()
         return ax._add_layer(spec, data=df)
 
-    def bar(self, alpha=None, ax=None, interactive=True,
+    def bar(self, alpha=None, interactive=True,
             width=450, height=300, **kwds):
         """Bar plot for Series data
 
@@ -180,29 +186,16 @@ class SeriesPlotMethods(BasePlotMethods):
         df.columns = map(str, df.columns)
         x, y = df.columns
 
-        spec = {
-          "mark": "bar",
-          "encoding": {
-            "x": {
-                "field": x,
-                "type": infer_vegalite_type(df[x], ordinal_threshold=50)
-            },
-            "y": {
-                "field": y,
-                "type": infer_vegalite_type(df[y], ordinal_threshold=0)
-            },
-          },
-        }
+        chart = self._plot(data=df, width=width, height=height).mark_bar().encode(
+            x='x',
+            y='y',
+            opacity=alt.Value(alpha or 1)
+        )
 
-        if alpha is not None:
-            assert 0 <= alpha <= 1
-            spec['encoding']['opacity'] = {'value': alpha}
+        if interactive:
+            return chart.interactive()
 
-        spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                      width=width, height=height)
-        if ax is None:
-            ax = Axes()
-        return ax._add_layer(spec, data=df)
+        return chart
 
     def barh(self, alpha=None, ax=None, interactive=True,
              width=450, height=300, **kwds):

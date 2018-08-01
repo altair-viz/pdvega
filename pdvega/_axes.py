@@ -1,4 +1,4 @@
-from vega3 import VegaLite
+import altair as alt
 
 
 class MaxRowsExceeded(ValueError):
