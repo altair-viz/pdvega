@@ -2,25 +2,36 @@ import numpy as np
 import pandas as pd
 import altair as alt
 
-from ._utils import (infer_vegalite_type, finalize_vegalite_spec,
-                     unpivot_frame, warn_if_keywords_unused,
-                     validate_aggregation)
-from ._pandas_internals import (PandasObject,
-                                register_dataframe_accessor,
-                                register_series_accessor)
-
-# from ._axes import Axes
+from ._utils import (
+    infer_vegalite_type,
+    unpivot_frame,
+    warn_if_keywords_unused,
+    validate_aggregation,
+)
+from ._pandas_internals import (
+    PandasObject,
+    register_dataframe_accessor,
+    register_series_accessor,
+)
 
 
 class BasePlotMethods(PandasObject):
+
     def __init__(self, data):
         self._data = data
 
     def __call__(self, kind, *args, **kwargs):
         raise NotImplementedError()
 
+    def _plot(self, data=None, width=450, height=300, title=''):
 
-@register_series_accessor('vgplot')
+        if data is None:
+            data = self._data
+        chart = alt.Chart(data=data).properties(width=width, height=height, title=title)
+        return chart
+
+
+@register_series_accessor("vgplot")
 class SeriesPlotMethods(BasePlotMethods):
     """Series Accessor & Method for creating Vega-Lite visualizations.
 
@@ -38,18 +49,19 @@ class SeriesPlotMethods(BasePlotMethods):
     with the ``kind`` argument: ``s.vgplot(kind='line', **kwds)``
     is equivalent to ``s.vgplot.line(**kwds)``
     """
-    def __call__(self, kind='line', **kwargs):
+
+    def __call__(self, kind="line", **kwargs):
         try:
             plot_method = getattr(self, kind)
         except AttributeError:
-            raise ValueError("kind='{0}' not valid for {1}"
-                             "".format(kind, self.__class__.__name__))
+            raise ValueError(
+                "kind='{0}' not valid for {1}" "".format(kind, self.__class__.__name__)
+            )
         return plot_method(**kwargs)
 
-    def _plot(self, interactive=True, width=450, height=300):
-        return alt.Chart(data=self._data).properties(width=width, height=height)
-
-    def line(self, alpha=None, ax=None, interactive=True, width=450, height=300, **kwds):
+    def line(
+        self, alpha=None, ax=None, width=450, height=300, **kwds
+    ):
         """Line plot for Series data
 
         >>> series.vgplot.line()  # doctest: +SKIP
@@ -69,42 +81,24 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
+        axes : altair.Chart
             The vega-lite plot
         """
-        warn_if_keywords_unused('line', kwds)
-        data = self._data
-        df = data.reset_index()
+        warn_if_keywords_unused("line", kwds)
+        df = self._data.reset_index()
         df.columns = map(str, df.columns)
         x, y = df.columns
 
-        # return self._plot(width=width, height=height).mark_
+        chart = self._plot(data=df, width=width, height=height, title=kwds.get('title', ''))
 
-        spec = {
-          "mark": "line",
-          "encoding": {
-            "x": {
-                "field": x,
-                "type": infer_vegalite_type(df[x], ordinal_threshold=0)
-            },
-            "y": {
-                "field": y,
-                "type": infer_vegalite_type(df[y], ordinal_threshold=0)
-            },
-          }
-        }
+        return chart.mark_line().encode(
+            x=alt.X(x, type=infer_vegalite_type(df[x])),
+            y=alt.Y(y, type=infer_vegalite_type(df[y])), opacity=alt.value(alpha or 1)
+        )
 
-        if alpha is not None:
-            assert 0 <= alpha <= 1
-            spec['encoding']['opacity'] = {'value': alpha}
-
-        spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                      width=width, height=height)
-        if ax is None:
-            ax = Axes()
-        return ax._add_layer(spec, data=df)
-
-    def area(self, alpha=None, ax=None, interactive=True, width=450, height=300, **kwds):
+    def area(
+        self, alpha=None, width=450, height=300, **kwds
+    ):
         """Area plot for Series data
 
         >>> series.vgplot.area()  # doctest: +SKIP
@@ -127,37 +121,19 @@ class SeriesPlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        warn_if_keywords_unused('area', kwds)
+        warn_if_keywords_unused("area", kwds)
         df = self._data.reset_index()
         df.columns = map(str, df.columns)
         x, y = df.columns
 
-        spec = {
-          "mark": "area",
-          "encoding": {
-            "x": {
-                "field": x,
-                "type": infer_vegalite_type(df[x], ordinal_threshold=0)
-            },
-            "y": {
-                "field": y,
-                "type": infer_vegalite_type(df[y], ordinal_threshold=0)
-            },
-          },
-        }
+        chart = self._plot(data=df, width=width, height=height, title=kwds.get('title', ''))
 
-        if alpha is not None:
-            assert 0 <= alpha <= 1
-            spec['encoding']['opacity'] = {'value': alpha}
+        return chart.mark_area().encode(
+            x=alt.X(x, type=infer_vegalite_type(df[x])),
+            y=alt.Y(y, type=infer_vegalite_type(df[y])), opacity=alt.value(alpha or 1)
+        )
 
-        spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                      width=width, height=height)
-        if ax is None:
-            ax = Axes()
-        return ax._add_layer(spec, data=df)
-
-    def bar(self, alpha=None, interactive=True,
-            width=450, height=300, **kwds):
+    def bar(self, alpha=None, width=450, height=300, **kwds):
         """Bar plot for Series data
 
         >>> series.vgplot.bar()  # doctest: +SKIP
@@ -180,25 +156,22 @@ class SeriesPlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        warn_if_keywords_unused('bar', kwds)
+        warn_if_keywords_unused("bar", kwds)
 
         df = self._data.reset_index()
         df.columns = map(str, df.columns)
         x, y = df.columns
 
-        chart = self._plot(data=df, width=width, height=height).mark_bar().encode(
-            x='x',
-            y='y',
-            opacity=alt.Value(alpha or 1)
+        chart = self._plot(data=df, width=width, height=height, title=kwds.get('title', ''))
+
+        return chart.mark_bar().encode(
+            x=alt.X(x, type=infer_vegalite_type(df[x])),
+            y=alt.Y(y, type=infer_vegalite_type(df[y])), opacity=alt.value(alpha or 1)
         )
 
-        if interactive:
-            return chart.interactive()
-
-        return chart
-
-    def barh(self, alpha=None, ax=None, interactive=True,
-             width=450, height=300, **kwds):
+    def barh(
+        self, alpha=None, width=450, height=300, **kwds
+    ):
         """Horizontal bar plot for Series data
 
         >>> series.vgplot.barh()  # doctest: +SKIP
@@ -221,17 +194,26 @@ class SeriesPlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        plot = self.bar(alpha=alpha, interactive=interactive,
-                        width=width, height=height, ax=ax, **kwds)
-        if 'encoding' in plot.spec:
-            enc = plot.spec['encoding']
-        else:
-            enc = plot.spec['layer'][-1]['encoding']
-        enc['x'], enc['y'] = enc['y'], enc['x']
+        plot = self.bar(
+            alpha=alpha,
+            width=width,
+            height=height,
+            **kwds
+        )
+
+        enc = plot.encoding
+        enc["x"], enc["y"] = enc["y"], enc["x"]
         return plot
 
-    def hist(self, bins=10, alpha=None, ax=None, histtype='bar',
-             interactive=True, width=450, height=300, **kwds):
+    def hist(
+        self,
+        bins=10,
+        alpha=None,
+        histtype="bar",
+        width=450,
+        height=300,
+        **kwds
+    ):
         """Histogram plot for Series data
 
         >>> series.vgplot.hist()  # doctest: +SKIP
@@ -258,47 +240,37 @@ class SeriesPlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        warn_if_keywords_unused('hist', kwds)
+        warn_if_keywords_unused("hist", kwds)
         df = self._data.to_frame()
-        df.columns = map(str, df.columns)
+        x, y = map(str, df.columns)
 
-        if histtype in ['bar', 'barstacked']:
-            mark = 'bar'
-        elif histtype == 'stepfilled':
-            mark = {'type': 'area', 'interpolate': 'step'}
-        elif histtype == 'step':
-            mark = {'type': 'line', 'interpolate': 'step'}
+        if histtype in ["bar", "barstacked"]:
+            mark = "bar"
+        elif histtype == "stepfilled":
+            mark = {"type": "area", "interpolate": "step"}
+        elif histtype == "step":
+            mark = {"type": "line", "interpolate": "step"}
         else:
-            raise ValueError("histtype '{0}' is not recognized"
-                             "".format(histtype))
+            raise ValueError("histtype '{0}' is not recognized" "".format(histtype))
 
-        spec = {
-            "mark": mark,
-            "encoding": {
-                "x": {
-                    "bin": {"maxbins": bins},
-                    "field": df.columns[0],
-                    "type": "quantitative"
-                },
-                "y": {
-                    "aggregate": "count",
-                    "type": "quantitative"
-                }
-            },
-        }
+        chart = self._plot(data=df, width=width, height=height, title=kwds.get('title', ''))
 
-        if alpha is not None:
-            assert 0 <= alpha <= 1
-            spec['encoding']['opacity'] = {'value': alpha}
+        return chart.mark_bar().encode(
+            x=alt.X(x, type=infer_vegalite_type(df[x])),
+            y=alt.Y(y, type=infer_vegalite_type(df[y])), opacity=alt.value(alpha or 1)
+        )
 
-        spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                      width=width, height=height)
-        if ax is None:
-            ax = Axes()
-        return ax._add_layer(spec, data=df)
+        chart.mark = mark
+        return chart
 
-    def kde(self, bw_method=None, alpha=None, ax=None,
-            interactive=True, width=450, height=300, **kwds):
+    def kde(
+        self,
+        bw_method=None,
+        alpha=None,
+        width=450,
+        height=300,
+        **kwds
+    ):
         """Kernel Density Estimation plot for Series data
 
         >>> series.vgplot.kde()  # doctest: +SKIP
@@ -332,17 +304,23 @@ class SeriesPlotMethods(BasePlotMethods):
         trange = tmax - tmin
         t = np.linspace(tmin - 0.5 * trange, tmax + 0.5 * trange, 1000)
 
-        kde_ser = pd.Series(gaussian_kde(data, bw_method=bw_method).evaluate(t),
-                            index=t, name=data.name)
-        kde_ser.index.name = ' '
+        kde_ser = pd.Series(
+            gaussian_kde(data, bw_method=bw_method).evaluate(t), index=t, name=data.name
+        )
+
+        kde_ser.index.name = " "
         f = self.__class__(kde_ser)
-        return f.line(alpha=alpha, interactive=interactive,
-                      width=width, height=height, ax=ax, **kwds)
+        return f.line(
+            alpha=alpha,
+            width=width,
+            height=height,
+            **kwds
+        )
 
     density = kde
 
 
-@register_dataframe_accessor('vgplot')
+@register_dataframe_accessor("vgplot")
 class FramePlotMethods(BasePlotMethods):
     """DataFrame Accessor & Method for creating Vega-Lite visualizations.
 
@@ -362,17 +340,29 @@ class FramePlotMethods(BasePlotMethods):
     with the ``kind`` argument: ``df.vgplot(kind='line', **kwds)``
     is equivalent to ``df.vgplot.line(**kwds)``
     """
-    def __call__(self, x=None, y=None, kind='line', **kwargs):
+
+    def __call__(self, x=None, y=None, kind="line", **kwargs):
         try:
             plot_method = getattr(self, kind)
         except AttributeError:
-            raise ValueError("kind='{0}' not valid for {1}"
-                             "".format(kind, self.__class__.__name__))
+            raise ValueError(
+                "kind='{0}' not valid for {1}" "".format(kind, self.__class__.__name__)
+            )
         return plot_method(x=x, y=y, **kwargs)
 
-    def line(self, x=None, y=None, alpha=None, ax=None,
-             var_name='variable', value_name='value',
-             interactive=True, width=450, height=300, **kwds):
+    def line(
+        self,
+        x=None,
+        y=None,
+        alpha=None,
+        ax=None,
+        var_name="variable",
+        value_name="value",
+        interactive=True,
+        width=450,
+        height=300,
+        **kwds
+    ):
         """Line plot for DataFrame data
 
         >>> dataframe.vgplot.line()  # doctest: +SKIP
@@ -405,57 +395,46 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        warn_if_keywords_unused('line', kwds)
+        warn_if_keywords_unused("line", kwds)
         use_order = (x is not None)
 
         if use_order:
             df = self._data.reset_index()
             order = df.columns[0]
-            df = unpivot_frame(df, x=(x, order), y=y,
-                               var_name=var_name, value_name=value_name)
+            df = unpivot_frame(
+                df, x=(x, order), y=y, var_name=var_name, value_name=value_name
+            )
         else:
-            df = unpivot_frame(self._data, x=x, y=y,
-                               var_name=var_name, value_name=value_name)
+            df = unpivot_frame(
+                self._data, x=x, y=y, var_name=var_name, value_name=value_name
+            )
             x = df.columns[0]
 
-        spec = {
-            "mark": "line",
-            "encoding": {
-                "x": {
-                    "field": x,
-                    "type": infer_vegalite_type(df[x],
-                                                ordinal_threshold=0)
-                },
-                "y": {
-                    "field": value_name,
-                    "type": infer_vegalite_type(df[value_name],
-                                                ordinal_threshold=0)
-                },
-                "color": {
-                    "field": var_name,
-                    "type": infer_vegalite_type(df[var_name],
-                                                ordinal_threshold=10)
-                },
-            },
-        }
+        chart = self._plot(width=width, height=height, title=kwds.get('title', None))
+        return chart.mark_line(
+            x=x, y=y, opacity=alt.value(alpha or 1)
+        )
+
         if use_order:
-            spec['encoding']['order'] = {
-                'field': order,
-                'type': infer_vegalite_type(df[order])
+            chart.encoding["order"] = {
+                "field": order, "type": infer_vegalite_type(df[order])
             }
 
-        if alpha is not None:
-            assert 0 <= alpha <= 1
-            spec['encoding']['opacity'] = {'value': alpha}
+        return chart
 
-        spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                      width=width, height=height)
-        if ax is None:
-            ax = Axes()
-        return ax._add_layer(spec, data=df)
-
-    def scatter(self, x, y, c=None, s=None, alpha=None, ax=None,
-                interactive=True, width=450, height=300, **kwds):
+    def scatter(
+        self,
+        x,
+        y,
+        c=None,
+        s=None,
+        alpha=None,
+        ax=None,
+        interactive=True,
+        width=450,
+        height=300,
+        **kwds
+    ):
         """Scatter plot for DataFrame data
 
         >>> dataframe.vgplot.scatter(x, y)  # doctest: +SKIP
@@ -486,53 +465,50 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        warn_if_keywords_unused('scatter', kwds)
+        warn_if_keywords_unused("scatter", kwds)
         data = self._data
         cols = [x, y]
 
-        encoding = {
-          "x": {
-              "field": x,
-              "type": infer_vegalite_type(data[x], ordinal_threshold=0)
-          },
-          "y": {
-              "field": y,
-              "type": infer_vegalite_type(data[y], ordinal_threshold=0)
-          },
-        }
+        chart = self._plot(width=width, height=height, title=kwds.get('title', None))
+        return chart.mark_line(
+            x=x, y=y, opacity=alt.value(alpha or 1)
+        )
 
         if c is not None:
             cols.append(c)
-            encoding['color'] = {
-                'field': c,
-                'type': infer_vegalite_type(data[c])
-            }
+            encoding["color"] = {"field": c, "type": infer_vegalite_type(data[c])}
 
         if s is not None:
             cols.append(s)
-            encoding['size'] = {
-                'field': s,
-                'type': infer_vegalite_type(data[s])
-            }
+            encoding["size"] = {"field": s, "type": infer_vegalite_type(data[s])}
 
         if alpha is not None:
             assert 0 <= alpha <= 1
-            encoding['opacity'] = {'value': alpha}
+            encoding["opacity"] = {"value": alpha}
 
-        spec = {
-          "mark": "circle",
-          "encoding": encoding
-        }
+        spec = {"mark": "circle", "encoding": encoding}
 
-        spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                      width=width, height=height)
+        spec = finalize_vegalite_spec(
+            spec, interactive=interactive, width=width, height=height
+        )
         if ax is None:
             ax = Axes()
         return ax._add_layer(spec, data=data[list(set(cols))])
 
-    def area(self, x=None, y=None, stacked=True, alpha=None, ax=None,
-             var_name='variable', value_name='value',
-             interactive=True, width=450, height=300, **kwds):
+    def area(
+        self,
+        x=None,
+        y=None,
+        stacked=True,
+        alpha=None,
+        ax=None,
+        var_name="variable",
+        value_name="value",
+        interactive=True,
+        width=450,
+        height=300,
+        **kwds
+    ):
         """Area plot for DataFrame data
 
         >>> dataframe.vgplot.area()  # doctest: +SKIP
@@ -568,28 +544,28 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        warn_if_keywords_unused('area', kwds)
-        df = unpivot_frame(self._data, x=x, y=y,
-                           var_name=var_name, value_name=value_name)
+        warn_if_keywords_unused("area", kwds)
+        df = unpivot_frame(
+            self._data, x=x, y=y, var_name=var_name, value_name=value_name
+        )
         x = df.columns[0]
 
         spec = {
-          "mark": "area",
-          "encoding": {
-            "x": {
-              "field": x,
-              "type": infer_vegalite_type(df[x], ordinal_threshold=0)
+            "mark": "area",
+            "encoding": {
+                "x": {
+                    "field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=0)
+                },
+                "y": {
+                    "field": value_name,
+                    "type": infer_vegalite_type(df[value_name], ordinal_threshold=0),
+                    "stack": "zero" if stacked else None,
+                },
+                "color": {
+                    "field": var_name,
+                    "type": infer_vegalite_type(df[var_name], ordinal_threshold=10),
+                },
             },
-            "y": {
-              "field": value_name,
-              "type": infer_vegalite_type(df[value_name], ordinal_threshold=0),
-              "stack": 'zero' if stacked else None
-            },
-            "color": {
-              "field": var_name,
-              "type": infer_vegalite_type(df[var_name], ordinal_threshold=10)
-            }
-          }
         }
 
         if alpha is None and not stacked and df[var_name].nunique() > 1:
@@ -597,17 +573,29 @@ class FramePlotMethods(BasePlotMethods):
 
         if alpha is not None:
             assert 0 <= alpha <= 1
-            spec['encoding']['opacity'] = {'value': alpha}
+            spec["encoding"]["opacity"] = {"value": alpha}
 
-        spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                      width=width, height=height)
+        spec = finalize_vegalite_spec(
+            spec, interactive=interactive, width=width, height=height
+        )
         if ax is None:
             ax = Axes()
         return ax._add_layer(spec, data=df)
 
-    def bar(self, x=None, y=None, stacked=False, alpha=None, ax=None,
-            var_name='variable', value_name='value',
-            interactive=True, width=450, height=300, **kwds):
+    def bar(
+        self,
+        x=None,
+        y=None,
+        stacked=False,
+        alpha=None,
+        ax=None,
+        var_name="variable",
+        value_name="value",
+        interactive=True,
+        width=450,
+        height=300,
+        **kwds
+    ):
         """Bar plot for DataFrame data
 
         >>> dataframe.vgplot.bar()  # doctest: +SKIP
@@ -643,28 +631,27 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        warn_if_keywords_unused('bar', kwds)
-        df = unpivot_frame(self._data, x=x, y=y,
-                           var_name=var_name, value_name=value_name)
+        warn_if_keywords_unused("bar", kwds)
+        df = unpivot_frame(
+            self._data, x=x, y=y, var_name=var_name, value_name=value_name
+        )
         x = df.columns[0]
 
         spec = {
-          "mark": "bar",
-          "encoding": {
-            "x": {
-                "field": x,
-                "type": infer_vegalite_type(df[x], ordinal_threshold=50)
+            "mark": "bar",
+            "encoding": {
+                "x": {
+                    "field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)
+                },
+                "y": {
+                    "field": "value",
+                    "type": infer_vegalite_type(df["value"], ordinal_threshold=0),
+                    "stack": "zero" if stacked else None,
+                },
+                "color": {
+                    "field": "variable", "type": infer_vegalite_type(df["variable"])
+                },
             },
-            "y": {
-                "field": "value",
-                "type": infer_vegalite_type(df["value"], ordinal_threshold=0),
-                "stack": 'zero' if stacked else None
-            },
-            "color": {
-                "field": "variable",
-                "type": infer_vegalite_type(df["variable"])
-            },
-          },
         }
 
         if alpha is None and not stacked and df[var_name].nunique() > 1:
@@ -672,17 +659,29 @@ class FramePlotMethods(BasePlotMethods):
 
         if alpha is not None:
             assert 0 <= alpha <= 1
-            spec['encoding']['opacity'] = {'value': alpha}
+            spec["encoding"]["opacity"] = {"value": alpha}
 
-        spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                      width=width, height=height)
+        spec = finalize_vegalite_spec(
+            spec, interactive=interactive, width=width, height=height
+        )
         if ax is None:
             ax = Axes()
         return ax._add_layer(spec, data=df)
 
-    def barh(self, x=None, y=None, stacked=False, alpha=None, ax=None,
-             var_name='variable', value_name='value',
-             interactive=True, width=450, height=300, **kwds):
+    def barh(
+        self,
+        x=None,
+        y=None,
+        stacked=False,
+        alpha=None,
+        ax=None,
+        var_name="variable",
+        value_name="value",
+        interactive=True,
+        width=450,
+        height=300,
+        **kwds
+    ):
         """Horizontal bar plot for DataFrame data
 
         >>> dataframe.vgplot.barh()  # doctest: +SKIP
@@ -718,20 +717,43 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        plot = self.bar(x=x, y=y, stacked=stacked, alpha=alpha, ax=ax,
-                        var_name=var_name, value_name=value_name,
-                        interactive=interactive, width=width, height=height,
-                        **kwds)
-        if 'encoding' in plot.spec:
-            enc = plot.spec['encoding']
+        plot = self.bar(
+            x=x,
+            y=y,
+            stacked=stacked,
+            alpha=alpha,
+            ax=ax,
+            var_name=var_name,
+            value_name=value_name,
+            interactive=interactive,
+            width=width,
+            height=height,
+            **kwds
+        )
+        if "encoding" in plot.spec:
+            enc = plot.spec["encoding"]
         else:
-            enc = plot.spec['layer'][-1]['encoding']
-        enc['x'], enc['y'] = enc['y'], enc['x']
+            enc = plot.spec["layer"][-1]["encoding"]
+        enc["x"], enc["y"] = enc["y"], enc["x"]
         return plot
 
-    def hist(self, x=None, y=None, by=None, bins=10, stacked=False, alpha=None,
-             ax=None, histtype='bar', var_name='variable', value_name='value',
-             interactive=True, width=450, height=300, **kwds):
+    def hist(
+        self,
+        x=None,
+        y=None,
+        by=None,
+        bins=10,
+        stacked=False,
+        alpha=None,
+        ax=None,
+        histtype="bar",
+        var_name="variable",
+        value_name="value",
+        interactive=True,
+        width=450,
+        height=300,
+        **kwds
+    ):
         """Histogram plot for DataFrame data
 
         >>> dataframe.vgplot.hist()  # doctest: +SKIP
@@ -773,22 +795,21 @@ class FramePlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        warn_if_keywords_unused('hist', kwds)
+        warn_if_keywords_unused("hist", kwds)
         if by is not None:
-            raise NotImplementedError('vgplot.hist `by` keyword')
+            raise NotImplementedError("vgplot.hist `by` keyword")
         if x is not None or y is not None:
             raise NotImplementedError('"x" and "y" args to hist()')
         df = self._data.melt(var_name=var_name, value_name=value_name)
 
-        if histtype in ['bar', 'barstacked']:
-            mark = 'bar'
-        elif histtype == 'stepfilled':
-            mark = {'type': 'area', 'interpolate': 'step'}
-        elif histtype == 'step':
-            mark = {'type': 'line', 'interpolate': 'step'}
+        if histtype in ["bar", "barstacked"]:
+            mark = "bar"
+        elif histtype == "stepfilled":
+            mark = {"type": "area", "interpolate": "step"}
+        elif histtype == "step":
+            mark = {"type": "line", "interpolate": "step"}
         else:
-            raise ValueError("histtype '{0}' is not recognized"
-                             "".format(histtype))
+            raise ValueError("histtype '{0}' is not recognized" "".format(histtype))
 
         spec = {
             "mark": mark,
@@ -796,17 +817,14 @@ class FramePlotMethods(BasePlotMethods):
                 "x": {
                     "bin": {"maxbins": bins},
                     "field": value_name,
-                    "type": "quantitative"
+                    "type": "quantitative",
                 },
                 "y": {
                     "aggregate": "count",
                     "type": "quantitative",
-                    "stack": ('zero' if stacked else None)
+                    "stack": ("zero" if stacked else None),
                 },
-                "color": {
-                    "field": var_name,
-                    "type": "nominal"
-                },
+                "color": {"field": var_name, "type": "nominal"},
             },
         }
 
@@ -815,17 +833,29 @@ class FramePlotMethods(BasePlotMethods):
 
         if alpha is not None:
             assert 0 <= alpha <= 1
-            spec['encoding']['opacity'] = {'value': alpha}
+            spec["encoding"]["opacity"] = {"value": alpha}
 
-        spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                      width=width, height=height)
+        spec = finalize_vegalite_spec(
+            spec, interactive=interactive, width=width, height=height
+        )
         if ax is None:
             ax = Axes()
         return ax._add_layer(spec, data=df)
 
-    def heatmap(self, x, y, C=None, reduce_C_function='mean',
-                gridsize=100, alpha=None, ax=None,
-                interactive=True, width=450, height=300, **kwds):
+    def heatmap(
+        self,
+        x,
+        y,
+        C=None,
+        reduce_C_function="mean",
+        gridsize=100,
+        alpha=None,
+        ax=None,
+        interactive=True,
+        width=450,
+        height=300,
+        **kwds
+    ):
         """Heatmap plot for DataFrame data
 
         Note that Vega-Lite does not support hexagonal binning, so this method
@@ -865,7 +895,7 @@ class FramePlotMethods(BasePlotMethods):
             The vega-lite plot
         """
         # TODO: Use actual hexbins rather than a grid heatmap
-        warn_if_keywords_unused('hexbin', kwds)
+        warn_if_keywords_unused("hexbin", kwds)
         reduce_C_function = validate_aggregation(reduce_C_function)
 
         if C is None:
@@ -874,39 +904,51 @@ class FramePlotMethods(BasePlotMethods):
             df = self._data[[x, y, C]]
 
         spec = {
-          "mark": "rect",
-          "encoding": {
-            "x": {"field": x, "bin": {"maxbins": gridsize}, "type": "quantitative"},
-            "y": {"field": y, "bin": {"maxbins": gridsize}, "type": "quantitative"},
-            "color": ({"aggregate": "count", "type": "quantitative"} if C is None else
-                      {"field": C, "aggregate": reduce_C_function, "type": "quantitative"})
-          },
-          "config": {
-            "range": {
-              "heatmap": {
-                "scheme": "greenblue"
-              }
+            "mark": "rect",
+            "encoding": {
+                "x": {"field": x, "bin": {"maxbins": gridsize}, "type": "quantitative"},
+                "y": {"field": y, "bin": {"maxbins": gridsize}, "type": "quantitative"},
+                "color": (
+                    {"aggregate": "count", "type": "quantitative"}
+                    if C is None
+                    else {
+                        "field": C,
+                        "aggregate": reduce_C_function,
+                        "type": "quantitative",
+                    }
+                ),
             },
-            "view": {
-              "stroke": "transparent"
-            }
-          }
+            "config": {
+                "range": {"heatmap": {"scheme": "greenblue"}},
+                "view": {"stroke": "transparent"},
+            },
         }
 
         if alpha is not None:
             assert 0 <= alpha <= 1
-            spec['encoding']['opacity'] = {'value': alpha}
+            spec["encoding"]["opacity"] = {"value": alpha}
 
-        spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                      width=width, height=height)
+        spec = finalize_vegalite_spec(
+            spec, interactive=interactive, width=width, height=height
+        )
         if ax is None:
             ax = Axes()
         return ax._add_layer(spec, data=df)
 
     hexbin = heatmap
 
-    def kde(self, x=None, y=None, bw_method=None, alpha=None, ax=None,
-            interactive=True, width=450, height=300, **kwds):
+    def kde(
+        self,
+        x=None,
+        y=None,
+        bw_method=None,
+        alpha=None,
+        ax=None,
+        interactive=True,
+        width=450,
+        height=300,
+        **kwds
+    ):
         """Kernel Density Estimate plot for DataFrame data
 
         >>> dataframe.vgplot.kde()  # doctest: +SKIP
@@ -940,6 +982,7 @@ class FramePlotMethods(BasePlotMethods):
             The vega-lite plot
         """
         from scipy.stats import gaussian_kde as kde
+
         if x is not None:
             raise NotImplementedError('"x" argument to df.vgplot.kde()')
 
@@ -952,13 +995,20 @@ class FramePlotMethods(BasePlotMethods):
         trange = tmax - tmin
         t = np.linspace(tmin - 0.5 * trange, tmax + 0.5 * trange, 1000)
 
-        kde_df = pd.DataFrame({col: kde(df[col], bw_method=bw_method).evaluate(t)
-                               for col in df}, index=t)
-        kde_df.index.name = ' '
+        kde_df = pd.DataFrame(
+            {col: kde(df[col], bw_method=bw_method).evaluate(t) for col in df}, index=t
+        )
+        kde_df.index.name = " "
 
         f = FramePlotMethods(kde_df)
-        return f.line(value_name='Density', alpha=alpha, ax=ax,
-                      interactive=interactive,
-                      width=width, height=height, **kwds)
+        return f.line(
+            value_name="Density",
+            alpha=alpha,
+            ax=ax,
+            interactive=interactive,
+            width=width,
+            height=height,
+            **kwds
+        )
 
     density = kde
