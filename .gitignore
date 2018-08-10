@@ -104,4 +104,4 @@ ENV/
 *~
 
 # notebooks
-Untitled*.ipynb
+Untitled*.ipynb**/.DS_Store
