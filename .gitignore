@@ -104,4 +104,8 @@ ENV/
 *~
 
 # notebooks
-Untitled*.ipynb**/.DS_Store
+Untitled*.ipynb
+
+# macs
+**/.DS_Store
+.DS_Store
