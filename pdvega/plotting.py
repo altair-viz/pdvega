@@ -1,10 +1,9 @@
 """Core plotting routines"""
 import warnings
-
+import altair as alt
 import numpy as np
 import pandas as pd
 
-from ._axes import Axes
 from ._utils import infer_vegalite_type, finalize_vegalite_spec
 
 __all__ = ['scatter_matrix', 'andrews_curves', 'parallel_coordinates',
@@ -102,7 +101,7 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
     else:
         cond['field'] = c
         cond['type'] = infer_vegalite_type(frame[c])
-    return Axes(spec, data=frame)
+    return alt.Chart(data=frame).from_dict(spec)
 
 
 def andrews_curves(data, class_column, samples=200, alpha=None, ax=None,

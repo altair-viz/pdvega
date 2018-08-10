@@ -23,7 +23,7 @@ class BasePlotMethods(PandasObject):
     def __call__(self, kind, *args, **kwargs):
         raise NotImplementedError()
 
-    def _plot(self, data=None, width=450, height=300, title=''):
+    def _plot(self, data=None, width=450, height=300, title=""):
 
         if data is None:
             data = self._data
@@ -59,9 +59,7 @@ class SeriesPlotMethods(BasePlotMethods):
             )
         return plot_method(**kwargs)
 
-    def line(
-        self, alpha=None, ax=None, width=450, height=300, **kwds
-    ):
+    def line(self, alpha=None, ax=None, width=450, height=300, **kwds):
         """Line plot for Series data
 
         >>> series.vgplot.line()  # doctest: +SKIP
@@ -89,16 +87,17 @@ class SeriesPlotMethods(BasePlotMethods):
         df.columns = map(str, df.columns)
         x, y = df.columns
 
-        chart = self._plot(data=df, width=width, height=height, title=kwds.get('title', ''))
+        chart = self._plot(
+            data=df, width=width, height=height, title=kwds.get("title", "")
+        )
 
         return chart.mark_line().encode(
             x=alt.X(x, type=infer_vegalite_type(df[x])),
-            y=alt.Y(y, type=infer_vegalite_type(df[y])), opacity=alt.value(alpha or 1)
+            y=alt.Y(y, type=infer_vegalite_type(df[y])),
+            opacity=alt.value(alpha or 1),
         )
 
-    def area(
-        self, alpha=None, width=450, height=300, **kwds
-    ):
+    def area(self, alpha=None, width=450, height=300, **kwds):
         """Area plot for Series data
 
         >>> series.vgplot.area()  # doctest: +SKIP
@@ -126,11 +125,14 @@ class SeriesPlotMethods(BasePlotMethods):
         df.columns = map(str, df.columns)
         x, y = df.columns
 
-        chart = self._plot(data=df, width=width, height=height, title=kwds.get('title', ''))
+        chart = self._plot(
+            data=df, width=width, height=height, title=kwds.get("title", "")
+        )
 
         return chart.mark_area().encode(
             x=alt.X(x, type=infer_vegalite_type(df[x])),
-            y=alt.Y(y, type=infer_vegalite_type(df[y])), opacity=alt.value(alpha or 1)
+            y=alt.Y(y, type=infer_vegalite_type(df[y])),
+            opacity=alt.value(alpha or 1),
         )
 
     def bar(self, alpha=None, width=450, height=300, **kwds):
@@ -162,16 +164,17 @@ class SeriesPlotMethods(BasePlotMethods):
         df.columns = map(str, df.columns)
         x, y = df.columns
 
-        chart = self._plot(data=df, width=width, height=height, title=kwds.get('title', ''))
+        chart = self._plot(
+            data=df, width=width, height=height, title=kwds.get("title", "")
+        )
 
         return chart.mark_bar().encode(
             x=alt.X(x, type=infer_vegalite_type(df[x])),
-            y=alt.Y(y, type=infer_vegalite_type(df[y])), opacity=alt.value(alpha or 1)
+            y=alt.Y(y, type=infer_vegalite_type(df[y])),
+            opacity=alt.value(alpha or 1),
         )
 
-    def barh(
-        self, alpha=None, width=450, height=300, **kwds
-    ):
+    def barh(self, alpha=None, width=450, height=300, **kwds):
         """Horizontal bar plot for Series data
 
         >>> series.vgplot.barh()  # doctest: +SKIP
@@ -194,26 +197,13 @@ class SeriesPlotMethods(BasePlotMethods):
         axes : pdvega.Axes
             The vega-lite plot
         """
-        plot = self.bar(
-            alpha=alpha,
-            width=width,
-            height=height,
-            **kwds
-        )
+        plot = self.bar(alpha=alpha, width=width, height=height, **kwds)
 
         enc = plot.encoding
         enc["x"], enc["y"] = enc["y"], enc["x"]
         return plot
 
-    def hist(
-        self,
-        bins=10,
-        alpha=None,
-        histtype="bar",
-        width=450,
-        height=300,
-        **kwds
-    ):
+    def hist(self, bins=10, alpha=None, histtype="bar", width=450, height=300, **kwds):
         """Histogram plot for Series data
 
         >>> series.vgplot.hist()  # doctest: +SKIP
@@ -253,24 +243,20 @@ class SeriesPlotMethods(BasePlotMethods):
         else:
             raise ValueError("histtype '{0}' is not recognized" "".format(histtype))
 
-        chart = self._plot(data=df, width=width, height=height, title=kwds.get('title', ''))
+        chart = self._plot(
+            data=df, width=width, height=height, title=kwds.get("title", "")
+        )
 
         return chart.mark_bar().encode(
             x=alt.X(x, type=infer_vegalite_type(df[x])),
-            y=alt.Y(y, type=infer_vegalite_type(df[y])), opacity=alt.value(alpha or 1)
+            y=alt.Y(y, type=infer_vegalite_type(df[y])),
+            opacity=alt.value(alpha or 1),
         )
 
         chart.mark = mark
         return chart
 
-    def kde(
-        self,
-        bw_method=None,
-        alpha=None,
-        width=450,
-        height=300,
-        **kwds
-    ):
+    def kde(self, bw_method=None, alpha=None, width=450, height=300, **kwds):
         """Kernel Density Estimation plot for Series data
 
         >>> series.vgplot.kde()  # doctest: +SKIP
@@ -310,12 +296,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         kde_ser.index.name = " "
         f = self.__class__(kde_ser)
-        return f.line(
-            alpha=alpha,
-            width=width,
-            height=height,
-            **kwds
-        )
+        return f.line(alpha=alpha, width=width, height=height, **kwds)
 
     density = kde
 
@@ -410,10 +391,8 @@ class FramePlotMethods(BasePlotMethods):
             )
             x = df.columns[0]
 
-        chart = self._plot(width=width, height=height, title=kwds.get('title', None))
-        return chart.mark_line(
-            x=x, y=y, opacity=alt.value(alpha or 1)
-        )
+        chart = self._plot(width=width, height=height, title=kwds.get("title", None))
+        return chart.mark_line(x=x, y=y, opacity=alt.value(alpha or 1))
 
         if use_order:
             chart.encoding["order"] = {
@@ -467,33 +446,18 @@ class FramePlotMethods(BasePlotMethods):
         """
         warn_if_keywords_unused("scatter", kwds)
         data = self._data
-        cols = [x, y]
 
-        chart = self._plot(width=width, height=height, title=kwds.get('title', None))
-        return chart.mark_line(
-            x=x, y=y, opacity=alt.value(alpha or 1)
-        )
+        chart = self._plot(width=width, height=height, title=kwds.get("title", None))
+        return chart.mark_line(x=x, y=y, opacity=alt.value(alpha or 1))
 
         if c is not None:
-            cols.append(c)
-            encoding["color"] = {"field": c, "type": infer_vegalite_type(data[c])}
+
+            chart.encoding["color"] = {"field": c, "type": infer_vegalite_type(data[c])}
 
         if s is not None:
-            cols.append(s)
-            encoding["size"] = {"field": s, "type": infer_vegalite_type(data[s])}
+            chart.encoding["size"] = {"field": s, "type": infer_vegalite_type(data[s])}
 
-        if alpha is not None:
-            assert 0 <= alpha <= 1
-            encoding["opacity"] = {"value": alpha}
-
-        spec = {"mark": "circle", "encoding": encoding}
-
-        spec = finalize_vegalite_spec(
-            spec, interactive=interactive, width=width, height=height
-        )
-        if ax is None:
-            ax = Axes()
-        return ax._add_layer(spec, data=data[list(set(cols))])
+        return chart
 
     def area(
         self,
@@ -548,39 +512,25 @@ class FramePlotMethods(BasePlotMethods):
         df = unpivot_frame(
             self._data, x=x, y=y, var_name=var_name, value_name=value_name
         )
-        x = df.columns[0]
 
-        spec = {
-            "mark": "area",
-            "encoding": {
-                "x": {
-                    "field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=0)
-                },
-                "y": {
-                    "field": value_name,
-                    "type": infer_vegalite_type(df[value_name], ordinal_threshold=0),
-                    "stack": "zero" if stacked else None,
-                },
-                "color": {
-                    "field": var_name,
-                    "type": infer_vegalite_type(df[var_name], ordinal_threshold=10),
-                },
-            },
-        }
+        x = df.columns[0]
 
         if alpha is None and not stacked and df[var_name].nunique() > 1:
             alpha = 0.7
 
-        if alpha is not None:
-            assert 0 <= alpha <= 1
-            spec["encoding"]["opacity"] = {"value": alpha}
-
-        spec = finalize_vegalite_spec(
-            spec, interactive=interactive, width=width, height=height
+        chart = self._plot(width=width, height=height, title=kwds.get("title", None))
+        chart = chart.mark_area().encode(
+            x=alt.X(x, type=infer_vegalite_type(df[x], ordinal_threshold=0)),
+            y=alt.Y(
+                y,
+                type=infer_vegalite_type(df[y], ordinal_threshold=0),
+                stack=(None, "zero")[stacked],
+            ),
+            opacity=alt.value(alpha or 1),
+            color=alt.Color(field=value_name, type=infer_vegalite_type(df[value_name])),
         )
-        if ax is None:
-            ax = Axes()
-        return ax._add_layer(spec, data=df)
+
+        return chart
 
     def bar(
         self,
@@ -637,36 +587,18 @@ class FramePlotMethods(BasePlotMethods):
         )
         x = df.columns[0]
 
-        spec = {
-            "mark": "bar",
-            "encoding": {
-                "x": {
-                    "field": x, "type": infer_vegalite_type(df[x], ordinal_threshold=50)
-                },
-                "y": {
-                    "field": "value",
-                    "type": infer_vegalite_type(df["value"], ordinal_threshold=0),
-                    "stack": "zero" if stacked else None,
-                },
-                "color": {
-                    "field": "variable", "type": infer_vegalite_type(df["variable"])
-                },
-            },
-        }
-
         if alpha is None and not stacked and df[var_name].nunique() > 1:
             alpha = 0.7
 
-        if alpha is not None:
-            assert 0 <= alpha <= 1
-            spec["encoding"]["opacity"] = {"value": alpha}
-
-        spec = finalize_vegalite_spec(
-            spec, interactive=interactive, width=width, height=height
+        chart = self._plot(data=df, width=width, height=height, title=kwds.get("title", None))
+        chart = chart.mark_bar().encode(
+            x=alt.X(x, type=infer_vegalite_type(df[x], ordinal_threshold=50)),
+            y=alt.Y("value", type=infer_vegalite_type(df["value"])),
+            color=alt.Color(fiend="variable", type=infer_vegalite_type(df["variable"])),
+            opacity=alt.value(alpha or 1),
         )
-        if ax is None:
-            ax = Axes()
-        return ax._add_layer(spec, data=df)
+
+        return chart
 
     def barh(
         self,
@@ -730,10 +662,8 @@ class FramePlotMethods(BasePlotMethods):
             height=height,
             **kwds
         )
-        if "encoding" in plot.spec:
-            enc = plot.spec["encoding"]
-        else:
-            enc = plot.spec["layer"][-1]["encoding"]
+
+        enc = plot.encoding
         enc["x"], enc["y"] = enc["y"], enc["x"]
         return plot
 
@@ -802,7 +732,7 @@ class FramePlotMethods(BasePlotMethods):
             raise NotImplementedError('"x" and "y" args to hist()')
         df = self._data.melt(var_name=var_name, value_name=value_name)
 
-        if histtype in ["bar", "barstacked"]:
+        if histtype in ("bar", "barstacked"):
             mark = "bar"
         elif histtype == "stepfilled":
             mark = {"type": "area", "interpolate": "step"}
@@ -811,36 +741,23 @@ class FramePlotMethods(BasePlotMethods):
         else:
             raise ValueError("histtype '{0}' is not recognized" "".format(histtype))
 
-        spec = {
-            "mark": mark,
-            "encoding": {
-                "x": {
-                    "bin": {"maxbins": bins},
-                    "field": value_name,
-                    "type": "quantitative",
-                },
-                "y": {
-                    "aggregate": "count",
-                    "type": "quantitative",
-                    "stack": ("zero" if stacked else None),
-                },
-                "color": {"field": var_name, "type": "nominal"},
-            },
-        }
-
         if alpha is None and not stacked and df[var_name].nunique() > 1:
             alpha = 0.7
 
-        if alpha is not None:
-            assert 0 <= alpha <= 1
-            spec["encoding"]["opacity"] = {"value": alpha}
-
-        spec = finalize_vegalite_spec(
-            spec, interactive=interactive, width=width, height=height
+        chart = self._plot(data=df, width=width, height=height, title=kwds.get("title", None))
+        chart.mark = mark
+        chart = chart.encode(
+            x=alt.X(value_name, bin={"maxbins": bins}, type="quantitative"),
+            y=alt.Y(
+                aggregate="count",
+                type="quantitative",
+                stack=("zero" if stacked else None),
+            ),
+            color=alt.Color(field=var_name, type="nominal"),
+            opacity=alt.value(alpha or 1),
         )
-        if ax is None:
-            ax = Axes()
-        return ax._add_layer(spec, data=df)
+
+        return chart
 
     def heatmap(
         self,
@@ -903,37 +820,23 @@ class FramePlotMethods(BasePlotMethods):
         else:
             df = self._data[[x, y, C]]
 
-        spec = {
-            "mark": "rect",
-            "encoding": {
-                "x": {"field": x, "bin": {"maxbins": gridsize}, "type": "quantitative"},
-                "y": {"field": y, "bin": {"maxbins": gridsize}, "type": "quantitative"},
-                "color": (
-                    {"aggregate": "count", "type": "quantitative"}
-                    if C is None
-                    else {
-                        "field": C,
-                        "aggregate": reduce_C_function,
-                        "type": "quantitative",
-                    }
-                ),
-            },
-            "config": {
-                "range": {"heatmap": {"scheme": "greenblue"}},
-                "view": {"stroke": "transparent"},
-            },
-        }
+        if C is None:
+            c = alt.Color(aggregate="count", type="quantitative")
+        else:
+            c = alt.Color(field=C, aggregate=reduce_C_function, type="quantitative")
 
-        if alpha is not None:
-            assert 0 <= alpha <= 1
-            spec["encoding"]["opacity"] = {"value": alpha}
-
-        spec = finalize_vegalite_spec(
-            spec, interactive=interactive, width=width, height=height
+        chart = self._plot(data=df, width=width, height=height, title=kwds.get("title", None))
+        chart = chart.mark_rect().encode(
+            x=alt.X(x, bin={"maxbins": gridsize}, type="quantitative"),
+            y=alt.Y(y, bin={"maxbins": gridsize}, type="quantitative"),
+            color=c,
+            opacity=alt.value(alpha or 1),
         )
-        if ax is None:
-            ax = Axes()
-        return ax._add_layer(spec, data=df)
+        chart.set_config(
+            range={"heatmap": {"scheme": "greenblue"}}, view={"stroke": "transparent"}
+        )
+
+        return chart
 
     hexbin = heatmap
 
@@ -983,7 +886,7 @@ class FramePlotMethods(BasePlotMethods):
         """
         from scipy.stats import gaussian_kde as kde
 
-        if x is not None:
+        if x is not None:  # ??
             raise NotImplementedError('"x" argument to df.vgplot.kde()')
 
         if y is not None:
