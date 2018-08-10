@@ -1,5 +1,5 @@
 import warnings
-
+import altair as alt
 import numpy as np
 import pandas as pd
 
@@ -80,6 +80,11 @@ def warn_if_keywords_unused(kind, kwds):
             keys = tuple(kwds.keys())
         warnings.warn("Unrecognized keywords in vgplot.{0}(): {1}"
                       "".format(kind, repr(keys)))
+
+
+def finalize_vegalite_spec(spec, width=450, height=300, title=None, **kwargs):
+    chart = alt.Chart.from_dict(spec)
+    return chart.properties(width=width, height=height, title=title)
 
 
 def validate_aggregation(agg):

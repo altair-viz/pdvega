@@ -101,11 +101,14 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
     else:
         cond['field'] = c
         cond['type'] = infer_vegalite_type(frame[c])
-    return alt.Chart(data=frame).from_dict(spec)
+
+    chart = alt.Chart().from_dict(spec)
+    chart.date = frame
+    return chart
 
 
 def andrews_curves(data, class_column, samples=200, alpha=None, ax=None,
-                   width=450, height=300, interactive=True, **kwds):
+                   width=450, height=300, **kwds):
     """
     Generates an Andrews curves visualization for visualising clusters of
     multivariate data.
@@ -131,8 +134,6 @@ def andrews_curves(data, class_column, samples=200, alpha=None, ax=None,
         The transparency of the lines
     ax : Axes, optional
         If specified, add the plot as a layer to the given axis
-    interactive : bool, optional
-        if True (default) then produce an interactive plot
     width : int, optional
         the width of the plot in pixels
     height : int, optional
@@ -177,11 +178,9 @@ def andrews_curves(data, class_column, samples=200, alpha=None, ax=None,
         assert 0 <= alpha <= 1
         spec['encoding']['opacity'] = {'value': alpha}
 
-    spec = finalize_vegalite_spec(spec, width=width, height=height, interactive=interactive)
-
-    if ax is None:
-        ax = Axes()
-    return ax._add_layer(spec, data=df)
+    chart = finalize_vegalite_spec(spec, width=width, height=height)
+    chart.date = data
+    return chart
 
 
 def parallel_coordinates(data, class_column, cols=None, alpha=None, ax=None,
@@ -257,15 +256,10 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None, ax=None,
         }
     }
 
-    if alpha is not None:
-        assert 0 <= alpha <= 1
-        spec['encoding']['opacity'] = {'value': alpha}
+    chart = finalize_vegalite_spec(spec, width=width, height=height)
+    chart.encode(opacity=alt.value(alpha or 1))
 
-    spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                  width=width, height=height)
-    if ax is None:
-        ax = Axes()
-    return ax._add_layer(spec, data=df)
+    return chart
 
 
 def lag_plot(data, lag=1, kind='scatter', ax=None, **kwds):
@@ -297,7 +291,9 @@ def lag_plot(data, lag=1, kind='scatter', ax=None, **kwds):
     y2 = 'y(t + {0})'.format(lag)
     lags = pd.DataFrame({y1: values[:-lag].T.ravel(),
                          y2: values[lag:].T.ravel()})
+
     if isinstance(data, pd.DataFrame):
         lags['variable'] = np.repeat(data.columns, lags.shape[0] / data.shape[1])
         kwds['c'] = 'variable'
+
     return lags.vgplot(kind=kind, x=y1, y=y2, ax=ax, **kwds)

@@ -1,9 +1,9 @@
-# from pandas.core.base import PandasObject
+from pandas.core.base import PandasObject
 
-# try:
-#     from pandas.api.types import infer_dtype as infer_dtype
-# except ImportError:  # Pandas before 0.20.0
-#     from pandas.lib import infer_dtype as infer_dtype
+try:
+    from pandas.api.types import infer_dtype as infer_dtype
+except ImportError:  # Pandas before 0.20.0
+    from pandas.lib import infer_dtype as infer_dtype
 
 from pandas import DataFrame, Series
 

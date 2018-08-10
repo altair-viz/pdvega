@@ -15,6 +15,18 @@ from ._pandas_internals import (
 )
 
 
+def _x(x, df, ordinal_threshold=6, **kwargs):
+    return alt.X(x, type=infer_vegalite_type(df[x],
+                                             ordinal_threshold=ordinal_threshold),
+                 **kwargs)
+
+
+def _y(y, df, ordinal_threshold=6, **kwargs):
+    return alt.Y(y, type=infer_vegalite_type(df[y],
+                                             ordinal_threshold=ordinal_threshold),
+                 **kwargs)
+
+
 class BasePlotMethods(PandasObject):
 
     def __init__(self, data):
@@ -23,10 +35,14 @@ class BasePlotMethods(PandasObject):
     def __call__(self, kind, *args, **kwargs):
         raise NotImplementedError()
 
-    def _plot(self, data=None, width=450, height=300, title=""):
+    def _plot(self, data=None, width=450, height=300, title=None):
 
         if data is None:
             data = self._data
+
+        if title is None:
+            title = ""
+
         chart = alt.Chart(data=data).properties(width=width, height=height, title=title)
         return chart
 
@@ -92,9 +108,7 @@ class SeriesPlotMethods(BasePlotMethods):
         )
 
         return chart.mark_line().encode(
-            x=alt.X(x, type=infer_vegalite_type(df[x])),
-            y=alt.Y(y, type=infer_vegalite_type(df[y])),
-            opacity=alt.value(alpha or 1),
+            x=_x(x, df), y=_y(y, df), opacity=alt.value(alpha or 1)
         )
 
     def area(self, alpha=None, width=450, height=300, **kwds):
@@ -130,9 +144,7 @@ class SeriesPlotMethods(BasePlotMethods):
         )
 
         return chart.mark_area().encode(
-            x=alt.X(x, type=infer_vegalite_type(df[x])),
-            y=alt.Y(y, type=infer_vegalite_type(df[y])),
-            opacity=alt.value(alpha or 1),
+            x=_x(x, df), y=_y(y, df), opacity=alt.value(alpha or 1)
         )
 
     def bar(self, alpha=None, width=450, height=300, **kwds):
@@ -169,9 +181,7 @@ class SeriesPlotMethods(BasePlotMethods):
         )
 
         return chart.mark_bar().encode(
-            x=alt.X(x, type=infer_vegalite_type(df[x])),
-            y=alt.Y(y, type=infer_vegalite_type(df[y])),
-            opacity=alt.value(alpha or 1),
+            x=_x(x, df), y=_y(y, df), opacity=alt.value(alpha or 1)
         )
 
     def barh(self, alpha=None, width=450, height=300, **kwds):
@@ -231,8 +241,9 @@ class SeriesPlotMethods(BasePlotMethods):
             The vega-lite plot
         """
         warn_if_keywords_unused("hist", kwds)
-        df = self._data.to_frame()
-        x, y = map(str, df.columns)
+        df = self._data.to_frame().reset_index(drop=False)
+        df.columns = df.columns.astype(str)
+        y, x = df.columns
 
         if histtype in ["bar", "barstacked"]:
             mark = "bar"
@@ -246,12 +257,10 @@ class SeriesPlotMethods(BasePlotMethods):
         chart = self._plot(
             data=df, width=width, height=height, title=kwds.get("title", "")
         )
-
-        return chart.mark_bar().encode(
-            x=alt.X(x, type=infer_vegalite_type(df[x])),
-            y=alt.Y(y, type=infer_vegalite_type(df[y])),
-            opacity=alt.value(alpha or 1),
-        )
+        chart.mark = mark
+        return chart.encode(x=_x(x, df, bin={"maxbins": 5}),
+                            y=_y(y, df, aggregate="count"),
+                            opacity=alt.value(alpha or 1))
 
         chart.mark = mark
         return chart
@@ -391,8 +400,16 @@ class FramePlotMethods(BasePlotMethods):
             )
             x = df.columns[0]
 
-        chart = self._plot(width=width, height=height, title=kwds.get("title", None))
-        return chart.mark_line(x=x, y=y, opacity=alt.value(alpha or 1))
+        chart = self._plot(
+            data=df, width=width, height=height, title=kwds.get("title", None)
+        )
+
+        chart = chart.mark_line().encode(
+            x=_x(x, df),
+            y=_y(value_name, df),
+            color=alt.Color(var_name, type="nominal"),
+            opacity=alt.value(alpha or 1),
+        )
 
         if use_order:
             chart.encoding["order"] = {
@@ -445,17 +462,18 @@ class FramePlotMethods(BasePlotMethods):
             The vega-lite plot
         """
         warn_if_keywords_unused("scatter", kwds)
-        data = self._data
+        df = self._data
 
-        chart = self._plot(width=width, height=height, title=kwds.get("title", None))
-        return chart.mark_line(x=x, y=y, opacity=alt.value(alpha or 1))
+        chart = self._plot(width=width, height=height, title=kwds.get("title", ""))
+        chart = chart.mark_point().encode(
+            x=_x(x, df), y=_y(y, df), opacity=alt.value(alpha or 1)
+        )
 
         if c is not None:
-
-            chart.encoding["color"] = {"field": c, "type": infer_vegalite_type(data[c])}
+            chart.encoding["color"] = {"field": c, "type": infer_vegalite_type(df[c])}
 
         if s is not None:
-            chart.encoding["size"] = {"field": s, "type": infer_vegalite_type(data[s])}
+            chart.encoding["size"] = {"field": s, "type": infer_vegalite_type(df[s])}
 
         return chart
 
@@ -518,16 +536,18 @@ class FramePlotMethods(BasePlotMethods):
         if alpha is None and not stacked and df[var_name].nunique() > 1:
             alpha = 0.7
 
-        chart = self._plot(width=width, height=height, title=kwds.get("title", None))
+        chart = self._plot(
+            data=df, width=width, height=height, title=kwds.get("title", None)
+        )
         chart = chart.mark_area().encode(
-            x=alt.X(x, type=infer_vegalite_type(df[x], ordinal_threshold=0)),
+            x=_x(x, df),
             y=alt.Y(
-                y,
-                type=infer_vegalite_type(df[y], ordinal_threshold=0),
+                value_name,
+                type=infer_vegalite_type(df[value_name]),
                 stack=(None, "zero")[stacked],
             ),
             opacity=alt.value(alpha or 1),
-            color=alt.Color(field=value_name, type=infer_vegalite_type(df[value_name])),
+            color=alt.Color(field=var_name, type=infer_vegalite_type(df[var_name])),
         )
 
         return chart
@@ -590,11 +610,17 @@ class FramePlotMethods(BasePlotMethods):
         if alpha is None and not stacked and df[var_name].nunique() > 1:
             alpha = 0.7
 
-        chart = self._plot(data=df, width=width, height=height, title=kwds.get("title", None))
+        chart = self._plot(
+            data=df, width=width, height=height, title=kwds.get("title", None)
+        )
         chart = chart.mark_bar().encode(
             x=alt.X(x, type=infer_vegalite_type(df[x], ordinal_threshold=50)),
-            y=alt.Y("value", type=infer_vegalite_type(df["value"])),
-            color=alt.Color(fiend="variable", type=infer_vegalite_type(df["variable"])),
+            y=alt.Y(
+                "value",
+                type=infer_vegalite_type(df["value"]),
+                stack=(None, "zero")[stacked],
+            ),
+            color=alt.Color(field="variable", type=infer_vegalite_type(df["variable"])),
             opacity=alt.value(alpha or 1),
         )
 
@@ -744,7 +770,9 @@ class FramePlotMethods(BasePlotMethods):
         if alpha is None and not stacked and df[var_name].nunique() > 1:
             alpha = 0.7
 
-        chart = self._plot(data=df, width=width, height=height, title=kwds.get("title", None))
+        chart = self._plot(
+            data=df, width=width, height=height, title=kwds.get("title", None)
+        )
         chart.mark = mark
         chart = chart.encode(
             x=alt.X(value_name, bin={"maxbins": bins}, type="quantitative"),
@@ -825,7 +853,9 @@ class FramePlotMethods(BasePlotMethods):
         else:
             c = alt.Color(field=C, aggregate=reduce_C_function, type="quantitative")
 
-        chart = self._plot(data=df, width=width, height=height, title=kwds.get("title", None))
+        chart = self._plot(
+            data=df, width=width, height=height, title=kwds.get("title", None)
+        )
         chart = chart.mark_rect().encode(
             x=alt.X(x, bin={"maxbins": gridsize}, type="quantitative"),
             y=alt.Y(y, bin={"maxbins": gridsize}, type="quantitative"),
