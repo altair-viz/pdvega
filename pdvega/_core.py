@@ -862,7 +862,7 @@ class FramePlotMethods(BasePlotMethods):
             color=c,
             opacity=alt.value(alpha or 1),
         )
-        chart.set_config(
+        chart.configure(
             range={"heatmap": {"scheme": "greenblue"}}, view={"stroke": "transparent"}
         )
 

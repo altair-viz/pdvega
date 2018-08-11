@@ -295,7 +295,7 @@ def test_df_hexbin():
     gridsize = 10
     plot = df.vgplot.hexbin(x="x", y="y", gridsize=gridsize)
     assert plot.mark == "rect"
-    utils.check_encodings(plot, x="x", y="y", color=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="y", color=utils.IGNORE, opacity=utils.IGNORE)
     assert plot["encoding"]["x"]["bin"] == {"maxbins": gridsize}
     assert plot["encoding"]["y"]["bin"] == {"maxbins": gridsize}
     assert plot["encoding"]["color"]["aggregate"] == "count"
@@ -306,7 +306,7 @@ def test_df_hexbin_C():
     gridsize = 10
     plot = df.vgplot.hexbin(x="x", y="y", C="C", gridsize=gridsize)
     assert plot.mark == "rect"
-    utils.check_encodings(plot, x="x", y="y", color="C")
+    utils.check_encodings(plot, x="x", y="y", color="C", opacity=utils.IGNORE)
     assert plot["encoding"]["x"]["bin"] == {"maxbins": gridsize}
     assert plot["encoding"]["y"]["bin"] == {"maxbins": gridsize}
     assert plot["encoding"]["color"]["aggregate"] == "mean"
@@ -315,8 +315,8 @@ def test_df_hexbin_C():
 def test_df_hexbin_Cfunc():
     df = pd.DataFrame({"x": range(10), "y": range(10), "C": range(10)})
     plot = df.vgplot.hexbin(x="x", y="y", C="C", reduce_C_function=min)
-    utils.check_encodings(plot, x="x", y="y", color="C")
     assert plot["encoding"]["color"]["aggregate"] == "min"
+    utils.check_encodings(plot, x="x", y="y", color="C", opacity=utils.IGNORE)
 
 
 def test_df_kde():
@@ -343,6 +343,6 @@ def test_ser_kde():
     assert plot.mark == "line"
     utils.check_encodings(
         plot, opacity=utils.IGNORE,
-        x={"field": " ", "type": "quantitative"},
-        y={"field": "x", "type": "quantitative"},
+        x=' ',
+        y='x',
     )
