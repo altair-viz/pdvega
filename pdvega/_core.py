@@ -16,15 +16,19 @@ from ._pandas_internals import (
 
 
 def _x(x, df, ordinal_threshold=6, **kwargs):
-    return alt.X(x, type=infer_vegalite_type(df[x],
-                                             ordinal_threshold=ordinal_threshold),
-                 **kwargs)
+    return alt.X(
+        x,
+        type=infer_vegalite_type(df[x], ordinal_threshold=ordinal_threshold),
+        **kwargs
+    )
 
 
 def _y(y, df, ordinal_threshold=6, **kwargs):
-    return alt.Y(y, type=infer_vegalite_type(df[y],
-                                             ordinal_threshold=ordinal_threshold),
-                 **kwargs)
+    return alt.Y(
+        y,
+        type=infer_vegalite_type(df[y], ordinal_threshold=ordinal_threshold),
+        **kwargs
+    )
 
 
 class BasePlotMethods(PandasObject):
@@ -107,9 +111,7 @@ class SeriesPlotMethods(BasePlotMethods):
             data=df, width=width, height=height, title=kwds.get("title", "")
         )
 
-        chart = chart.mark_line().encode(
-            x=_x(x, df), y=_y(y, df)
-        )
+        chart = chart.mark_line().encode(x=_x(x, df), y=_y(y, df))
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -149,9 +151,7 @@ class SeriesPlotMethods(BasePlotMethods):
             data=df, width=width, height=height, title=kwds.get("title", "")
         )
 
-        chart = chart.mark_area().encode(
-            x=_x(x, df), y=_y(y, df)
-        )
+        chart = chart.mark_area().encode(x=_x(x, df), y=_y(y, df))
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -192,9 +192,7 @@ class SeriesPlotMethods(BasePlotMethods):
             data=df, width=width, height=height, title=kwds.get("title", "")
         )
 
-        chart = chart.mark_bar().encode(
-            x=_x(x, df), y=_y(y, df)
-        )
+        chart = chart.mark_bar().encode(x=_x(x, df), y=_y(y, df))
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -263,21 +261,26 @@ class SeriesPlotMethods(BasePlotMethods):
         df.columns = df.columns.astype(str)
         y, x = df.columns
 
-        if histtype in ["bar", "barstacked"]:
-            mark = "bar"
-        elif histtype == "stepfilled":
-            mark = {"type": "area", "interpolate": "step"}
-        elif histtype == "step":
-            mark = {"type": "line", "interpolate": "step"}
+        marks = {
+            "bar": "bar",
+            "barstacked": "bar",
+            "stepfilled": {"type": "area", "interpolate": "step"},
+            "step": {"type": "line", "interpolate": "step"},
+        }
+
+        if histtype in marks:
+            mark = marks[histtype]
         else:
             raise ValueError("histtype '{0}' is not recognized" "".format(histtype))
 
         chart = self._plot(
             data=df, width=width, height=height, title=kwds.get("title", "")
         )
+
         chart.mark = mark
-        return chart.encode(x=_x(x, df, bin={"maxbins": 5}),
-                            y=_y(y, df, aggregate="count"))
+        chart = chart.encode(
+            x=_x(x, df, bin={"maxbins": 5}), y=_y(y, df, aggregate="count")
+        )
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -425,9 +428,7 @@ class FramePlotMethods(BasePlotMethods):
         )
 
         chart = chart.mark_line().encode(
-            x=_x(x, df),
-            y=_y(value_name, df),
-            color=alt.Color(var_name, type="nominal")
+            x=_x(x, df), y=_y(value_name, df), color=alt.Color(var_name, type="nominal")
         )
 
         if alpha is not None:
@@ -488,9 +489,7 @@ class FramePlotMethods(BasePlotMethods):
         df = self._data
 
         chart = self._plot(width=width, height=height, title=kwds.get("title", ""))
-        chart = chart.mark_point().encode(
-            x=_x(x, df), y=_y(y, df)
-        )
+        chart = chart.mark_point().encode(x=_x(x, df), y=_y(y, df))
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -791,12 +790,15 @@ class FramePlotMethods(BasePlotMethods):
             raise NotImplementedError('"x" and "y" args to hist()')
         df = self._data.melt(var_name=var_name, value_name=value_name)
 
-        if histtype in ("bar", "barstacked"):
-            mark = "bar"
-        elif histtype == "stepfilled":
-            mark = {"type": "area", "interpolate": "step"}
-        elif histtype == "step":
-            mark = {"type": "line", "interpolate": "step"}
+        marks = {
+            "bar": "bar",
+            "barstacked": "bar",
+            "stepfilled": {"type": "area", "interpolate": "step"},
+            "step": {"type": "line", "interpolate": "step"},
+        }
+
+        if histtype in marks:
+            mark = marks[histtype]
         else:
             raise ValueError("histtype '{0}' is not recognized" "".format(histtype))
 
@@ -895,7 +897,7 @@ class FramePlotMethods(BasePlotMethods):
         chart = chart.mark_rect().encode(
             x=alt.X(x, bin={"maxbins": gridsize}, type="quantitative"),
             y=alt.Y(y, bin={"maxbins": gridsize}, type="quantitative"),
-            color=c
+            color=c,
         )
 
         if alpha:

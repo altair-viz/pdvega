@@ -84,7 +84,7 @@ SERIES_TEST_CASES = {
 
 
 def is_stackable(kind):
-    return kind in ['bar', 'barh', 'area', 'hist']
+    return kind in {'bar', 'barh', 'area', 'hist'}
 
 
 @pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
@@ -95,15 +95,12 @@ def test_series_plot_interactive(data, kind, info):
 
     spec = data.vgplot(kind=kind, **kwds)
     validate_vegalite(spec)
-    assert spec['selection']['grid'] == {"type": "interval", "bind": "scales"}
-
-    spec = data.vgplot(kind=kind, interactive=True, **kwds)
-    validate_vegalite(spec)
-    assert spec['selection']['grid'] == {"type": "interval", "bind": "scales"}
-
-    spec = data.vgplot(kind=kind, interactive=False, **kwds)
-    validate_vegalite(spec)
     assert 'selection' not in spec.to_dict()
+
+    spec = data.vgplot(kind=kind, **kwds).interactive()
+    validate_vegalite(spec)
+    s = spec.to_dict()
+    assert next(iter(s['selection'].values())) == {'bind': 'scales', 'encodings': ['x', 'y'], 'type': 'interval'}
 
 
 @pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
@@ -114,15 +111,12 @@ def test_frame_plot_interactive(data, kind, info):
 
     spec = data.vgplot(kind=kind, **kwds)
     validate_vegalite(spec)
-    assert spec['selection']['grid'] == {"type": "interval", "bind": "scales"}
-
-    spec = data.vgplot(kind=kind, interactive=True, **kwds)
-    validate_vegalite(spec)
-    assert spec['selection']['grid'] == {"type": "interval", "bind": "scales"}
-
-    spec = data.vgplot(kind=kind, interactive=False, **kwds)
-    validate_vegalite(spec)
     assert 'selection' not in spec.to_dict()
+
+    spec = data.vgplot(kind=kind, **kwds).interactive()
+    validate_vegalite(spec)
+    s = spec.to_dict()
+    assert next(iter(s['selection'].values())) == {'bind': 'scales', 'encodings': ['x', 'y'], 'type': 'interval'}
 
 
 @pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
@@ -133,11 +127,13 @@ def test_series_plot_alpha(data, kind, info):
 
     spec = data.vgplot(kind=kind, alpha=0.5, **kwds)
     validate_vegalite(spec)
-    assert spec.encoding.to_dict()['opacity']['value'] == 0.5
+    encoding = spec['encoding'].to_dict()
+    assert 'opacity' in encoding, encoding.keys()
+    assert encoding['opacity']['value'] == 0.5
 
     spec = data.vgplot(kind=kind, **kwds)
     validate_vegalite(spec)
-    assert 'opacity' not in spec.encoding.to_dict()
+    assert 'opacity' not in spec['encoding'].to_dict()
 
 
 @pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
@@ -149,28 +145,28 @@ def test_frame_plot_alpha(data, kind, info):
     # if alpha is explicitly specified, then opacity should be in the spec
     spec = data.vgplot(kind=kind, alpha=0.5, **kwds)
     validate_vegalite(spec)
-    assert spec.encoding.to_dict()['opacity']['value'] == 0.5
+    assert spec['encoding'].to_dict()['opacity']['value'] == 0.5
 
     if is_stackable(kind):
         # stackable plots have a default opacity when not stacked
         spec = data.vgplot(kind=kind, stacked=False, **kwds)
         validate_vegalite(spec)
-        assert spec.encoding.to_dict()['opacity']['value'] == 0.7
+        assert spec['encoding'].to_dict()['opacity']['value'] == 0.7
 
         # if only one column is being plotted, then should have no opacity
         spec = data[cols[:1]].vgplot(kind=kind, stacked=False, **kwds)
         validate_vegalite(spec)
-        assert 'opacity' not in spec.encoding.to_dict()
+        assert 'opacity' not in spec['encoding'].to_dict()
 
         # if stacked, then should have no opacity
         spec = data.vgplot(kind=kind, stacked=True, **kwds)
         validate_vegalite(spec)
-        assert 'opacity' not in spec.encoding.to_dict()
+        assert 'opacity' not in spec['encoding'].to_dict()
     else:
         # non-stackable plots have no default opacity
         spec = data.vgplot(kind=kind, **kwds)
         validate_vegalite(spec)
-        assert 'opacity' not in spec.encoding.to_dict()
+        assert 'opacity' not in spec['encoding'].to_dict()
 
 
 @pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
