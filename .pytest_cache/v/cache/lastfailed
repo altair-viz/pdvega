@@ -1,5 +1,4 @@
 {
-  "pdvega/tests/test_advanced.py::test_advanced": true,
   "pdvega/tests/test_axes.py::test_max_rows": true,
   "pdvega/tests/test_core_common.py::test_frame_plot_ax[area-info3]": true,
   "pdvega/tests/test_core_common.py::test_frame_plot_ax[bar-info1]": true,

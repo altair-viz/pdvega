@@ -6,6 +6,7 @@ def test_advanced():
     df = pd.Series(range(10))
     plot = df.vgplot.line()
 
-    plot.spec['encoding']['x']['scale'] = {'zero': False}
-    assert 'scale' in plot.spec['encoding']['x']
-    assert plot.spec['encoding']['x']['scale']['zero'] is False
+    plot['encoding']['x']['scale'] = {'zero': False}
+    spec = plot.to_dict()
+    assert 'scale' in spec['encoding']['x']
+    assert spec['encoding']['x']['scale']['zero'] is False

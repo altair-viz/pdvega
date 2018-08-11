@@ -1,7 +1,3 @@
 [
-  "pdvega/tests/test_plotting.py::test_scatter_matrix",
-  "pdvega/tests/test_plotting.py::test_parallel_coordinates",
-  "pdvega/tests/test_plotting.py::test_andrews_curves",
-  "pdvega/tests/test_plotting.py::test_lag_plot[1]",
-  "pdvega/tests/test_plotting.py::test_lag_plot[5]"
+  "pdvega/tests/test_advanced.py::test_advanced"
 ]
