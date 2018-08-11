@@ -4,7 +4,7 @@ import altair as alt
 import numpy as np
 import pandas as pd
 
-from ._utils import infer_vegalite_type, finalize_vegalite_spec
+from ._utils import infer_vegalite_type
 
 __all__ = ["scatter_matrix", "andrews_curves", "parallel_coordinates", "lag_plot"]
 
