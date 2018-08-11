@@ -33,8 +33,8 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
 
     Returns
     -------
-    plot : VegaLite object
-        The Vega-Lite representation of the plot.
+    chart: alt.Chart object
+        The alt.Chart representation of the plot.
 
     See Also
     --------
@@ -45,12 +45,14 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
             "Unrecognized keywords in pdvega.scatter_matrix: {0}"
             "".format(list(kwds.keys()))
         )
+
     cols = [
         col
         for col in frame.columns
         if col not in [c, s]
         if infer_vegalite_type(frame[col], ordinal_threshold=0) == "quantitative"
     ]
+
     spec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
         "repeat": {"row": cols, "column": cols[::-1]},
@@ -103,7 +105,7 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
 
 
 def andrews_curves(
-    data, class_column, samples=200, alpha=None, ax=None, width=450, height=300, **kwds
+    data, class_column, samples=200, alpha=None, width=450, height=300, **kwds
 ):
     """
     Generates an Andrews curves visualization for visualising clusters of
@@ -128,8 +130,6 @@ def andrews_curves(
         Number of points to plot in each curve
     alpha: float, optional
         The transparency of the lines
-    ax : Axes, optional
-        If specified, add the plot as a layer to the given axis
     width : int, optional
         the width of the plot in pixels
     height : int, optional
@@ -139,7 +139,7 @@ def andrews_curves(
 
     Returns:
     --------
-    ax: Matplotlib axis object
+    chart: alt.Chart object
 
     """
     if kwds:
@@ -147,6 +147,7 @@ def andrews_curves(
             "Unrecognized keywords in pdvega.andrews_curves(): {0}"
             "".format(list(kwds.keys()))
         )
+
     t = np.linspace(-np.pi, np.pi, samples)
     vals = data.drop(class_column, axis=1).values.T
 
@@ -198,7 +199,6 @@ def parallel_coordinates(
     class_column,
     cols=None,
     alpha=None,
-    ax=None,
     width=450,
     height=300,
     interactive=True,
@@ -218,8 +218,6 @@ def parallel_coordinates(
         A list of column names to use
     alpha: float, optional
         The transparency of the lines
-    ax : Axes, optional
-        If specified, add the plot as a layer to the given axis
     interactive : bool, optional
         if True (default) then produce an interactive plot
     width : int, optional
@@ -233,8 +231,8 @@ def parallel_coordinates(
 
     Returns
     -------
-    plot : VegaLite object
-        The Vega-Lite representation of the plot.
+    chart: alt.Chart object
+        The altair representation of the plot.
 
     See Also
     --------
@@ -269,7 +267,7 @@ def parallel_coordinates(
     return chart
 
 
-def lag_plot(data, lag=1, kind="scatter", ax=None, **kwds):
+def lag_plot(data, lag=1, kind="scatter", **kwds):
     """Lag plot for time series.
 
     Parameters
@@ -280,14 +278,12 @@ def lag_plot(data, lag=1, kind="scatter", ax=None, **kwds):
         The lag of the scatter plot, default=1
     kind: string
         The kind of plot to use (e.g. 'scatter', 'line')
-    ax : Axes, optional
-        If specified, add the plot as a layer to the given axis
     **kwds:
         Additional keywords passed to data.vgplot.scatter
 
     Returns
     -------
-    plot: VegaLite plot object
+    chart: alt.Chart object
     """
     if lag != int(lag) or int(lag) <= 0:
         raise ValueError("lag must be a positive integer")
@@ -302,4 +298,4 @@ def lag_plot(data, lag=1, kind="scatter", ax=None, **kwds):
         lags["variable"] = np.repeat(data.columns, lags.shape[0] / data.shape[1])
         kwds["c"] = "variable"
 
-    return lags.vgplot(kind=kind, x=y1, y=y2, ax=ax, **kwds)
+    return lags.vgplot(kind=kind, x=y1, y=y2, **kwds)

@@ -17,7 +17,7 @@ from ._pandas_internals import (
 
 def _x(x, df, ordinal_threshold=6, **kwargs):
     return alt.X(
-        x,
+        field=x,
         type=infer_vegalite_type(df[x], ordinal_threshold=ordinal_threshold),
         **kwargs
     )
@@ -25,7 +25,7 @@ def _x(x, df, ordinal_threshold=6, **kwargs):
 
 def _y(y, df, ordinal_threshold=6, **kwargs):
     return alt.Y(
-        y,
+        field=y,
         type=infer_vegalite_type(df[y], ordinal_threshold=ordinal_threshold),
         **kwargs
     )
@@ -79,7 +79,7 @@ class SeriesPlotMethods(BasePlotMethods):
             )
         return plot_method(**kwargs)
 
-    def line(self, alpha=None, ax=None, width=450, height=300, **kwds):
+    def line(self, alpha=None, width=450, height=300, **kwds):
         """Line plot for Series data
 
         >>> series.vgplot.line()  # doctest: +SKIP
@@ -88,10 +88,6 @@ class SeriesPlotMethods(BasePlotMethods):
         ----------
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -99,8 +95,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : altair.Chart
-            The vega-lite plot
+        chart : altair.Chart
+            The altair plot representation
         """
         warn_if_keywords_unused("line", kwds)
         df = self._data.reset_index()
@@ -128,10 +124,6 @@ class SeriesPlotMethods(BasePlotMethods):
         ----------
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -139,8 +131,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         warn_if_keywords_unused("area", kwds)
         df = self._data.reset_index()
@@ -168,10 +160,6 @@ class SeriesPlotMethods(BasePlotMethods):
         ----------
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -179,8 +167,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         warn_if_keywords_unused("bar", kwds)
 
@@ -209,10 +197,6 @@ class SeriesPlotMethods(BasePlotMethods):
         ----------
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -220,8 +204,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         plot = self.bar(alpha=alpha, width=width, height=height, **kwds)
 
@@ -242,10 +226,6 @@ class SeriesPlotMethods(BasePlotMethods):
             transparency level, 0 <= alpha <= 1
         histtype : string, {'bar', 'step', 'stepfilled'}
             The type of histogram to generate. Default is 'bar'.
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -253,8 +233,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         warn_if_keywords_unused("hist", kwds)
         df = self._data.to_frame().reset_index(drop=False)
@@ -301,10 +281,6 @@ class SeriesPlotMethods(BasePlotMethods):
             See `scipy.stats.gaussian_kde` for more details.
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -312,8 +288,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         from scipy.stats import gaussian_kde
 
@@ -368,7 +344,6 @@ class FramePlotMethods(BasePlotMethods):
         x=None,
         y=None,
         alpha=None,
-        ax=None,
         var_name="variable",
         value_name="value",
         interactive=True,
@@ -390,14 +365,10 @@ class FramePlotMethods(BasePlotMethods):
             columns (except x if specified) will be used.
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
         var_name : string, optional
             the legend title
         value_name : string, optional
             the y-axis label
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -405,8 +376,8 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         warn_if_keywords_unused("line", kwds)
         use_order = (x is not None)
@@ -449,7 +420,6 @@ class FramePlotMethods(BasePlotMethods):
         c=None,
         s=None,
         alpha=None,
-        ax=None,
         interactive=True,
         width=450,
         height=300,
@@ -471,10 +441,6 @@ class FramePlotMethods(BasePlotMethods):
             the column to use to encode the size of the points
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -482,8 +448,8 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         warn_if_keywords_unused("scatter", kwds)
         df = self._data
@@ -509,7 +475,6 @@ class FramePlotMethods(BasePlotMethods):
         y=None,
         stacked=True,
         alpha=None,
-        ax=None,
         var_name="variable",
         value_name="value",
         interactive=True,
@@ -534,14 +499,10 @@ class FramePlotMethods(BasePlotMethods):
             areas will overlap
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
         var_name : string, optional
             the legend title
         value_name : string, optional
             the y-axis label
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -549,8 +510,8 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         warn_if_keywords_unused("area", kwds)
         df = unpivot_frame(
@@ -587,7 +548,6 @@ class FramePlotMethods(BasePlotMethods):
         y=None,
         stacked=False,
         alpha=None,
-        ax=None,
         var_name="variable",
         value_name="value",
         interactive=True,
@@ -612,14 +572,10 @@ class FramePlotMethods(BasePlotMethods):
             areas will overlap
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
         var_name : string, optional
             the legend title
         value_name : string, optional
             the y-axis label
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -627,8 +583,8 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         warn_if_keywords_unused("bar", kwds)
         df = unpivot_frame(
@@ -664,7 +620,6 @@ class FramePlotMethods(BasePlotMethods):
         y=None,
         stacked=False,
         alpha=None,
-        ax=None,
         var_name="variable",
         value_name="value",
         interactive=True,
@@ -689,14 +644,10 @@ class FramePlotMethods(BasePlotMethods):
             areas will overlap
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
         var_name : string, optional
             the legend title
         value_name : string, optional
             the y-axis label
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -704,15 +655,14 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         plot = self.bar(
             x=x,
             y=y,
             stacked=stacked,
             alpha=alpha,
-            ax=ax,
             var_name=var_name,
             value_name=value_name,
             interactive=interactive,
@@ -733,7 +683,6 @@ class FramePlotMethods(BasePlotMethods):
         bins=10,
         stacked=False,
         alpha=None,
-        ax=None,
         histtype="bar",
         var_name="variable",
         value_name="value",
@@ -763,16 +712,12 @@ class FramePlotMethods(BasePlotMethods):
             areas will overlap
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
         histtype : string, {'bar', 'step', 'stepfilled'}
             The type of histogram to generate. Default is 'bar'.
         var_name : string, optional
             the legend title
         value_name : string, optional
             the y-axis label
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -780,8 +725,8 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         warn_if_keywords_unused("hist", kwds)
         if by is not None:
@@ -833,7 +778,6 @@ class FramePlotMethods(BasePlotMethods):
         reduce_C_function="mean",
         gridsize=100,
         alpha=None,
-        ax=None,
         interactive=True,
         width=450,
         height=300,
@@ -863,10 +807,6 @@ class FramePlotMethods(BasePlotMethods):
             the number of divisions in the x and y axis (default=100)
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -874,8 +814,8 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         # TODO: Use actual hexbins rather than a grid heatmap
         warn_if_keywords_unused("hexbin", kwds)
@@ -918,7 +858,6 @@ class FramePlotMethods(BasePlotMethods):
         y=None,
         bw_method=None,
         alpha=None,
-        ax=None,
         interactive=True,
         width=450,
         height=300,
@@ -942,10 +881,6 @@ class FramePlotMethods(BasePlotMethods):
             See `scipy.stats.gaussian_kde` for more details.
         alpha : float, optional
             transparency level, 0 <= alpha <= 1
-        ax : Axes, optional
-            If specified, add the plot as a layer to the given axis
-        interactive : bool, optional
-            if True (default) then produce an interactive plot
         width : int, optional
             the width of the plot in pixels
         height : int, optional
@@ -953,8 +888,8 @@ class FramePlotMethods(BasePlotMethods):
 
         Returns
         -------
-        axes : pdvega.Axes
-            The vega-lite plot
+        chart : alt.Chart
+            altair chart representation
         """
         from scipy.stats import gaussian_kde as kde
 
@@ -979,7 +914,6 @@ class FramePlotMethods(BasePlotMethods):
         return f.line(
             value_name="Density",
             alpha=alpha,
-            ax=ax,
             interactive=interactive,
             width=width,
             height=height,
