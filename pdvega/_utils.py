@@ -82,9 +82,9 @@ def warn_if_keywords_unused(kind, kwds):
                       "".format(kind, repr(keys)))
 
 
-def finalize_vegalite_spec(spec, width=450, height=300, title=None, **kwargs):
-    chart = alt.Chart.from_dict(spec)
-    return chart.properties(width=width, height=height, title=title)
+def finalize_vegalite_spec(width=450, height=300, title=None, **kwargs):
+    chart = alt.Chart.from_dict(spec).properties(width=width, height=height, title=title)
+    return chart
 
 
 def validate_aggregation(agg):

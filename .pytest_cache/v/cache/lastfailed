@@ -16,10 +16,5 @@
   "pdvega/tests/test_core_common.py::test_series_plot_ax[density-info6]": true,
   "pdvega/tests/test_core_common.py::test_series_plot_ax[hist-info4]": true,
   "pdvega/tests/test_core_common.py::test_series_plot_ax[kde-info5]": true,
-  "pdvega/tests/test_core_common.py::test_series_plot_ax[line-info0]": true,
-  "pdvega/tests/test_plotting.py::test_andrews_curves": true,
-  "pdvega/tests/test_plotting.py::test_lag_plot[1]": true,
-  "pdvega/tests/test_plotting.py::test_lag_plot[5]": true,
-  "pdvega/tests/test_plotting.py::test_parallel_coordinates": true,
-  "pdvega/tests/test_plotting.py::test_scatter_matrix": true
+  "pdvega/tests/test_core_common.py::test_series_plot_ax[line-info0]": true
 }

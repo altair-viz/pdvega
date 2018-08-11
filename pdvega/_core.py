@@ -489,7 +489,7 @@ class FramePlotMethods(BasePlotMethods):
         df = self._data
 
         chart = self._plot(width=width, height=height, title=kwds.get("title", ""))
-        chart = chart.mark_point().encode(x=_x(x, df), y=_y(y, df))
+        chart = chart.mark_point().encode(x=_x(x, df, ordinal_threshold=0), y=_y(y, df, ordinal_threshold=0))
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -499,7 +499,7 @@ class FramePlotMethods(BasePlotMethods):
             chart.encoding["color"] = {"field": c, "type": infer_vegalite_type(df[c])}
 
         if s is not None:
-            chart.encoding["size"] = {"field": s, "type": infer_vegalite_type(df[s])}
+            chart.encoding["size"] = {"field": s, "type": infer_vegalite_type(df[s], 0)}
 
         return chart
 
