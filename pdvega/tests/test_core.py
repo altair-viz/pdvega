@@ -14,7 +14,7 @@ def test_line_simple():
     assert plot.mark == "line"
 
     utils.check_encodings(plot, x="index", y="value",
-                          color="variable", opacity=utils.IGNORE)
+                          color="variable")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"x", "y"}
 
@@ -27,8 +27,7 @@ def test_line_xy():
     assert plot.mark == "line"
 
     utils.check_encodings(plot, x="x", y="value",
-                          color="variable", order="index",
-                          opacity=utils.IGNORE)
+                          color="variable", order="index")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"y"}
 
@@ -38,7 +37,7 @@ def test_series_line():
     plot = ser.vgplot.line()
     utils.validate_vegalite(plot)
     assert plot.mark == "line"
-    utils.check_encodings(plot, x="index", y="0", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="index", y="0")
 
 
 def test_scatter_simple():
@@ -47,7 +46,7 @@ def test_scatter_simple():
     plot = df.vgplot.scatter(x="x", y="y")
     utils.validate_vegalite(plot)
     assert plot.mark == "point"
-    utils.check_encodings(plot, x="x", y="y", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="y")
 
 
 def test_scatter_color_size():
@@ -58,7 +57,7 @@ def test_scatter_color_size():
     plot = df.vgplot.scatter(x="x", y="y", c="c", s="s")
     utils.validate_vegalite(plot)
     assert plot.mark == "point"
-    utils.check_encodings(plot, x="x", y="y", color="c", size="s", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="y", color="c", size="s")
 
 
 def test_scatter_common_columns():
@@ -67,7 +66,7 @@ def test_scatter_common_columns():
     plot = df.vgplot.scatter(x="x", y="y", c="y")
     utils.validate_vegalite(plot)
     assert plot.mark == "point"
-    utils.check_encodings(plot, x="x", y="y", color="y", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="y", color="y")
 
 
 def test_bar_simple():
@@ -77,7 +76,8 @@ def test_bar_simple():
     utils.validate_vegalite(plot)
     assert plot.mark == "bar"
     utils.check_encodings(
-        plot, x="index", y="value", color="variable", opacity=utils.IGNORE
+        plot, x="index", y="value", color="variable",
+        opacity=utils.IGNORE
     )
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"x", "y"}
@@ -90,7 +90,7 @@ def test_bar_stacked():
     plot = df.vgplot.bar(stacked=True)
     utils.validate_vegalite(plot)
     assert plot.mark == "bar"
-    utils.check_encodings(plot, x="index", y="value", color="variable", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="index", y="value", color="variable")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"x", "y"}
     assert plot["encoding"]["y"]["stack"] == "zero"
@@ -102,7 +102,7 @@ def test_bar_xy():
     plot = df.vgplot.bar(x="x", y="y")
     utils.validate_vegalite(plot)
     assert plot.mark == "bar"
-    utils.check_encodings(plot, x="x", y="value", color="variable", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="value", color="variable")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"y"}
     assert plot["encoding"]["y"]["stack"] is None
@@ -114,7 +114,7 @@ def test_bar_xy_stacked():
     plot = df.vgplot.bar(x="x", y="y", stacked=True)
     utils.validate_vegalite(plot)
     assert plot.mark == "bar"
-    utils.check_encodings(plot, x="x", y="value", color="variable", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="value", color="variable")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"y"}
     assert plot["encoding"]["y"]["stack"] == "zero"
@@ -125,7 +125,7 @@ def test_series_bar():
     plot = ser.vgplot.bar()
     utils.validate_vegalite(plot)
     assert plot.mark == "bar"
-    utils.check_encodings(plot, x="index", y="0", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="index", y="0")
 
 
 def test_barh_simple():
@@ -135,7 +135,8 @@ def test_barh_simple():
     utils.validate_vegalite(plot)
     assert plot.mark == "bar"
     utils.check_encodings(
-        plot, y="index", x="value", color="variable", opacity=utils.IGNORE
+        plot, y="index", x="value", color="variable",
+        opacity=utils.IGNORE
     )
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"x", "y"}
@@ -148,7 +149,7 @@ def test_barh_stacked():
     plot = df.vgplot.barh(stacked=True)
     utils.validate_vegalite(plot)
     assert plot.mark == "bar"
-    utils.check_encodings(plot, y="index", x="value", color="variable", opacity=utils.IGNORE)
+    utils.check_encodings(plot, y="index", x="value", color="variable")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"x", "y"}
     assert plot["encoding"]["x"]["stack"] == "zero"
@@ -160,7 +161,7 @@ def test_barh_xy():
     plot = df.vgplot.barh(x="x", y="y")
     utils.validate_vegalite(plot)
     assert plot.mark == "bar"
-    utils.check_encodings(plot, x="value", y="x", color="variable", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="value", y="x", color="variable")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"y"}
     assert plot["encoding"]["x"]["stack"] is None
@@ -172,7 +173,7 @@ def test_barh_xy_stacked():
     plot = df.vgplot.barh(x="x", y="y", stacked=True)
     utils.validate_vegalite(plot)
     assert plot.mark == "bar"
-    utils.check_encodings(plot, x="value", y="x", color="variable", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="value", y="x", color="variable")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"y"}
     assert plot["encoding"]["x"]["stack"] == "zero"
@@ -183,7 +184,7 @@ def test_series_barh():
     plot = ser.vgplot.barh()
     utils.validate_vegalite(plot)
     assert plot.mark == "bar"
-    utils.check_encodings(plot, y="index", x="0", opacity=utils.IGNORE)
+    utils.check_encodings(plot, y="index", x="0")
 
 
 def test_df_area_simple():
@@ -193,7 +194,7 @@ def test_df_area_simple():
     utils.validate_vegalite(plot)
     assert plot.mark == "area"
     utils.check_encodings(plot, x="index", y="value",
-                          color="variable", opacity=utils.IGNORE)
+                          color="variable")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"x", "y"}
     assert plot["encoding"]["y"]["stack"] == "zero"
@@ -220,7 +221,7 @@ def test_df_area_xy():
     plot = df.vgplot.area(x="x", y="y")
     utils.validate_vegalite(plot)
     assert plot.mark == "area"
-    utils.check_encodings(plot, x="x", y="value", color="variable", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="value", color="variable")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"y"}
     assert plot["encoding"]["y"]["stack"] == "zero"
@@ -232,7 +233,7 @@ def test_df_area_xy_unstacked():
     plot = df.vgplot.area(x="x", y="y", stacked=False)
     utils.validate_vegalite(plot)
     assert plot.mark == "area"
-    utils.check_encodings(plot, x="x", y="value", color="variable", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="value", color="variable")
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"y"}
     assert plot["encoding"]["y"]["stack"] is None
@@ -243,7 +244,7 @@ def test_series_area():
     plot = ser.vgplot.area()
     utils.validate_vegalite(plot)
     assert plot.mark == "area"
-    utils.check_encodings(plot, x="index", y="0", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="index", y="0")
 
 
 @pytest.mark.parametrize("stacked", [True, False])
@@ -263,10 +264,11 @@ def test_df_hist(stacked, histtype):
     if stacked:
         # No default opacity for a stacked histogram
         utils.check_encodings(plot, x="value", y=utils.IGNORE,
-                              color="variable", opacity=utils.IGNORE)
+                              color="variable")
     else:
         utils.check_encodings(
-            plot, x="value", y=utils.IGNORE, color="variable", opacity=utils.IGNORE
+            plot, x="value", y=utils.IGNORE, color="variable",
+            opacity=utils.IGNORE
         )
     assert plot["encoding"]["x"]["bin"] == {"maxbins": 5}
     assert plot["encoding"]["y"]["aggregate"] == "count"
@@ -285,7 +287,7 @@ def test_series_hist(histtype):
     plot = ser.vgplot.hist(bins=5, histtype=histtype)
     assert plot.mark == marks[histtype]
 
-    utils.check_encodings(plot, x="0", y=utils.IGNORE, opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="0", y=utils.IGNORE)
     assert plot["encoding"]["x"]["bin"] == {"maxbins": 5}
     assert plot["encoding"]["y"]["aggregate"] == "count"
 
@@ -295,7 +297,7 @@ def test_df_hexbin():
     gridsize = 10
     plot = df.vgplot.hexbin(x="x", y="y", gridsize=gridsize)
     assert plot.mark == "rect"
-    utils.check_encodings(plot, x="x", y="y", color=utils.IGNORE, opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="y", color=utils.IGNORE)
     assert plot["encoding"]["x"]["bin"] == {"maxbins": gridsize}
     assert plot["encoding"]["y"]["bin"] == {"maxbins": gridsize}
     assert plot["encoding"]["color"]["aggregate"] == "count"
@@ -306,7 +308,7 @@ def test_df_hexbin_C():
     gridsize = 10
     plot = df.vgplot.hexbin(x="x", y="y", C="C", gridsize=gridsize)
     assert plot.mark == "rect"
-    utils.check_encodings(plot, x="x", y="y", color="C", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="y", color="C")
     assert plot["encoding"]["x"]["bin"] == {"maxbins": gridsize}
     assert plot["encoding"]["y"]["bin"] == {"maxbins": gridsize}
     assert plot["encoding"]["color"]["aggregate"] == "mean"
@@ -316,14 +318,14 @@ def test_df_hexbin_Cfunc():
     df = pd.DataFrame({"x": range(10), "y": range(10), "C": range(10)})
     plot = df.vgplot.hexbin(x="x", y="y", C="C", reduce_C_function=min)
     assert plot["encoding"]["color"]["aggregate"] == "min"
-    utils.check_encodings(plot, x="x", y="y", color="C", opacity=utils.IGNORE)
+    utils.check_encodings(plot, x="x", y="y", color="C")
 
 
 def test_df_kde():
     df = pd.DataFrame({"x": range(10), "y": range(10)})
     plot = df.vgplot.kde(bw_method="scott")
     assert plot.mark == "line"
-    utils.check_encodings(plot, x=" ", y="Density", color=utils.IGNORE, opacity=utils.IGNORE)
+    utils.check_encodings(plot, x=" ", y="Density", color=utils.IGNORE)
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"x", "y"}
 
@@ -332,7 +334,7 @@ def test_df_kde_y():
     df = pd.DataFrame({"x": range(10), "y": range(10)})
     plot = df.vgplot.kde(y="y", bw_method="scott")
     assert plot.mark == "line"
-    utils.check_encodings(plot, x=" ", y="Density", color=utils.IGNORE, opacity=utils.IGNORE)
+    utils.check_encodings(plot, x=" ", y="Density", color=utils.IGNORE)
     data = plot.data
     assert set(pd.unique(data["variable"])) == {"y"}
 
@@ -342,7 +344,7 @@ def test_ser_kde():
     plot = ser.vgplot.kde(bw_method="scott")
     assert plot.mark == "line"
     utils.check_encodings(
-        plot, opacity=utils.IGNORE,
+        plot,
         x=' ',
         y='x',
     )

@@ -107,9 +107,15 @@ class SeriesPlotMethods(BasePlotMethods):
             data=df, width=width, height=height, title=kwds.get("title", "")
         )
 
-        return chart.mark_line().encode(
-            x=_x(x, df), y=_y(y, df), opacity=alt.value(alpha or 1)
+        chart = chart.mark_line().encode(
+            x=_x(x, df), y=_y(y, df)
         )
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            chart = chart.encode(opacity=alt.value(alpha))
+
+        return chart
 
     def area(self, alpha=None, width=450, height=300, **kwds):
         """Area plot for Series data
@@ -143,9 +149,15 @@ class SeriesPlotMethods(BasePlotMethods):
             data=df, width=width, height=height, title=kwds.get("title", "")
         )
 
-        return chart.mark_area().encode(
-            x=_x(x, df), y=_y(y, df), opacity=alt.value(alpha or 1)
+        chart = chart.mark_area().encode(
+            x=_x(x, df), y=_y(y, df)
         )
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            chart = chart.encode(opacity=alt.value(alpha))
+
+        return chart
 
     def bar(self, alpha=None, width=450, height=300, **kwds):
         """Bar plot for Series data
@@ -180,9 +192,15 @@ class SeriesPlotMethods(BasePlotMethods):
             data=df, width=width, height=height, title=kwds.get("title", "")
         )
 
-        return chart.mark_bar().encode(
-            x=_x(x, df), y=_y(y, df), opacity=alt.value(alpha or 1)
+        chart = chart.mark_bar().encode(
+            x=_x(x, df), y=_y(y, df)
         )
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            chart = chart.encode(opacity=alt.value(alpha))
+
+        return chart
 
     def barh(self, alpha=None, width=450, height=300, **kwds):
         """Horizontal bar plot for Series data
@@ -259,10 +277,12 @@ class SeriesPlotMethods(BasePlotMethods):
         )
         chart.mark = mark
         return chart.encode(x=_x(x, df, bin={"maxbins": 5}),
-                            y=_y(y, df, aggregate="count"),
-                            opacity=alt.value(alpha or 1))
+                            y=_y(y, df, aggregate="count"))
 
-        chart.mark = mark
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            chart = chart.encode(opacity=alt.value(alpha))
+
         return chart
 
     def kde(self, bw_method=None, alpha=None, width=450, height=300, **kwds):
@@ -407,9 +427,12 @@ class FramePlotMethods(BasePlotMethods):
         chart = chart.mark_line().encode(
             x=_x(x, df),
             y=_y(value_name, df),
-            color=alt.Color(var_name, type="nominal"),
-            opacity=alt.value(alpha or 1),
+            color=alt.Color(var_name, type="nominal")
         )
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            chart = chart.encode(opacity=alt.value(alpha))
 
         if use_order:
             chart.encoding["order"] = {
@@ -466,8 +489,12 @@ class FramePlotMethods(BasePlotMethods):
 
         chart = self._plot(width=width, height=height, title=kwds.get("title", ""))
         chart = chart.mark_point().encode(
-            x=_x(x, df), y=_y(y, df), opacity=alt.value(alpha or 1)
+            x=_x(x, df), y=_y(y, df)
         )
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            chart = chart.encode(opacity=alt.value(alpha))
 
         if c is not None:
             chart.encoding["color"] = {"field": c, "type": infer_vegalite_type(df[c])}
@@ -546,9 +573,12 @@ class FramePlotMethods(BasePlotMethods):
                 type=infer_vegalite_type(df[value_name]),
                 stack=(None, "zero")[stacked],
             ),
-            opacity=alt.value(alpha or 1),
             color=alt.Color(field=var_name, type=infer_vegalite_type(df[var_name])),
         )
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            chart = chart.encode(opacity=alt.value(alpha))
 
         return chart
 
@@ -621,8 +651,11 @@ class FramePlotMethods(BasePlotMethods):
                 stack=(None, "zero")[stacked],
             ),
             color=alt.Color(field="variable", type=infer_vegalite_type(df["variable"])),
-            opacity=alt.value(alpha or 1),
         )
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            chart = chart.encode(opacity=alt.value(alpha))
 
         return chart
 
@@ -782,8 +815,11 @@ class FramePlotMethods(BasePlotMethods):
                 stack=("zero" if stacked else None),
             ),
             color=alt.Color(field=var_name, type="nominal"),
-            opacity=alt.value(alpha or 1),
         )
+
+        if alpha is not None:
+            assert 0 <= alpha <= 1
+            chart = chart.encode(opacity=alt.value(alpha))
 
         return chart
 
@@ -859,9 +895,13 @@ class FramePlotMethods(BasePlotMethods):
         chart = chart.mark_rect().encode(
             x=alt.X(x, bin={"maxbins": gridsize}, type="quantitative"),
             y=alt.Y(y, bin={"maxbins": gridsize}, type="quantitative"),
-            color=c,
-            opacity=alt.value(alpha or 1),
+            color=c
         )
+
+        if alpha:
+            assert 0 <= alpha <= 1
+            chart = chart.encode(opacity=alt.value(alpha))
+
         chart.configure(
             range={"heatmap": {"scheme": "greenblue"}}, view={"stroke": "transparent"}
         )
