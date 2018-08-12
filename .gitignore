@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
+# C extnsions
 *.so
 
 # Distribution / packaging
@@ -44,6 +44,8 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
+.pytest_cache/*
+**/.pytest_cache/*
 .hypothesis/
 
 # Translations
