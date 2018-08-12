@@ -12,6 +12,7 @@ def check_encodings(chart, **fields):
     for encoding, expected_field in fields.items():
         if expected_field is IGNORE:
             continue
+
         actual_field = edict[encoding]['field']
         if actual_field != expected_field:
             raise ValueError("Expected '{0}' encoding to be '{1}'; got '{2}'"

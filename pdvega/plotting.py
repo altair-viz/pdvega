@@ -168,20 +168,6 @@ def andrews_curves(
         }
     )
 
-    spec = {
-        "x": {"field": "t", "type": "quantitative"},
-        "y": {"field": " ", "type": "quantitative"},
-        "color": {"field": class_column, "type": infer_vegalite_type(df[class_column])},
-        "detail": {"field": "sample", "type": "quantitative"},
-    }
-
-    if alpha is None and df[class_column].nunique() > 20:
-        alpha = 0.3
-
-    if alpha is not None:
-        assert 0 <= alpha <= 1
-        spec["opacity"] = {"value": alpha}
-
     chart = alt.Chart(df).properties(width=width, height=height).mark_line()
     chart = chart.encode(
         x=alt.X(field="t", type="quantitative"),
@@ -190,7 +176,10 @@ def andrews_curves(
         detail=alt.Detail(field='sample', type="quantitative")
     )
 
-    if alpha is None and len(df[class_column].nunique()) > 20:
+    if alpha is None and df[class_column].nunique() > 20:
+        alpha = 0.5
+
+    if alpha is not None:
         assert 0 <= alpha <= 1
         return chart.encode(opacity=alt.value(alpha))
 
