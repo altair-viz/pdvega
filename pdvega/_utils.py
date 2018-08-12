@@ -34,7 +34,7 @@ def infer_vegalite_type(data, ordinal_threshold=6):
             return 'quantitative'
     elif typ in ('floating', 'mixed-integer-float', 'complex'):
         return 'quantitative'
-    elif typ in ('string', 'bytes', 'categorical', 'boolean', 'mixed', 'unicode'):
+    elif typ in ('string', 'bytes', 'categorical', 'boolean', 'mixed', 'unicode', 'object'):
         return 'nominal'
     elif typ in ('datetime', 'datetime64', 'timedelta',
                  'timedelta64', 'date', 'time', 'period'):

@@ -175,6 +175,9 @@ def andrews_curves(
         "detail": {"field": "sample", "type": "quantitative"},
     }
 
+    if len(class_column.nunique()) > 20:
+        alpha = 0.3
+
     if alpha is not None:
         assert 0 <= alpha <= 1
         spec["opacity"] = {"value": alpha}
@@ -187,7 +190,7 @@ def andrews_curves(
         detail=alt.Detail(field='sample', type="quantitative")
     )
 
-    if alpha is not None:
+    if alpha is None and len(class_column.nunique()) > 20:
         assert 0 <= alpha <= 1
         return chart.encode(opacity=alt.value(alpha))
 
@@ -260,6 +263,9 @@ def parallel_coordinates(
          color=alt.Color(field=class_column, type=infer_vegalite_type(df[class_column])),
          detail=alt.Detail(field=index, type=infer_vegalite_type(df[index]))
     )
+
+    if alpha is None and len(class_column.nunique()) > 20:
+        alpha = 0.3
 
     if alpha is not None:
         assert 0 <= alpha <= 1
