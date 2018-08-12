@@ -175,7 +175,7 @@ def andrews_curves(
         "detail": {"field": "sample", "type": "quantitative"},
     }
 
-    if len(class_column.nunique()) > 20:
+    if alpha is None and df[class_column].nunique() > 20:
         alpha = 0.3
 
     if alpha is not None:
@@ -264,7 +264,7 @@ def parallel_coordinates(
          detail=alt.Detail(field=index, type=infer_vegalite_type(df[index]))
     )
 
-    if alpha is None and len(df[class_column].nunique()) > 20:
+    if alpha is None and df[class_column].nunique() > 20:
         alpha = 0.3
 
     if alpha is not None:
