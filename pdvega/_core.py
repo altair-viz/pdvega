@@ -346,7 +346,6 @@ class FramePlotMethods(BasePlotMethods):
         alpha=None,
         var_name="variable",
         value_name="value",
-        interactive=True,
         width=450,
         height=300,
         **kwds
@@ -420,7 +419,6 @@ class FramePlotMethods(BasePlotMethods):
         c=None,
         s=None,
         alpha=None,
-        interactive=True,
         width=450,
         height=300,
         **kwds
@@ -465,7 +463,7 @@ class FramePlotMethods(BasePlotMethods):
             chart.encoding["color"] = {"field": c, "type": infer_vegalite_type(df[c])}
 
         if s is not None:
-            chart.encoding["size"] = {"field": s, "type": infer_vegalite_type(df[s], 0)}
+            chart.encoding["size"] = {"field": s, "type": infer_vegalite_type(df[s])}
 
         return chart
 
@@ -477,7 +475,6 @@ class FramePlotMethods(BasePlotMethods):
         alpha=None,
         var_name="variable",
         value_name="value",
-        interactive=True,
         width=450,
         height=300,
         **kwds
@@ -550,7 +547,6 @@ class FramePlotMethods(BasePlotMethods):
         alpha=None,
         var_name="variable",
         value_name="value",
-        interactive=True,
         width=450,
         height=300,
         **kwds
@@ -622,7 +618,6 @@ class FramePlotMethods(BasePlotMethods):
         alpha=None,
         var_name="variable",
         value_name="value",
-        interactive=True,
         width=450,
         height=300,
         **kwds
@@ -665,7 +660,6 @@ class FramePlotMethods(BasePlotMethods):
             alpha=alpha,
             var_name=var_name,
             value_name=value_name,
-            interactive=interactive,
             width=width,
             height=height,
             **kwds
@@ -686,7 +680,6 @@ class FramePlotMethods(BasePlotMethods):
         histtype="bar",
         var_name="variable",
         value_name="value",
-        interactive=True,
         width=450,
         height=300,
         **kwds
@@ -778,7 +771,6 @@ class FramePlotMethods(BasePlotMethods):
         reduce_C_function="mean",
         gridsize=100,
         alpha=None,
-        interactive=True,
         width=450,
         height=300,
         **kwds
@@ -858,7 +850,6 @@ class FramePlotMethods(BasePlotMethods):
         y=None,
         bw_method=None,
         alpha=None,
-        interactive=True,
         width=450,
         height=300,
         **kwds
@@ -914,7 +905,6 @@ class FramePlotMethods(BasePlotMethods):
         return f.line(
             value_name="Density",
             alpha=alpha,
-            interactive=interactive,
             width=width,
             height=height,
             **kwds
