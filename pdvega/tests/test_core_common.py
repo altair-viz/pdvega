@@ -19,14 +19,6 @@ def data():
     })
 
 
-COMMON_ARGS = {
-    'alpha': [None, 0.5],
-    'interactive': [True, False],
-    'width': [300, 450],
-    'height': [200, 300],
-    'ax': [None, pdvega.alt.Chart(), pdvega.alt.LayerChart()]
-}
-
 other_chart = pd.Series(range(10)).vgplot(kind='line')
 AXES = [
     (None, pdvega.alt.Chart),
