@@ -79,7 +79,7 @@ class SeriesPlotMethods(BasePlotMethods):
             )
         return plot_method(**kwargs)
 
-    def line(self, alpha=None, width=450, height=300, **kwds):
+    def line(self, alpha=None, width=450, height=300, ax=None, **kwds):
         """Line plot for Series data
 
         >>> series.vgplot.line()  # doctest: +SKIP
@@ -92,6 +92,8 @@ class SeriesPlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -113,9 +115,11 @@ class SeriesPlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
 
+        if ax is not None:
+            return ax + chart
         return chart
 
-    def area(self, alpha=None, width=450, height=300, **kwds):
+    def area(self, alpha=None, width=450, height=300, ax=None, **kwds):
         """Area plot for Series data
 
         >>> series.vgplot.area()  # doctest: +SKIP
@@ -128,6 +132,8 @@ class SeriesPlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -149,9 +155,11 @@ class SeriesPlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
 
+        if ax is not None:
+            return ax + chart
         return chart
 
-    def bar(self, alpha=None, width=450, height=300, **kwds):
+    def bar(self, alpha=None, width=450, height=300, ax=None, **kwds):
         """Bar plot for Series data
 
         >>> series.vgplot.bar()  # doctest: +SKIP
@@ -164,6 +172,8 @@ class SeriesPlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -186,9 +196,11 @@ class SeriesPlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
 
+        if ax is not None:
+            return ax + chart
         return chart
 
-    def barh(self, alpha=None, width=450, height=300, **kwds):
+    def barh(self, alpha=None, width=450, height=300, ax=None, **kwds):
         """Horizontal bar plot for Series data
 
         >>> series.vgplot.barh()  # doctest: +SKIP
@@ -201,19 +213,24 @@ class SeriesPlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
         chart : alt.Chart
             altair chart representation
         """
-        plot = self.bar(alpha=alpha, width=width, height=height, **kwds)
+        chart = self.bar(alpha=alpha, width=width, height=height, **kwds)
 
-        enc = plot.encoding
+        enc = chart.encoding
         enc["x"], enc["y"] = enc["y"], enc["x"]
-        return plot
 
-    def hist(self, bins=10, alpha=None, histtype="bar", width=450, height=300, **kwds):
+        if ax is not None:
+            return ax + chart
+        return chart
+
+    def hist(self, bins=10, alpha=None, histtype="bar", width=450, height=300, ax=None, **kwds):
         """Histogram plot for Series data
 
         >>> series.vgplot.hist()  # doctest: +SKIP
@@ -230,6 +247,8 @@ class SeriesPlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -266,9 +285,11 @@ class SeriesPlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
 
+        if ax is not None:
+            return ax + chart
         return chart
 
-    def kde(self, bw_method=None, alpha=None, width=450, height=300, **kwds):
+    def kde(self, bw_method=None, alpha=None, width=450, height=300, ax=None, **kwds):
         """Kernel Density Estimation plot for Series data
 
         >>> series.vgplot.kde()  # doctest: +SKIP
@@ -285,6 +306,8 @@ class SeriesPlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -304,7 +327,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         kde_ser.index.name = " "
         f = self.__class__(kde_ser)
-        return f.line(alpha=alpha, width=width, height=height, **kwds)
+        return f.line(alpha=alpha, width=width, height=height, ax=ax, **kwds)
 
     density = kde
 
@@ -348,6 +371,7 @@ class FramePlotMethods(BasePlotMethods):
         value_name="value",
         width=450,
         height=300,
+        ax=None,
         **kwds
     ):
         """Line plot for DataFrame data
@@ -372,6 +396,8 @@ class FramePlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -410,6 +436,8 @@ class FramePlotMethods(BasePlotMethods):
                 "field": order, "type": infer_vegalite_type(df[order])
             }
 
+        if ax is not None:
+            return ax + chart
         return chart
 
     def scatter(
@@ -421,6 +449,7 @@ class FramePlotMethods(BasePlotMethods):
         alpha=None,
         width=450,
         height=300,
+        ax=None,
         **kwds
     ):
         """Scatter plot for DataFrame data
@@ -443,6 +472,8 @@ class FramePlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -465,6 +496,8 @@ class FramePlotMethods(BasePlotMethods):
         if s is not None:
             chart.encoding["size"] = {"field": s, "type": infer_vegalite_type(df[s])}
 
+        if ax is not None:
+            return ax + chart
         return chart
 
     def area(
@@ -477,6 +510,7 @@ class FramePlotMethods(BasePlotMethods):
         value_name="value",
         width=450,
         height=300,
+        ax=None,
         **kwds
     ):
         """Area plot for DataFrame data
@@ -504,6 +538,8 @@ class FramePlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -537,6 +573,8 @@ class FramePlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
 
+        if ax is not None:
+            return ax + chart
         return chart
 
     def bar(
@@ -549,6 +587,7 @@ class FramePlotMethods(BasePlotMethods):
         value_name="value",
         width=450,
         height=300,
+        ax=None,
         **kwds
     ):
         """Bar plot for DataFrame data
@@ -576,6 +615,8 @@ class FramePlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -608,6 +649,8 @@ class FramePlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
 
+        if ax is not None:
+            return ax + chart
         return chart
 
     def barh(
@@ -620,6 +663,7 @@ class FramePlotMethods(BasePlotMethods):
         value_name="value",
         width=450,
         height=300,
+        ax=None,
         **kwds
     ):
         """Horizontal bar plot for DataFrame data
@@ -647,13 +691,15 @@ class FramePlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
         chart : alt.Chart
             altair chart representation
         """
-        plot = self.bar(
+        chart = self.bar(
             x=x,
             y=y,
             stacked=stacked,
@@ -665,9 +711,11 @@ class FramePlotMethods(BasePlotMethods):
             **kwds
         )
 
-        enc = plot.encoding
+        enc = chart.encoding
         enc["x"], enc["y"] = enc["y"], enc["x"]
-        return plot
+        if ax is not None:
+            return ax + chart
+        return chart
 
     def hist(
         self,
@@ -682,6 +730,7 @@ class FramePlotMethods(BasePlotMethods):
         value_name="value",
         width=450,
         height=300,
+        ax=None,
         **kwds
     ):
         """Histogram plot for DataFrame data
@@ -715,6 +764,8 @@ class FramePlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -761,6 +812,8 @@ class FramePlotMethods(BasePlotMethods):
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
 
+        if ax is not None:
+            return ax + chart
         return chart
 
     def heatmap(
@@ -773,6 +826,7 @@ class FramePlotMethods(BasePlotMethods):
         alpha=None,
         width=450,
         height=300,
+        ax=None,
         **kwds
     ):
         """Heatmap plot for DataFrame data
@@ -803,6 +857,8 @@ class FramePlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -840,6 +896,8 @@ class FramePlotMethods(BasePlotMethods):
             range={"heatmap": {"scheme": "greenblue"}}, view={"stroke": "transparent"}
         )
 
+        if ax is not None:
+            return ax + chart
         return chart
 
     hexbin = heatmap
@@ -852,6 +910,7 @@ class FramePlotMethods(BasePlotMethods):
         alpha=None,
         width=450,
         height=300,
+        ax=None,
         **kwds
     ):
         """Kernel Density Estimate plot for DataFrame data
@@ -876,6 +935,8 @@ class FramePlotMethods(BasePlotMethods):
             the width of the plot in pixels
         height : int, optional
             the height of the plot in pixels
+        ax: altair.Chart, optional
+            chart to be overlayed with this vis (convinience method for `chart1 + chart2`)
 
         Returns
         -------
@@ -907,6 +968,7 @@ class FramePlotMethods(BasePlotMethods):
             alpha=alpha,
             width=width,
             height=height,
+            ax=ax,
             **kwds
         )
 
