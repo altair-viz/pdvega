@@ -1,26 +1,27 @@
-import jsonschema
+# import jsonschema
+# import pandas as pd
 
-import pandas as pd
-
-from pdvega.schema import VEGALITE_SCHEMA
+# from pdvega.schema import VEGALITE_SCHEMA
 
 IGNORE = object()
 
 
-def check_encodings(spec, **fields):
-    assert set(spec['encoding'].keys()) == set(fields.keys())
+def check_encodings(chart, **fields):
+    edict = chart.encoding.to_dict()
+    assert set(edict.keys()) == set(fields.keys())
     for encoding, expected_field in fields.items():
         if expected_field is IGNORE:
             continue
-        actual_field = spec['encoding'][encoding]['field']
+
+        actual_field = edict[encoding]['field']
         if actual_field != expected_field:
             raise ValueError("Expected '{0}' encoding to be '{1}'; got '{2}'"
                              "".format(encoding, expected_field, actual_field))
 
 
-def get_data(spec):
-    return pd.DataFrame.from_records(spec['data']['values'])
+def get_data(chart):
+    return chart.data
 
 
-def validate_vegalite(spec):
-    return jsonschema.validate(spec, VEGALITE_SCHEMA)
+def validate_vegalite(chart):
+    assert chart.to_dict(validate=True)

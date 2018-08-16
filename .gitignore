@@ -44,6 +44,8 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
+.pytest_cache/*
+**/.pytest_cache/*
 .hypothesis/
 
 # Translations
@@ -105,3 +107,7 @@ ENV/
 
 # notebooks
 Untitled*.ipynb
+
+# macs
+**/.DS_Store
+.DS_Store

@@ -1,14 +1,12 @@
 """Core plotting routines"""
 import warnings
-
+import altair as alt
 import numpy as np
 import pandas as pd
 
-from ._axes import Axes
-from ._utils import infer_vegalite_type, finalize_vegalite_spec
+from ._utils import infer_vegalite_type
 
-__all__ = ['scatter_matrix', 'andrews_curves', 'parallel_coordinates',
-           'lag_plot']
+__all__ = ["scatter_matrix", "andrews_curves", "parallel_coordinates", "lag_plot"]
 
 
 def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
@@ -35,78 +33,80 @@ def scatter_matrix(frame, c=None, s=None, figsize=None, dpi=72.0, **kwds):
 
     Returns
     -------
-    plot : VegaLite object
-        The Vega-Lite representation of the plot.
+    chart: alt.Chart object
+        The alt.Chart representation of the plot.
 
     See Also
     --------
     pandas.plotting.scatter_matrix : matplotlib version of this routine
     """
     if kwds:
-        warnings.warn("Unrecognized keywords in pdvega.scatter_matrix: {0}"
-                      "".format(list(kwds.keys())))
-    cols = [col for col in frame.columns
-            if col not in [c, s]
-            if infer_vegalite_type(frame[col], ordinal_threshold=0) == 'quantitative']
+        warnings.warn(
+            "Unrecognized keywords in pdvega.scatter_matrix: {0}"
+            "".format(list(kwds.keys()))
+        )
+
+    cols = [
+        col
+        for col in frame.columns
+        if col not in [c, s]
+        if infer_vegalite_type(frame[col], ordinal_threshold=0) == "quantitative"
+    ]
+
     spec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-      "repeat": {
-        "row": cols,
-        "column": cols[::-1]
-      },
-      "spec": {
-        "mark": "point",
-        "selection": {
-          "brush": {
-            "type": "interval",
-            "resolve": "union",
-            "on": "[mousedown[event.shiftKey], window:mouseup] > window:mousemove!",
-            "translate": "[mousedown[event.shiftKey], window:mouseup] > window:mousemove!",
-            "zoom": "wheel![event.shiftKey]"
-          },
-          "grid": {
-            "type": "interval",
-            "resolve": "global",
-            "bind": "scales",
-            "translate": "[mousedown[!event.shiftKey], window:mouseup] > window:mousemove!",
-            "zoom": "wheel![!event.shiftKey]"
-          }
-        },
-        "encoding": {
-          "x": {"field": {"repeat": "column"}, "type": "quantitative"},
-          "y": {"field": {"repeat": "row"}, "type": "quantitative"},
-          "color": {
-            "condition": {
-              "selection": "brush",
+        "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
+        "repeat": {"row": cols, "column": cols[::-1]},
+        "spec": {
+            "mark": "point",
+            "selection": {
+                "brush": {
+                    "type": "interval",
+                    "resolve": "union",
+                    "on": "[mousedown[event.shiftKey], window:mouseup] > window:mousemove!",
+                    "translate": "[mousedown[event.shiftKey], window:mouseup] > window:mousemove!",
+                    "zoom": "wheel![event.shiftKey]",
+                },
+                "grid": {
+                    "type": "interval",
+                    "resolve": "global",
+                    "bind": "scales",
+                    "translate": "[mousedown[!event.shiftKey], window:mouseup] > window:mousemove!",
+                    "zoom": "wheel![!event.shiftKey]",
+                },
             },
-            "value": "grey"
-          }
+            "encoding": {
+                "x": {"field": {"repeat": "column"}, "type": "quantitative"},
+                "y": {"field": {"repeat": "row"}, "type": "quantitative"},
+                "color": {"condition": {"selection": "brush"}, "value": "grey"},
+            },
         },
-      }
     }
 
     if figsize is not None:
         width_inches, height_inches = figsize
-        spec['spec']['width'] = 0.8 * dpi * width_inches / len(cols)
-        spec['spec']['height'] = 0.8 * dpi * height_inches / len(cols)
+        spec["spec"]["width"] = 0.8 * dpi * width_inches / len(cols)
+        spec["spec"]["height"] = 0.8 * dpi * height_inches / len(cols)
 
     if s is not None:
-        spec['spec']['encoding']["size"] = {
-            "field": s,
-            "type": infer_vegalite_type(frame[s])
+        spec["spec"]["encoding"]["size"] = {
+            "field": s, "type": infer_vegalite_type(frame[s])
         }
 
-    cond = spec['spec']['encoding']['color']['condition']
+    cond = spec["spec"]["encoding"]["color"]["condition"]
     if c is None:
-        cond['value'] = 'steelblue'
+        cond["value"] = "steelblue"
     else:
-        cond['field'] = c
-        cond['type'] = infer_vegalite_type(frame[c])
-    return Axes(spec, data=frame)
+        cond["field"] = c
+        cond["type"] = infer_vegalite_type(frame[c])
+
+    chart = alt.Chart().from_dict(spec)
+    chart.data = frame
+    return chart
 
 
-def andrews_curves(data, class_column, samples=200, alpha=None, ax=None,
-                   width=450, height=300, interactive=True, **kwds):
+def andrews_curves(
+    data, class_column, samples=200, alpha=None, width=450, height=300, **kwds
+):
     """
     Generates an Andrews curves visualization for visualising clusters of
     multivariate data.
@@ -130,10 +130,6 @@ def andrews_curves(data, class_column, samples=200, alpha=None, ax=None,
         Number of points to plot in each curve
     alpha: float, optional
         The transparency of the lines
-    ax : Axes, optional
-        If specified, add the plot as a layer to the given axis
-    interactive : bool, optional
-        if True (default) then produce an interactive plot
     width : int, optional
         the width of the plot in pixels
     height : int, optional
@@ -143,12 +139,15 @@ def andrews_curves(data, class_column, samples=200, alpha=None, ax=None,
 
     Returns:
     --------
-    ax: Matplotlib axis object
+    chart: alt.Chart object
 
     """
     if kwds:
-        warnings.warn("Unrecognized keywords in pdvega.andrews_curves(): {0}"
-                      "".format(list(kwds.keys())))
+        warnings.warn(
+            "Unrecognized keywords in pdvega.andrews_curves(): {0}"
+            "".format(list(kwds.keys()))
+        )
+
     t = np.linspace(-np.pi, np.pi, samples)
     vals = data.drop(class_column, axis=1).values.T
 
@@ -160,34 +159,45 @@ def andrews_curves(data, class_column, samples=200, alpha=None, ax=None,
         else:
             curves += np.outer(vals[i], np.cos(ft))
 
-    df = pd.DataFrame({'t': np.tile(t, curves.shape[0]),
-                       'sample': np.repeat(np.arange(curves.shape[0]), curves.shape[1]),
-                       ' ': curves.ravel(),
-                       class_column: np.repeat(data[class_column], samples)})
-
-    spec = {
-        'mark': 'line',
-        'encoding': {
-            'x': {'field': 't', 'type': 'quantitative'},
-            'y': {'field': ' ', 'type': 'quantitative'},
-            'color': {'field': class_column, 'type': infer_vegalite_type(df[class_column])},
-            'detail': {'field': 'sample', 'type': 'quantitative'}
+    df = pd.DataFrame(
+        {
+            "t": np.tile(t, curves.shape[0]),
+            "sample": np.repeat(np.arange(curves.shape[0]), curves.shape[1]),
+            " ": curves.ravel(),
+            class_column: np.repeat(data[class_column], samples),
         }
-    }
+    )
+
+    chart = alt.Chart(df).properties(width=width, height=height).mark_line()
+    chart = chart.encode(
+        x=alt.X(field="t", type="quantitative"),
+        y=alt.Y(field=" ", type="quantitative"),
+        color=alt.Color(field=class_column, type=infer_vegalite_type(df[class_column])),
+        detail=alt.Detail(field='sample', type="quantitative")
+    )
+
+    if alpha is None and df[class_column].nunique() > 20:
+        alpha = 0.5
+
     if alpha is not None:
         assert 0 <= alpha <= 1
-        spec['encoding']['opacity'] = {'value': alpha}
+        return chart.encode(opacity=alt.value(alpha))
 
-    spec = finalize_vegalite_spec(spec, width=width, height=height, interactive=interactive)
-
-    if ax is None:
-        ax = Axes()
-    return ax._add_layer(spec, data=df)
+    return chart
 
 
-def parallel_coordinates(data, class_column, cols=None, alpha=None, ax=None,
-                         width=450, height=300, interactive=True,
-                         var_name='variable', value_name='value', **kwds):
+def parallel_coordinates(
+    data,
+    class_column,
+    cols=None,
+    alpha=None,
+    width=450,
+    height=300,
+    interactive=True,
+    var_name="variable",
+    value_name="value",
+    **kwds
+):
     """
     Parallel coordinates plotting.
 
@@ -200,8 +210,6 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None, ax=None,
         A list of column names to use
     alpha: float, optional
         The transparency of the lines
-    ax : Axes, optional
-        If specified, add the plot as a layer to the given axis
     interactive : bool, optional
         if True (default) then produce an interactive plot
     width : int, optional
@@ -215,16 +223,18 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None, ax=None,
 
     Returns
     -------
-    plot : VegaLite object
-        The Vega-Lite representation of the plot.
+    chart: alt.Chart object
+        The altair representation of the plot.
 
     See Also
     --------
     pandas.plotting.parallel_coordinates : matplotlib version of this routine
     """
     if kwds:
-        warnings.warn("Unrecognized keywords in pdvega.scatter_matrix: {0}"
-                      "".format(list(kwds.keys())))
+        warnings.warn(
+            "Unrecognized keywords in pdvega.scatter_matrix: {0}"
+            "".format(list(kwds.keys()))
+        )
 
     # Transform the dataframe to be used in Vega-Lite
     if cols is not None:
@@ -233,43 +243,26 @@ def parallel_coordinates(data, class_column, cols=None, alpha=None, ax=None,
     df = data.reset_index()
     index = (set(df.columns) - set(cols)).pop()
     assert index in df.columns
-    df = df.melt([index, class_column],
-                 var_name=var_name, value_name=value_name)
+    df = df.melt([index, class_column], var_name=var_name, value_name=value_name)
 
-    spec = {
-        'mark': 'line',
-        'encoding': {
-            'color': {
-                'field': class_column,
-                'type': infer_vegalite_type(df[class_column])
-            },
-            'detail': {
-                'field': index,
-                'type': infer_vegalite_type(df[index])
-            },
-            'x': {
-                'field': var_name,
-                'type': infer_vegalite_type(df[var_name])
-            },
-            'y': {
-                'field': value_name,
-                'type': infer_vegalite_type(df[value_name])
-            }
-        }
-    }
+    chart = alt.Chart(df).properties(width=width, height=height)
+    chart = chart.mark_line().encode(
+         x=alt.X(field=var_name, type=infer_vegalite_type(df[var_name])),
+         y=alt.Y(field=value_name, type=infer_vegalite_type(df[value_name])),
+         color=alt.Color(field=class_column, type=infer_vegalite_type(df[class_column])),
+         detail=alt.Detail(field=index, type=infer_vegalite_type(df[index]))
+    )
+
+    if alpha is None and df[class_column].nunique() > 20:
+        alpha = 0.3
 
     if alpha is not None:
         assert 0 <= alpha <= 1
-        spec['encoding']['opacity'] = {'value': alpha}
-
-    spec = finalize_vegalite_spec(spec, interactive=interactive,
-                                  width=width, height=height)
-    if ax is None:
-        ax = Axes()
-    return ax._add_layer(spec, data=df)
+        return chart.encode(opacity=alt.value(alpha))
+    return chart
 
 
-def lag_plot(data, lag=1, kind='scatter', ax=None, **kwds):
+def lag_plot(data, lag=1, kind="scatter", **kwds):
     """Lag plot for time series.
 
     Parameters
@@ -280,25 +273,24 @@ def lag_plot(data, lag=1, kind='scatter', ax=None, **kwds):
         The lag of the scatter plot, default=1
     kind: string
         The kind of plot to use (e.g. 'scatter', 'line')
-    ax : Axes, optional
-        If specified, add the plot as a layer to the given axis
     **kwds:
         Additional keywords passed to data.vgplot.scatter
 
     Returns
     -------
-    plot: VegaLite plot object
+    chart: alt.Chart object
     """
     if lag != int(lag) or int(lag) <= 0:
         raise ValueError("lag must be a positive integer")
     lag = int(lag)
 
     values = data.values
-    y1 = 'y(t)'
-    y2 = 'y(t + {0})'.format(lag)
-    lags = pd.DataFrame({y1: values[:-lag].T.ravel(),
-                         y2: values[lag:].T.ravel()})
+    y1 = "y(t)"
+    y2 = "y(t + {0})".format(lag)
+    lags = pd.DataFrame({y1: values[:-lag].T.ravel(), y2: values[lag:].T.ravel()})
+
     if isinstance(data, pd.DataFrame):
-        lags['variable'] = np.repeat(data.columns, lags.shape[0] / data.shape[1])
-        kwds['c'] = 'variable'
-    return lags.vgplot(kind=kind, x=y1, y=y2, ax=ax, **kwds)
+        lags["variable"] = np.repeat(data.columns, lags.shape[0] / data.shape[1])
+        kwds["c"] = "variable"
+
+    return lags.vgplot(kind=kind, x=y1, y=y2, **kwds)
