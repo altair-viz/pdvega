@@ -27,14 +27,14 @@ DESCRIPTION = "Pandas plotting interface to Vega and Vega-Lite"
 LONG_DESCRIPTION = """
 pdvega makes it easy to create Vega-Lite plots from pandas dataframes,
 using the familiar pandas visualization API. For more information, see
-the `pdvega documentation <http://jakevdp.github.io/pdvega/>`_.
+the `pdvega documentation <http://altair-viz.github.io/pdvega/>`_.
 """
 NAME = "pdvega"
 AUTHOR = "Jake VanderPlas"
 AUTHOR_EMAIL = "jakevdp@gmail.com"
 MAINTAINER = "Jake VanderPlas"
 MAINTAINER_EMAIL = "jakevdp@gmail.com"
-URL = 'http://jakevdp.github.io/pdvega/'
+URL = 'http://altair-viz.github.io/pdvega/'
 DOWNLOAD_URL = 'http://github.com/jakevdp/pdvega/'
 LICENSE = 'MIT'
 
