@@ -1,7 +1,7 @@
 # ``pdvega``: Vega-Lite plotting for Pandas Dataframes
 
-[![build status](http://img.shields.io/travis/jakevdp/pdvega/master.svg?style=flat)](https://travis-ci.org/jakevdp/pdvega)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jakevdp/pdvega/master?filepath=examples%2Fpdvega_example.ipynb)
+[![build status](http://img.shields.io/travis/altair-viz/pdvega/master.svg?style=flat)](https://travis-ci.org/altair-viz/pdvega)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/altair-viz/pdvega/master?filepath=examples%2Fpdvega_example.ipynb)
 
 ``pdvega`` is a library that allows you to quickly create interactive
 [Vega-Lite](https://vega.github.io/vega-lite/) plots from Pandas dataframes,
