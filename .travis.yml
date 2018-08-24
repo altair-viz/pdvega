@@ -1,5 +1,7 @@
 language: python
 
+cache: pip
+
 python:
   - 2.7
   - 3.5
@@ -8,21 +10,14 @@ python:
 env:
   global:
     - TEST_DIR=/tmp/_pdvega/
-    - PIP_DEPS="pandas scipy ipython vega3 jsonschema flake8 pytest"
 
 before_install:
   - pip install pip --upgrade
-  - pip install $PIP_DEPS
 
 install:
-  - pip install .
-
-before_script:
-    # stop the build if there are Python syntax errors or undefined names
-    - flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics
-    # exit-zero treats all errors as warnings.  The GitHub editor is 127 chars wide
-    - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+  - pip install -e .[dev]
 
 script:
+  - flake8 ./
   - mkdir -p $TEST_DIR
-  - cd $TEST_DIR && python -m pytest --pyargs pdvega --doctest-modules
+  - cd $TEST_DIR && python -m pytest --pyargs  --doctest-modules pdvega

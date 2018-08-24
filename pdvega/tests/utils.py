@@ -1,8 +1,3 @@
-# import jsonschema
-# import pandas as pd
-
-# from pdvega.schema import VEGALITE_SCHEMA
-
 IGNORE = object()
 
 

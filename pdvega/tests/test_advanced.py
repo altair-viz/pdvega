@@ -1,4 +1,4 @@
-import pdvega
+import pdvega # flake8: noqa
 import pandas as pd
 
 

@@ -233,10 +233,10 @@ def test_series_plot_kwd_warnings(data, kind, info):
     data = data[col]
 
     with pytest.warns(UserWarning, match="Unrecognized keywords in vgplot.[a-z]+\(\): 'unrecognized_arg'"):
-        plot = data.vgplot(kind=kind, unrecognized_arg=None, **kwds)
+        data.vgplot(kind=kind, unrecognized_arg=None, **kwds)
 
     with pytest.warns(UserWarning):
-        plot = data.vgplot(kind=kind, unrecognized1=None, unrecognized2=None, **kwds)
+        data.vgplot(kind=kind, unrecognized1=None, unrecognized2=None, **kwds)
 
 
 @pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
@@ -246,7 +246,7 @@ def test_frame_plot_kwd_warnings(data, kind, info):
     data = data[cols]
 
     with pytest.warns(UserWarning, match="Unrecognized keywords in vgplot.[a-z]+\(\): 'unrecognized_arg'"):
-        plot = data.vgplot(kind=kind, unrecognized_arg=None, **kwds)
+        data.vgplot(kind=kind, unrecognized_arg=None, **kwds)
 
     with pytest.warns(UserWarning):
-        plot = data.vgplot(kind=kind, unrecognized1=None, unrecognized2=None, **kwds)
+        data.vgplot(kind=kind, unrecognized1=None, unrecognized2=None, **kwds)

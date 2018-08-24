@@ -1,3 +1,4 @@
+# flake8: noqa
 import altair as alt
 from . import plotting, themes
 from ._core import FramePlotMethods, SeriesPlotMethods

@@ -1,10 +1,9 @@
 import ast
-import os
 import json
 import importlib
 from hashlib import md5
 
-from itertools import tee, chain, islice
+from itertools import tee, chain
 
 
 def dict_hash(dct):
