@@ -31,6 +31,9 @@ def version(path):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
+
+HERE = os.path.abspath(os.path.dirname(__file__))
+
 # From https://github.com/jupyterlab/jupyterlab/blob/master/setupbase.py, BSD licensed
 def find_packages(top=HERE):
     """
