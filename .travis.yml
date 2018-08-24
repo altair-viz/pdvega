@@ -8,7 +8,7 @@ python:
 env:
   global:
     - TEST_DIR=/tmp/_pdvega/
-    - PIP_DEPS="pandas scipy ipython vega3 jsonschema flake8 pytest"
+    - PIP_DEPS="pandas scipy altair flake8 pytest"
 
 before_install:
   - pip install pip --upgrade

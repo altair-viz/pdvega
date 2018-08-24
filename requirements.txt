@@ -1,0 +1,4 @@
+altair
+numpy
+pandas
+scipy
