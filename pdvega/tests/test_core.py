@@ -2,6 +2,8 @@ import pytest
 
 import pandas as pd
 
+import altair as alt
+
 from pdvega.tests import utils
 
 
@@ -298,8 +300,8 @@ def test_df_hexbin():
     plot = df.vgplot.hexbin(x="x", y="y", gridsize=gridsize)
     assert plot.mark == "rect"
     utils.check_encodings(plot, x="x", y="y", color=utils.IGNORE)
-    assert plot["encoding"]["x"]["bin"] == {"maxbins": gridsize}
-    assert plot["encoding"]["y"]["bin"] == {"maxbins": gridsize}
+    assert plot["encoding"]["x"]["bin"] == alt.Bin(maxbins=gridsize)
+    assert plot["encoding"]["y"]["bin"] == alt.Bin(maxbins=gridsize)
     assert plot["encoding"]["color"]["aggregate"] == "count"
 
 
@@ -309,8 +311,8 @@ def test_df_hexbin_C():
     plot = df.vgplot.hexbin(x="x", y="y", C="C", gridsize=gridsize)
     assert plot.mark == "rect"
     utils.check_encodings(plot, x="x", y="y", color="C")
-    assert plot["encoding"]["x"]["bin"] == {"maxbins": gridsize}
-    assert plot["encoding"]["y"]["bin"] == {"maxbins": gridsize}
+    assert plot["encoding"]["x"]["bin"] == alt.Bin(maxbins=gridsize)
+    assert plot["encoding"]["y"]["bin"] == alt.Bin(maxbins=gridsize)
     assert plot["encoding"]["color"]["aggregate"] == "mean"
 
 
