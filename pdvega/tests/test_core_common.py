@@ -280,3 +280,25 @@ def test_frame_plot_figsize(data, kind, info):
     chart = data.vgplot(kind=kind, width=100, height=100, **kwds)
     assert chart.height == 100
     assert chart.width == 100
+
+
+@pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
+def test_series_title(data, kind, info):
+    col = info['col']
+    kwds = info.get('kwds', {})
+    data = data[col]
+
+    title = 'Test'
+    chart = data.vgplot(kind=kind, title=title, **kwds)
+    assert chart.title == title
+
+
+@pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
+def test_frame_title(data, kind, info):
+    cols = info['usecols']
+    kwds = info.get('kwds', {})
+    data = data[cols]
+
+    title = 'Test'
+    chart = data.vgplot(kind=kind, title=title, **kwds)
+    assert chart.title == title
