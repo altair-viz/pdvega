@@ -1,5 +1,5 @@
 import warnings
-
+import altair as alt
 import numpy as np
 import pandas as pd
 
@@ -27,17 +27,17 @@ def infer_vegalite_type(data, ordinal_threshold=6):
 
     # TODO: Once this returns 'O', please update test_select_x and test_select_y in test_api.py
 
-    if typ in ['mixed-integer', 'integer']:
+    if typ in ('mixed-integer', 'integer'):
         if ordinal_threshold and pd.Series(data).nunique() <= ordinal_threshold:
             return 'ordinal'
         else:
             return 'quantitative'
-    elif typ in ['floating', 'mixed-integer-float', 'complex']:
+    elif typ in ('floating', 'mixed-integer-float', 'complex'):
         return 'quantitative'
-    elif typ in ['string', 'bytes', 'categorical', 'boolean', 'mixed', 'unicode']:
+    elif typ in ('string', 'bytes', 'categorical', 'boolean', 'mixed', 'unicode', 'object'):
         return 'nominal'
-    elif typ in ['datetime', 'datetime64', 'timedelta',
-                 'timedelta64', 'date', 'time', 'period']:
+    elif typ in ('datetime', 'datetime64', 'timedelta',
+                 'timedelta64', 'date', 'time', 'period'):
         return 'temporal'
     else:
         warnings.warn("I don't know how to infer vegalite type from '{0}'.  "
@@ -65,9 +65,9 @@ def unpivot_frame(frame, x=None, y=None,
     if isinstance(y, tuple):
         y = list(y)
     if x is not None:
-        _ = frame[x]
+        _ = frame[x] # flake8: noqa
     if y is not None:
-        _ = frame[y]
+        _ = frame[y] # flake8: noqa
     return frame.melt(id_vars=x, value_vars=y,
                       var_name=var_name, value_name=value_name)
 
@@ -80,24 +80,6 @@ def warn_if_keywords_unused(kind, kwds):
             keys = tuple(kwds.keys())
         warnings.warn("Unrecognized keywords in vgplot.{0}(): {1}"
                       "".format(kind, repr(keys)))
-
-
-def finalize_vegalite_spec(spec, interactive=True, width=450, height=300):
-    spec.update({
-        "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-        "width": width,
-        "height": height
-    })
-    if interactive:
-        spec.update({
-            "selection": {
-                "grid": {
-                    "type": "interval",
-                    "bind": "scales"
-                }
-            }
-        })
-    return spec
 
 
 def validate_aggregation(agg):

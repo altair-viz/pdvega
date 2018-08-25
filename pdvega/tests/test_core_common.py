@@ -19,12 +19,13 @@ def data():
     })
 
 
-COMMON_ARGS = {
-    'alpha': [None, 0.5],
-    'interactive': [True, False],
-    'width': [300, 450],
-    'height': [200, 300],
-}
+other_chart = pd.Series(range(10)).vgplot(kind='line')
+AXES = [
+    (None, pdvega.alt.Chart),
+    (other_chart, pdvega.alt.LayerChart),
+    (pdvega.alt.layer(other_chart), pdvega.alt.LayerChart)
+]
+
 
 FRAME_TEST_CASES = {
     'line': {
@@ -84,7 +85,7 @@ SERIES_TEST_CASES = {
 
 
 def is_stackable(kind):
-    return kind in ['bar', 'barh', 'area', 'hist']
+    return kind in {'bar', 'barh', 'area', 'hist'}
 
 
 @pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
@@ -93,17 +94,14 @@ def test_series_plot_interactive(data, kind, info):
     kwds = info.get('kwds', {})
     data = data[col]
 
-    spec = data.vgplot(kind=kind, **kwds).spec
+    spec = data.vgplot(kind=kind, **kwds)
     validate_vegalite(spec)
-    assert spec['selection']['grid'] == {"type": "interval", "bind": "scales"}
+    assert 'selection' not in spec.to_dict()
 
-    spec = data.vgplot(kind=kind, interactive=True, **kwds).spec
+    spec = data.vgplot(kind=kind, **kwds).interactive()
     validate_vegalite(spec)
-    assert spec['selection']['grid'] == {"type": "interval", "bind": "scales"}
-
-    spec = data.vgplot(kind=kind, interactive=False, **kwds).spec
-    validate_vegalite(spec)
-    assert 'selection' not in spec
+    s = spec.to_dict()
+    assert next(iter(s['selection'].values())) == {'bind': 'scales', 'encodings': ['x', 'y'], 'type': 'interval'}
 
 
 @pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
@@ -112,17 +110,14 @@ def test_frame_plot_interactive(data, kind, info):
     kwds = info.get('kwds', {})
     data = data[cols]
 
-    spec = data.vgplot(kind=kind, **kwds).spec
-    validate_vegalite(spec)
-    assert spec['selection']['grid'] == {"type": "interval", "bind": "scales"}
+    chart = data.vgplot(kind=kind, **kwds)
+    validate_vegalite(chart)
+    assert 'selection' not in chart.to_dict()
 
-    spec = data.vgplot(kind=kind, interactive=True, **kwds).spec
-    validate_vegalite(spec)
-    assert spec['selection']['grid'] == {"type": "interval", "bind": "scales"}
-
-    spec = data.vgplot(kind=kind, interactive=False, **kwds).spec
-    validate_vegalite(spec)
-    assert 'selection' not in spec
+    chart = data.vgplot(kind=kind, **kwds).interactive()
+    validate_vegalite(chart)
+    s = chart.to_dict()
+    assert next(iter(s['selection'].values())) == {'bind': 'scales', 'encodings': ['x', 'y'], 'type': 'interval'}
 
 
 @pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
@@ -131,13 +126,27 @@ def test_series_plot_alpha(data, kind, info):
     kwds = info.get('kwds', {})
     data = data[col]
 
-    spec = data.vgplot(kind=kind, alpha=0.5, **kwds).spec
-    validate_vegalite(spec)
-    assert spec['encoding']['opacity']['value'] == 0.5
+    chart = data.vgplot(kind=kind, alpha=0.5, **kwds)
+    validate_vegalite(chart)
+    encoding = chart['encoding'].to_dict()
+    assert 'opacity' in encoding, encoding.keys()
+    assert encoding['opacity']['value'] == 0.5
 
-    spec = data.vgplot(kind=kind, **kwds).spec
-    validate_vegalite(spec)
-    assert 'opacity' not in spec['encoding']
+    chart = data.vgplot(kind=kind, **kwds)
+    validate_vegalite(chart)
+    assert 'opacity' not in chart['encoding'].to_dict()
+
+
+@pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
+@pytest.mark.parametrize('ax', AXES)
+def test_series_plot_ax(data, kind, info, ax):
+    col = info['col']
+    kwds = info.get('kwds', {})
+    data = data[col]
+
+    chart = data.vgplot(kind=kind, ax=ax[0], **kwds)
+    validate_vegalite(chart)
+    assert isinstance(chart, ax[1])
 
 
 @pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
@@ -147,30 +156,42 @@ def test_frame_plot_alpha(data, kind, info):
     data = data[cols]
 
     # if alpha is explicitly specified, then opacity should be in the spec
-    spec = data.vgplot(kind=kind, alpha=0.5, **kwds).spec
-    validate_vegalite(spec)
-    assert spec['encoding']['opacity']['value'] == 0.5
+    chart = data.vgplot(kind=kind, alpha=0.5, **kwds)
+    validate_vegalite(chart)
+    assert chart['encoding'].to_dict()['opacity']['value'] == 0.5
 
     if is_stackable(kind):
         # stackable plots have a default opacity when not stacked
-        spec = data.vgplot(kind=kind, stacked=False, **kwds).spec
-        validate_vegalite(spec)
-        assert spec['encoding']['opacity']['value'] == 0.7
+        chart = data.vgplot(kind=kind, stacked=False, **kwds)
+        validate_vegalite(chart)
+        assert chart['encoding'].to_dict()['opacity']['value'] == 0.7
 
         # if only one column is being plotted, then should have no opacity
-        spec = data[cols[:1]].vgplot(kind=kind, stacked=False, **kwds).spec
-        validate_vegalite(spec)
-        assert 'opacity' not in spec['encoding']
+        chart = data[cols[:1]].vgplot(kind=kind, stacked=False, **kwds)
+        validate_vegalite(chart)
+        assert 'opacity' not in chart['encoding'].to_dict()
 
         # if stacked, then should have no opacity
-        spec = data.vgplot(kind=kind, stacked=True, **kwds).spec
-        validate_vegalite(spec)
-        assert 'opacity' not in spec['encoding']
+        chart = data.vgplot(kind=kind, stacked=True, **kwds)
+        validate_vegalite(chart)
+        assert 'opacity' not in chart['encoding'].to_dict()
     else:
         # non-stackable plots have no default opacity
-        spec = data.vgplot(kind=kind, **kwds).spec
-        validate_vegalite(spec)
-        assert 'opacity' not in spec['encoding']
+        chart = data.vgplot(kind=kind, **kwds)
+        validate_vegalite(chart)
+        assert 'opacity' not in chart['encoding'].to_dict()
+
+
+@pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
+@pytest.mark.parametrize('ax', AXES)
+def test_frame_plot_ax(data, kind, info, ax):
+    cols = info['usecols']
+    kwds = info.get('kwds', {})
+    data = data[cols]
+
+    chart = data.vgplot(kind=kind, ax=ax[0], **kwds)
+    validate_vegalite(chart)
+    assert isinstance(chart, ax[1])
 
 
 @pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
@@ -179,13 +200,14 @@ def test_series_plot_width_height(data, kind, info):
     kwds = info.get('kwds', {})
     data = data[col]
 
-    spec = data.vgplot(kind=kind, width=300, height=200, **kwds).spec
+    spec = data.vgplot(kind=kind, width=300, height=200, **kwds)
     validate_vegalite(spec)
     assert (spec['width'], spec['height']) == (300, 200)
 
-    spec = data.vgplot(kind=kind, **kwds).spec
+    spec = data.vgplot(kind=kind, **kwds)
     validate_vegalite(spec)
-    assert (spec['width'], spec['height']) == (450, 300)
+    s = spec.to_dict()
+    assert (s['width'], s['height']) == (450, 300)
 
 
 @pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
@@ -194,13 +216,15 @@ def test_frame_plot_width_height(data, kind, info):
     kwds = info.get('kwds', {})
     data = data[cols]
 
-    spec = data.vgplot(kind=kind, width=300, height=200, **kwds).spec
+    spec = data.vgplot(kind=kind, width=300, height=200, **kwds)
     validate_vegalite(spec)
-    assert (spec['width'], spec['height']) == (300, 200)
+    s = spec.to_dict()
+    assert (s['width'], s['height']) == (300, 200)
 
-    spec = data.vgplot(kind=kind, **kwds).spec
+    spec = data.vgplot(kind=kind, **kwds)
     validate_vegalite(spec)
-    assert (spec['width'], spec['height']) == (450, 300)
+    s = spec.to_dict()
+    assert (s['width'], s['height']) == (450, 300)
 
 
 @pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
@@ -210,10 +234,10 @@ def test_series_plot_kwd_warnings(data, kind, info):
     data = data[col]
 
     with pytest.warns(UserWarning, match="Unrecognized keywords in vgplot.[a-z]+\(\): 'unrecognized_arg'"):
-        plot = data.vgplot(kind=kind, unrecognized_arg=None, **kwds)
+        data.vgplot(kind=kind, unrecognized_arg=None, **kwds)
 
     with pytest.warns(UserWarning):
-        plot = data.vgplot(kind=kind, unrecognized1=None, unrecognized2=None, **kwds)
+        data.vgplot(kind=kind, unrecognized1=None, unrecognized2=None, **kwds)
 
 
 @pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
@@ -223,45 +247,37 @@ def test_frame_plot_kwd_warnings(data, kind, info):
     data = data[cols]
 
     with pytest.warns(UserWarning, match="Unrecognized keywords in vgplot.[a-z]+\(\): 'unrecognized_arg'"):
-        plot = data.vgplot(kind=kind, unrecognized_arg=None, **kwds)
+        data.vgplot(kind=kind, unrecognized_arg=None, **kwds)
 
     with pytest.warns(UserWarning):
-        plot = data.vgplot(kind=kind, unrecognized1=None, unrecognized2=None, **kwds)
+        data.vgplot(kind=kind, unrecognized1=None, unrecognized2=None, **kwds)
 
 
 @pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
-def test_series_plot_ax(data, kind, info):
-    ax = pdvega.Axes()
+def test_series_fontsize(data, kind, info):
     col = info['col']
     kwds = info.get('kwds', {})
     data = data[col]
 
-    plot = data.vgplot(kind=kind, ax=ax, **kwds)
-    validate_vegalite(plot.spec)
-    assert plot is ax
-    assert 'layer' not in plot.spec
+    chart = data.vgplot(kind=kind, figsize=(10, 10), dpi=72, **kwds)
+    assert chart.height == 10 * 72 * 0.8
+    assert chart.width == 10 * 72 * 0.8
 
-    data2 = 2 * data
-    plot = data2.vgplot(kind=kind, ax=ax, **kwds)
-    validate_vegalite(plot.spec)
-    assert plot is ax
-    assert 'layer' in plot.spec
+    chart = data.vgplot(kind=kind, width=100, height=100, **kwds)
+    assert chart.height == 100
+    assert chart.width == 100
 
 
 @pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
-def test_frame_plot_ax(data, kind, info):
-    ax = pdvega.Axes()
+def test_frame_plot_fontsize(data, kind, info):
     cols = info['usecols']
     kwds = info.get('kwds', {})
     data = data[cols]
 
-    plot = data.vgplot(kind=kind, ax=ax, **kwds)
-    validate_vegalite(plot.spec)
-    assert plot is ax
-    assert 'layer' not in plot.spec
+    chart = data.vgplot(kind=kind, figsize=(10, 10), dpi=72, **kwds)
+    assert chart.height == 10 * 72 * 0.8
+    assert chart.width == 10 * 72 * 0.8
 
-    data2 = 2 * data
-    plot = data2.vgplot(kind=kind, ax=ax, **kwds)
-    validate_vegalite(plot.spec)
-    assert plot is ax
-    assert 'layer' in plot.spec
+    chart = data.vgplot(kind=kind, width=100, height=100, **kwds)
+    assert chart.height == 100
+    assert chart.width == 100

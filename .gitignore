@@ -104,4 +104,7 @@ ENV/
 *~
 
 # notebooks
-Untitled*.ipynb
+Untitled*.ipynb.pytest_cache/
+.DS_Store
+**.DS_Store
+.pytest_cache
