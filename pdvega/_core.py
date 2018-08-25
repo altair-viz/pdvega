@@ -927,30 +927,27 @@ class FramePlotMethods(BasePlotMethods):
             df = self._data[[x, y, C]]
 
         if C is None:
-            c = alt.Color(aggregate="count", type="quantitative")
+            color = alt.Color(aggregate="count", type="quantitative")
         else:
-            c = alt.Color(field=C, aggregate=reduce_C_function, type="quantitative")
+            color = alt.Color(field=C, aggregate=reduce_C_function,
+                              type="quantitative")
+
+        color.scale = alt.Scale(scheme='greens')
 
         chart = self._plot(
             data=df, width=width, height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
             dpi=kwds.pop("dpi", None)
+        ).mark_rect().encode(
+            x=alt.X(x, bin=alt.Bin(maxbins=gridsize), type="quantitative"),
+            y=alt.Y(y, bin=alt.Bin(maxbins=gridsize), type="quantitative"),
+            color=color,
         )
 
-        chart = chart.mark_rect().encode(
-            x=alt.X(x, bin={"maxbins": gridsize}, type="quantitative"),
-            y=alt.Y(y, bin={"maxbins": gridsize}, type="quantitative"),
-            color=c,
-        )
-
-        if alpha:
+        if alpha is not None:
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
-
-        chart.configure(
-            range={"heatmap": {"scheme": "greenblue"}}, view={"stroke": "transparent"}
-        )
 
         if ax is not None:
             return ax + chart
