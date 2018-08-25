@@ -39,14 +39,12 @@ class BasePlotMethods(PandasObject):
     def __call__(self, kind, *args, **kwargs):
         raise NotImplementedError()
 
-        
     def _plot(self, data=None, width=450, height=300, title=None, figsize=None, dpi=75):
         if data is None:
             data = self._data
 
         if title is None:
             title = ""
-
 
         if figsize is not None:
             width_inches, height_inches = figsize
@@ -111,11 +109,12 @@ class SeriesPlotMethods(BasePlotMethods):
         x, y = df.columns
 
         chart = self._plot(
-
-            data=df, width=width, height=height,
+            data=df,
+            width=width,
+            height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
-            dpi=kwds.pop("dpi", None)
+            dpi=kwds.pop("dpi", None),
         )
 
         chart = chart.mark_line().encode(x=_x(x, df), y=_y(y, df))
@@ -123,7 +122,6 @@ class SeriesPlotMethods(BasePlotMethods):
         if alpha is not None:
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
-
 
         if ax is not None:
             return ax + chart
@@ -157,19 +155,19 @@ class SeriesPlotMethods(BasePlotMethods):
         x, y = df.columns
 
         chart = self._plot(
-
-            data=df, width=width, height=height,
+            data=df,
+            width=width,
+            height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
-            dpi=kwds.pop("dpi", None)
+            dpi=kwds.pop("dpi", None),
+        ).mark_area().encode(
+            x=_x(x, df), y=_y(y, df)
         )
-
-        chart = chart.mark_area().encode(x=_x(x, df), y=_y(y, df))
 
         if alpha is not None:
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
-
 
         if ax is not None:
             return ax + chart
@@ -204,14 +202,15 @@ class SeriesPlotMethods(BasePlotMethods):
         x, y = df.columns
 
         chart = self._plot(
-
-            data=df, width=width, height=height,
+            data=df,
+            width=width,
+            height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
-            dpi=kwds.pop("dpi", None)
+            dpi=kwds.pop("dpi", None),
+        ).mark_bar().encode(
+            x=_x(x, df), y=_y(y, df)
         )
-
-        chart = chart.mark_bar().encode(x=_x(x, df), y=_y(y, df))
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -222,7 +221,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         warn_if_keywords_unused("bar", kwds)
         return chart
-      
+
     def barh(self, alpha=None, width=450, height=300, ax=None, **kwds):
         """Horizontal bar plot for Series data
 
@@ -246,15 +245,23 @@ class SeriesPlotMethods(BasePlotMethods):
         """
         chart = self.bar(alpha=alpha, width=width, height=height, **kwds)
 
-
         enc = chart.encoding
         enc["x"], enc["y"] = enc["y"], enc["x"]
 
         if ax is not None:
             return ax + chart
         return chart
-  
-    def hist(self, bins=10, alpha=None, histtype="bar", width=450, height=300, ax=None, **kwds):
+
+    def hist(
+        self,
+        bins=10,
+        alpha=None,
+        histtype="bar",
+        width=450,
+        height=300,
+        ax=None,
+        **kwds
+    ):
         """Histogram plot for Series data
 
         >>> series.vgplot.hist()  # doctest: +SKIP
@@ -296,10 +303,12 @@ class SeriesPlotMethods(BasePlotMethods):
             raise ValueError("histtype '{0}' is not recognized" "".format(histtype))
 
         chart = self._plot(
-            data=df, width=width, height=height,
+            data=df,
+            width=width,
+            height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
-            dpi=kwds.pop("dpi", None)
+            dpi=kwds.pop("dpi", None),
         )
 
         chart.mark = mark
@@ -447,14 +456,13 @@ class FramePlotMethods(BasePlotMethods):
             x = df.columns[0]
 
         chart = self._plot(
-
-            data=df, width=width, height=height,
+            data=df,
+            width=width,
+            height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
-            dpi=kwds.pop("dpi", None)
-        )
-
-        chart = chart.mark_line().encode(
+            dpi=kwds.pop("dpi", None),
+        ).mark_line().encode(
             x=_x(x, df), y=_y(value_name, df), color=alt.Color(var_name, type="nominal")
         )
 
@@ -474,16 +482,7 @@ class FramePlotMethods(BasePlotMethods):
         return chart
 
     def scatter(
-        self,
-        x,
-        y,
-        c=None,
-        s=None,
-        alpha=None,
-        width=450,
-        height=300,
-        ax=None,
-        **kwds
+        self, x, y, c=None, s=None, alpha=None, width=450, height=300, ax=None, **kwds
     ):
         """Scatter plot for DataFrame data
 
@@ -515,12 +514,15 @@ class FramePlotMethods(BasePlotMethods):
         """
         df = self._data
 
-        chart = self._plot(width=width, height=height,
-                           title=kwds.pop("title", ""),
-                           figsize=kwds.pop("figsize", None),
-                           dpi=kwds.pop("dpi", None))
-
-        chart = chart.mark_point().encode(x=_x(x, df, ordinal_threshold=0), y=_y(y, df, ordinal_threshold=0))
+        chart = self._plot(
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
+        ).mark_point().encode(
+            x=_x(x, df, ordinal_threshold=0), y=_y(y, df, ordinal_threshold=0)
+        )
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -594,13 +596,13 @@ class FramePlotMethods(BasePlotMethods):
             alpha = 0.7
 
         chart = self._plot(
-            data=df, width=width, height=height,
+            data=df,
+            width=width,
+            height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
-            dpi=kwds.pop("dpi", None)
-        )
-
-        chart = chart.mark_area().encode(
+            dpi=kwds.pop("dpi", None),
+        ).mark_area().encode(
             x=_x(x, df),
             y=alt.Y(
                 value_name,
@@ -675,13 +677,13 @@ class FramePlotMethods(BasePlotMethods):
             alpha = 0.7
 
         chart = self._plot(
-            data=df, width=width, height=height,
+            data=df,
+            width=width,
+            height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
-            dpi=kwds.pop("dpi", None)
-        )
-
-        chart = chart.mark_bar().encode(
+            dpi=kwds.pop("dpi", None),
+        ).mark_bar().encode(
             x=alt.X(x, type=infer_vegalite_type(df[x], ordinal_threshold=50)),
             y=alt.Y(
                 "value",
@@ -842,10 +844,12 @@ class FramePlotMethods(BasePlotMethods):
             alpha = 0.7
 
         chart = self._plot(
-            data=df, width=width, height=height,
+            data=df,
+            width=width,
+            height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
-            dpi=kwds.pop("dpi", None)
+            dpi=kwds.pop("dpi", None),
         )
 
         chart.mark = mark
@@ -929,16 +933,17 @@ class FramePlotMethods(BasePlotMethods):
         if C is None:
             color = alt.Color(aggregate="count", type="quantitative")
         else:
-            color = alt.Color(field=C, aggregate=reduce_C_function,
-                              type="quantitative")
+            color = alt.Color(field=C, aggregate=reduce_C_function, type="quantitative")
 
-        color.scale = alt.Scale(scheme='greens')
+        color.scale = alt.Scale(scheme="greens")
 
         chart = self._plot(
-            data=df, width=width, height=height,
+            data=df,
+            width=width,
+            height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
-            dpi=kwds.pop("dpi", None)
+            dpi=kwds.pop("dpi", None),
         ).mark_rect().encode(
             x=alt.X(x, bin=alt.Bin(maxbins=gridsize), type="quantitative"),
             y=alt.Y(y, bin=alt.Bin(maxbins=gridsize), type="quantitative"),
@@ -1019,12 +1024,7 @@ class FramePlotMethods(BasePlotMethods):
 
         f = FramePlotMethods(kde_df)
         return f.line(
-            value_name="Density",
-            alpha=alpha,
-            width=width,
-            height=height,
-            ax=ax,
-            **kwds
+            value_name="Density", alpha=alpha, width=width, height=height, ax=ax, **kwds
         )
 
     density = kde
