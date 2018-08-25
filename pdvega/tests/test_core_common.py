@@ -250,3 +250,55 @@ def test_frame_plot_kwd_warnings(data, kind, info):
 
     with pytest.warns(UserWarning):
         data.vgplot(kind=kind, unrecognized1=None, unrecognized2=None, **kwds)
+
+
+@pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
+def test_series_figsize(data, kind, info):
+    col = info['col']
+    kwds = info.get('kwds', {})
+    data = data[col]
+
+    chart = data.vgplot(kind=kind, figsize=(10, 10), dpi=72, **kwds)
+    assert chart.height == 10 * 72 * 0.8
+    assert chart.width == 10 * 72 * 0.8
+
+    chart = data.vgplot(kind=kind, width=100, height=100, **kwds)
+    assert chart.height == 100
+    assert chart.width == 100
+
+
+@pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
+def test_frame_plot_figsize(data, kind, info):
+    cols = info['usecols']
+    kwds = info.get('kwds', {})
+    data = data[cols]
+
+    chart = data.vgplot(kind=kind, figsize=(10, 10), dpi=72, **kwds)
+    assert chart.height == 10 * 72 * 0.8
+    assert chart.width == 10 * 72 * 0.8
+
+    chart = data.vgplot(kind=kind, width=100, height=100, **kwds)
+    assert chart.height == 100
+    assert chart.width == 100
+
+
+@pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
+def test_series_title(data, kind, info):
+    col = info['col']
+    kwds = info.get('kwds', {})
+    data = data[col]
+
+    title = 'Test'
+    chart = data.vgplot(kind=kind, title=title, **kwds)
+    assert chart.title == title
+
+
+@pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
+def test_frame_title(data, kind, info):
+    cols = info['usecols']
+    kwds = info.get('kwds', {})
+    data = data[cols]
+
+    title = 'Test'
+    chart = data.vgplot(kind=kind, title=title, **kwds)
+    assert chart.title == title

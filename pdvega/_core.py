@@ -39,13 +39,17 @@ class BasePlotMethods(PandasObject):
     def __call__(self, kind, *args, **kwargs):
         raise NotImplementedError()
 
-    def _plot(self, data=None, width=450, height=300, title=None):
-
+    def _plot(self, data=None, width=450, height=300, title=None, figsize=None, dpi=75):
         if data is None:
             data = self._data
 
         if title is None:
             title = ""
+
+        if figsize is not None:
+            width_inches, height_inches = figsize
+            width = 0.8 * dpi * width_inches
+            height = 0.8 * dpi * height_inches
 
         chart = alt.Chart(data=data).properties(width=width, height=height, title=title)
         return chart
@@ -100,13 +104,17 @@ class SeriesPlotMethods(BasePlotMethods):
         chart : altair.Chart
             The altair plot representation
         """
-        warn_if_keywords_unused("line", kwds)
         df = self._data.reset_index()
         df.columns = map(str, df.columns)
         x, y = df.columns
 
         chart = self._plot(
-            data=df, width=width, height=height, title=kwds.get("title", "")
+            data=df,
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
         )
 
         chart = chart.mark_line().encode(x=_x(x, df), y=_y(y, df))
@@ -117,6 +125,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         if ax is not None:
             return ax + chart
+
+        warn_if_keywords_unused("line", kwds)
         return chart
 
     def area(self, alpha=None, width=450, height=300, ax=None, **kwds):
@@ -140,16 +150,20 @@ class SeriesPlotMethods(BasePlotMethods):
         chart : alt.Chart
             altair chart representation
         """
-        warn_if_keywords_unused("area", kwds)
         df = self._data.reset_index()
         df.columns = map(str, df.columns)
         x, y = df.columns
 
         chart = self._plot(
-            data=df, width=width, height=height, title=kwds.get("title", "")
+            data=df,
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
+        ).mark_area().encode(
+            x=_x(x, df), y=_y(y, df)
         )
-
-        chart = chart.mark_area().encode(x=_x(x, df), y=_y(y, df))
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -157,6 +171,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         if ax is not None:
             return ax + chart
+
+        warn_if_keywords_unused("area", kwds)
         return chart
 
     def bar(self, alpha=None, width=450, height=300, ax=None, **kwds):
@@ -180,17 +196,21 @@ class SeriesPlotMethods(BasePlotMethods):
         chart : alt.Chart
             altair chart representation
         """
-        warn_if_keywords_unused("bar", kwds)
 
         df = self._data.reset_index()
         df.columns = map(str, df.columns)
         x, y = df.columns
 
         chart = self._plot(
-            data=df, width=width, height=height, title=kwds.get("title", "")
+            data=df,
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
+        ).mark_bar().encode(
+            x=_x(x, df), y=_y(y, df)
         )
-
-        chart = chart.mark_bar().encode(x=_x(x, df), y=_y(y, df))
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -198,6 +218,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         if ax is not None:
             return ax + chart
+
+        warn_if_keywords_unused("bar", kwds)
         return chart
 
     def barh(self, alpha=None, width=450, height=300, ax=None, **kwds):
@@ -230,7 +252,16 @@ class SeriesPlotMethods(BasePlotMethods):
             return ax + chart
         return chart
 
-    def hist(self, bins=10, alpha=None, histtype="bar", width=450, height=300, ax=None, **kwds):
+    def hist(
+        self,
+        bins=10,
+        alpha=None,
+        histtype="bar",
+        width=450,
+        height=300,
+        ax=None,
+        **kwds
+    ):
         """Histogram plot for Series data
 
         >>> series.vgplot.hist()  # doctest: +SKIP
@@ -255,7 +286,6 @@ class SeriesPlotMethods(BasePlotMethods):
         chart : alt.Chart
             altair chart representation
         """
-        warn_if_keywords_unused("hist", kwds)
         df = self._data.to_frame().reset_index(drop=False)
         df.columns = df.columns.astype(str)
         y, x = df.columns
@@ -273,7 +303,12 @@ class SeriesPlotMethods(BasePlotMethods):
             raise ValueError("histtype '{0}' is not recognized" "".format(histtype))
 
         chart = self._plot(
-            data=df, width=width, height=height, title=kwds.get("title", "")
+            data=df,
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
         )
 
         chart.mark = mark
@@ -287,6 +322,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         if ax is not None:
             return ax + chart
+
+        warn_if_keywords_unused("hist", kwds)
         return chart
 
     def kde(self, bw_method=None, alpha=None, width=450, height=300, ax=None, **kwds):
@@ -404,7 +441,6 @@ class FramePlotMethods(BasePlotMethods):
         chart : alt.Chart
             altair chart representation
         """
-        warn_if_keywords_unused("line", kwds)
         use_order = (x is not None)
 
         if use_order:
@@ -420,10 +456,13 @@ class FramePlotMethods(BasePlotMethods):
             x = df.columns[0]
 
         chart = self._plot(
-            data=df, width=width, height=height, title=kwds.get("title", None)
-        )
-
-        chart = chart.mark_line().encode(
+            data=df,
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
+        ).mark_line().encode(
             x=_x(x, df), y=_y(value_name, df), color=alt.Color(var_name, type="nominal")
         )
 
@@ -438,19 +477,12 @@ class FramePlotMethods(BasePlotMethods):
 
         if ax is not None:
             return ax + chart
+
+        warn_if_keywords_unused("line", kwds)
         return chart
 
     def scatter(
-        self,
-        x,
-        y,
-        c=None,
-        s=None,
-        alpha=None,
-        width=450,
-        height=300,
-        ax=None,
-        **kwds
+        self, x, y, c=None, s=None, alpha=None, width=450, height=300, ax=None, **kwds
     ):
         """Scatter plot for DataFrame data
 
@@ -480,11 +512,17 @@ class FramePlotMethods(BasePlotMethods):
         chart : alt.Chart
             altair chart representation
         """
-        warn_if_keywords_unused("scatter", kwds)
         df = self._data
 
-        chart = self._plot(width=width, height=height, title=kwds.get("title", ""))
-        chart = chart.mark_point().encode(x=_x(x, df, ordinal_threshold=0), y=_y(y, df, ordinal_threshold=0))
+        chart = self._plot(
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
+        ).mark_point().encode(
+            x=_x(x, df, ordinal_threshold=0), y=_y(y, df, ordinal_threshold=0)
+        )
 
         if alpha is not None:
             assert 0 <= alpha <= 1
@@ -498,6 +536,8 @@ class FramePlotMethods(BasePlotMethods):
 
         if ax is not None:
             return ax + chart
+
+        warn_if_keywords_unused("scatter", kwds)
         return chart
 
     def area(
@@ -546,7 +586,6 @@ class FramePlotMethods(BasePlotMethods):
         chart : alt.Chart
             altair chart representation
         """
-        warn_if_keywords_unused("area", kwds)
         df = unpivot_frame(
             self._data, x=x, y=y, var_name=var_name, value_name=value_name
         )
@@ -557,9 +596,13 @@ class FramePlotMethods(BasePlotMethods):
             alpha = 0.7
 
         chart = self._plot(
-            data=df, width=width, height=height, title=kwds.get("title", None)
-        )
-        chart = chart.mark_area().encode(
+            data=df,
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
+        ).mark_area().encode(
             x=_x(x, df),
             y=alt.Y(
                 value_name,
@@ -575,6 +618,8 @@ class FramePlotMethods(BasePlotMethods):
 
         if ax is not None:
             return ax + chart
+
+        warn_if_keywords_unused("area", kwds)
         return chart
 
     def bar(
@@ -623,7 +668,6 @@ class FramePlotMethods(BasePlotMethods):
         chart : alt.Chart
             altair chart representation
         """
-        warn_if_keywords_unused("bar", kwds)
         df = unpivot_frame(
             self._data, x=x, y=y, var_name=var_name, value_name=value_name
         )
@@ -633,9 +677,13 @@ class FramePlotMethods(BasePlotMethods):
             alpha = 0.7
 
         chart = self._plot(
-            data=df, width=width, height=height, title=kwds.get("title", None)
-        )
-        chart = chart.mark_bar().encode(
+            data=df,
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
+        ).mark_bar().encode(
             x=alt.X(x, type=infer_vegalite_type(df[x], ordinal_threshold=50)),
             y=alt.Y(
                 "value",
@@ -651,6 +699,8 @@ class FramePlotMethods(BasePlotMethods):
 
         if ax is not None:
             return ax + chart
+
+        warn_if_keywords_unused("bar", kwds)
         return chart
 
     def barh(
@@ -772,7 +822,6 @@ class FramePlotMethods(BasePlotMethods):
         chart : alt.Chart
             altair chart representation
         """
-        warn_if_keywords_unused("hist", kwds)
         if by is not None:
             raise NotImplementedError("vgplot.hist `by` keyword")
         if x is not None or y is not None:
@@ -795,8 +844,14 @@ class FramePlotMethods(BasePlotMethods):
             alpha = 0.7
 
         chart = self._plot(
-            data=df, width=width, height=height, title=kwds.get("title", None)
+            data=df,
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
         )
+
         chart.mark = mark
         chart = chart.encode(
             x=alt.X(value_name, bin={"maxbins": bins}, type="quantitative"),
@@ -814,6 +869,8 @@ class FramePlotMethods(BasePlotMethods):
 
         if ax is not None:
             return ax + chart
+
+        warn_if_keywords_unused("hist", kwds)
         return chart
 
     def heatmap(
@@ -866,7 +923,6 @@ class FramePlotMethods(BasePlotMethods):
             altair chart representation
         """
         # TODO: Use actual hexbins rather than a grid heatmap
-        warn_if_keywords_unused("hexbin", kwds)
         reduce_C_function = validate_aggregation(reduce_C_function)
 
         if C is None:
@@ -877,16 +933,21 @@ class FramePlotMethods(BasePlotMethods):
         if C is None:
             color = alt.Color(aggregate="count", type="quantitative")
         else:
-            color = alt.Color(field=C, aggregate=reduce_C_function,
-                              type="quantitative")
-        color.scale = alt.Scale(scheme='greens')
+            color = alt.Color(field=C, aggregate=reduce_C_function, type="quantitative")
+
+        color.scale = alt.Scale(scheme="greens")
 
         chart = self._plot(
-            data=df, width=width, height=height, title=kwds.get("title", None)
+            data=df,
+            width=width,
+            height=height,
+            title=kwds.pop("title", ""),
+            figsize=kwds.pop("figsize", None),
+            dpi=kwds.pop("dpi", None),
         ).mark_rect().encode(
             x=alt.X(x, bin=alt.Bin(maxbins=gridsize), type="quantitative"),
             y=alt.Y(y, bin=alt.Bin(maxbins=gridsize), type="quantitative"),
-            color=color
+            color=color,
         )
 
         if alpha is not None:
@@ -895,6 +956,8 @@ class FramePlotMethods(BasePlotMethods):
 
         if ax is not None:
             return ax + chart
+
+        warn_if_keywords_unused("hexbin", kwds)
         return chart
 
     hexbin = heatmap
@@ -961,12 +1024,7 @@ class FramePlotMethods(BasePlotMethods):
 
         f = FramePlotMethods(kde_df)
         return f.line(
-            value_name="Density",
-            alpha=alpha,
-            width=width,
-            height=height,
-            ax=ax,
-            **kwds
+            value_name="Density", alpha=alpha, width=width, height=height, ax=ax, **kwds
         )
 
     density = kde
