@@ -26,7 +26,6 @@ AXES = [
     (pdvega.alt.layer(other_chart), pdvega.alt.LayerChart)
 ]
 
-
 FRAME_TEST_CASES = {
     'line': {
         'usecols': ['x', 'y', 'z'],
@@ -254,7 +253,7 @@ def test_frame_plot_kwd_warnings(data, kind, info):
 
 
 @pytest.mark.parametrize('kind,info', SERIES_TEST_CASES.items())
-def test_series_fontsize(data, kind, info):
+def test_series_figsize(data, kind, info):
     col = info['col']
     kwds = info.get('kwds', {})
     data = data[col]
@@ -269,7 +268,7 @@ def test_series_fontsize(data, kind, info):
 
 
 @pytest.mark.parametrize('kind,info', FRAME_TEST_CASES.items())
-def test_frame_plot_fontsize(data, kind, info):
+def test_frame_plot_figsize(data, kind, info):
     cols = info['usecols']
     kwds = info.get('kwds', {})
     data = data[cols]

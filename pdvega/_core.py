@@ -39,13 +39,14 @@ class BasePlotMethods(PandasObject):
     def __call__(self, kind, *args, **kwargs):
         raise NotImplementedError()
 
+        
     def _plot(self, data=None, width=450, height=300, title=None, figsize=None, dpi=75):
-
         if data is None:
             data = self._data
 
         if title is None:
             title = ""
+
 
         if figsize is not None:
             width_inches, height_inches = figsize
@@ -110,6 +111,7 @@ class SeriesPlotMethods(BasePlotMethods):
         x, y = df.columns
 
         chart = self._plot(
+
             data=df, width=width, height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
@@ -121,6 +123,7 @@ class SeriesPlotMethods(BasePlotMethods):
         if alpha is not None:
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
+
 
         if ax is not None:
             return ax + chart
@@ -154,6 +157,7 @@ class SeriesPlotMethods(BasePlotMethods):
         x, y = df.columns
 
         chart = self._plot(
+
             data=df, width=width, height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
@@ -165,6 +169,7 @@ class SeriesPlotMethods(BasePlotMethods):
         if alpha is not None:
             assert 0 <= alpha <= 1
             chart = chart.encode(opacity=alt.value(alpha))
+
 
         if ax is not None:
             return ax + chart
@@ -199,6 +204,7 @@ class SeriesPlotMethods(BasePlotMethods):
         x, y = df.columns
 
         chart = self._plot(
+
             data=df, width=width, height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),
@@ -216,7 +222,7 @@ class SeriesPlotMethods(BasePlotMethods):
 
         warn_if_keywords_unused("bar", kwds)
         return chart
-
+      
     def barh(self, alpha=None, width=450, height=300, ax=None, **kwds):
         """Horizontal bar plot for Series data
 
@@ -240,13 +246,14 @@ class SeriesPlotMethods(BasePlotMethods):
         """
         chart = self.bar(alpha=alpha, width=width, height=height, **kwds)
 
+
         enc = chart.encoding
         enc["x"], enc["y"] = enc["y"], enc["x"]
 
         if ax is not None:
             return ax + chart
         return chart
-
+  
     def hist(self, bins=10, alpha=None, histtype="bar", width=450, height=300, ax=None, **kwds):
         """Histogram plot for Series data
 
@@ -440,6 +447,7 @@ class FramePlotMethods(BasePlotMethods):
             x = df.columns[0]
 
         chart = self._plot(
+
             data=df, width=width, height=height,
             title=kwds.pop("title", ""),
             figsize=kwds.pop("figsize", None),

@@ -1,4 +1,5 @@
-from pandas.core.base import PandasObject  # flake8: noqa
+from pandas.core.base import PandasObject # flake8: noqa
+
 
 try:
     from pandas.api.types import infer_dtype as infer_dtype
