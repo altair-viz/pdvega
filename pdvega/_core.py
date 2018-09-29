@@ -278,7 +278,8 @@ class SeriesPlotMethods(BasePlotMethods):
 
         chart.mark = mark
         chart = chart.encode(
-            x=_x(x, df, bin={"maxbins": 5}), y=_y(y, df, aggregate="count")
+            x=_x(x, df, bin={"maxbins": bins}), 
+            y=_y(y, df, aggregate="count")
         )
 
         if alpha is not None:

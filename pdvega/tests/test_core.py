@@ -251,7 +251,8 @@ def test_series_area():
 
 @pytest.mark.parametrize("stacked", [True, False])
 @pytest.mark.parametrize("histtype", ["bar", "step", "stepfilled"])
-def test_df_hist(stacked, histtype):
+@pytest.mark.parametrize("maxbins", [3, 5, 10])
+def test_df_hist(stacked, histtype, maxbins):
     df = pd.DataFrame({"x": range(10), "y": range(10)})
 
     marks = {
@@ -261,7 +262,7 @@ def test_df_hist(stacked, histtype):
     }
 
     # bar histogram
-    plot = df.vgplot.hist(bins=5, stacked=stacked, histtype=histtype)
+    plot = df.vgplot.hist(bins=maxbins, stacked=stacked, histtype=histtype)
     assert plot.mark == marks[histtype]
     if stacked:
         # No default opacity for a stacked histogram
@@ -272,13 +273,14 @@ def test_df_hist(stacked, histtype):
             plot, x="value", y=utils.IGNORE, color="variable",
             opacity=utils.IGNORE
         )
-    assert plot["encoding"]["x"]["bin"] == {"maxbins": 5}
+    assert plot["encoding"]["x"]["bin"] == {"maxbins": maxbins}
     assert plot["encoding"]["y"]["aggregate"] == "count"
     assert plot["encoding"]["y"]["stack"] == ("zero" if stacked else None)
 
 
 @pytest.mark.parametrize("histtype", ["bar", "step", "stepfilled"])
-def test_series_hist(histtype):
+@pytest.mark.parametrize("maxbins", [3, 5, 10])
+def test_series_hist(histtype, maxbins):
     ser = pd.Series(range(10))
 
     marks = {
@@ -286,11 +288,11 @@ def test_series_hist(histtype):
         "step": {"type": "line", "interpolate": "step"},
         "stepfilled": {"type": "area", "interpolate": "step"},
     }
-    plot = ser.vgplot.hist(bins=5, histtype=histtype)
+    plot = ser.vgplot.hist(bins=maxbins, histtype=histtype)
     assert plot.mark == marks[histtype]
 
     utils.check_encodings(plot, x="0", y=utils.IGNORE)
-    assert plot["encoding"]["x"]["bin"] == {"maxbins": 5}
+    assert plot["encoding"]["x"]["bin"] == {"maxbins": maxbins}
     assert plot["encoding"]["y"]["aggregate"] == "count"
 
 
