@@ -63,8 +63,8 @@ MAINTAINER_EMAIL = "jakevdp@gmail.com"
 URL = 'http://altair-viz.github.io/pdvega/'
 DOWNLOAD_URL = 'http://github.com/jakevdp/pdvega/'
 LICENSE = 'MIT'
-INSTALL_REQUIRES    = get_install_requirements("requirements.txt")
-DEV_REQUIRES        = get_install_requirements("requirements_dev.txt")
+INSTALL_REQUIRES = get_install_requirements("requirements.txt")
+DEV_REQUIRES  = get_install_requirements("requirements_dev.txt")
 PACKAGES = find_packages()
 VERSION = version('pdvega/__init__.py')
 
