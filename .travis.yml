@@ -13,7 +13,7 @@ before_install:
   - pip install pip --upgrade
 
 install:
-  - pip install -e .[dev]
+  - pip install -U -e .[dev]
 
 script:
   - flake8 ./
