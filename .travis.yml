@@ -11,9 +11,10 @@ env:
 
 before_install:
   - pip install pip --upgrade
+  - pip install -U pytest
 
 install:
-  - pip install -U -e .[dev]
+  - pip install -e .[dev]
 
 script:
   - flake8 ./
