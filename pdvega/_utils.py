@@ -1,5 +1,4 @@
 import warnings
-import altair as alt
 import numpy as np
 import pandas as pd
 
@@ -66,9 +65,9 @@ def unpivot_frame(frame, x=None, y=None,
     if isinstance(y, tuple):
         y = list(y)
     if x is not None:
-        _ = frame[x] # flake8: noqa
+        _ = frame[x] # noqa
     if y is not None:
-        _ = frame[y] # flake8: noqa
+        _ = frame[y] # noqa
     return frame.melt(id_vars=x, value_vars=y,
                       var_name=var_name, value_name=value_name)
 
