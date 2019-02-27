@@ -3,8 +3,10 @@ from pandas.core.base import PandasObject # flake8: noqa
 
 try:
     from pandas.api.types import infer_dtype as infer_dtype
+    _infer_dtype_kwds = {'skipna': False}
 except ImportError:  # Pandas before 0.20.0
     from pandas.lib import infer_dtype as infer_dtype
+    _infer_dtype_kwds = {}
 
 from pandas import DataFrame, Series
 

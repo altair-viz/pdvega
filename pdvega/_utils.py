@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from ._pandas_internals import infer_dtype as pd_infer_dtype
+from ._pandas_internals import _infer_dtype_kwds
 
 
 def infer_vegalite_type(data, ordinal_threshold=6):
@@ -23,7 +24,7 @@ def infer_vegalite_type(data, ordinal_threshold=6):
     Licence: BSD-3
     """
     # infer based on the dtype of the input
-    typ = pd_infer_dtype(data)
+    typ = pd_infer_dtype(data, **_infer_dtype_kwds)
 
     # TODO: Once this returns 'O', please update test_select_x and test_select_y in test_api.py
 
