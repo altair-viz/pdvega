@@ -12,7 +12,7 @@ cd _build
 # clone the repo if needed
 if test -d pdvega;
 then echo "using existing cloned pdvega directory";
-else git clone git@github.com:jakevdp/pdvega.git;
+else git clone git@github.com:altair-viz/pdvega.git;
 fi
 
 # sync the website
