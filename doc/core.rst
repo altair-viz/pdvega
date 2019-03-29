@@ -305,4 +305,4 @@ For examples of these, refer to :ref:`statistical-plotting`.
 
 
 
-.. _vega_datasets: http://github.com/jakevdp/vega_datasets
+.. _vega_datasets: http://github.com/altair-viz/vega_datasets
